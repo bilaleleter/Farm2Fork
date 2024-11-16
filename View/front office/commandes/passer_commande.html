@@ -1,0 +1,69 @@
+<form action="/passer_commande" method="POST">
+    <!-- Informations Client -->
+    <h2>Informations Client</h2>
+    <div>
+        <label for="nom">Nom :</label>
+        <input type="text" id="nom" name="nom" placeholder="Votre nom" required>
+    </div>
+
+    <div>
+        <label for="email">Email :</label>
+        <input type="email" id="email" name="email" placeholder="Votre email" required>
+    </div>
+
+    <div>
+        <label for="telephone">Téléphone :</label>
+        <input type="tel" id="telephone" name="telephone" placeholder="Votre numéro de téléphone" required>
+    </div>
+
+    <div>
+        <label for="adresse">Adresse :</label>
+        <input type="text" id="adresse" name="adresse" placeholder="Votre adresse" required>
+    </div>
+
+    <!-- Détails du Produit -->
+    <h2>Choix du Produit</h2>
+    <div>
+        <label for="produit">Produit :</label>
+        <select id="produit" name="produit" required>
+            <option value="" disabled selected>Sélectionnez un produit</option>
+            <option value="produit1">Produit 1</option>
+            <option value="produit2">Produit 2</option>
+            <option value="produit3">Produit 3</option>
+        </select>
+    </div>
+
+    <div>
+        <label for="quantite">Quantité :</label>
+        <input type="number" id="quantite" name="quantite" min="1" placeholder="Quantité" required>
+    </div>
+
+    <!-- Informations sur la Livraison -->
+    <h2>Informations de Livraison</h2>
+    <div>
+        <label for="adresse_livraison">Adresse de Livraison :</label>
+        <input type="text" id="adresse_livraison" name="adresse_livraison" placeholder="Adresse de livraison" required>
+    </div>
+
+    <div>
+        <label for="date_livraison">Date de Livraison Préférée :</label>
+        <input type="date" id="date_livraison" name="date_livraison">
+    </div>
+
+    <!-- Mode de Paiement -->
+    <h2>Mode de Paiement</h2>
+    <div>
+        <label for="mode_paiement">Mode de Paiement :</label>
+        <select id="mode_paiement" name="mode_paiement" required>
+            <option value="" disabled selected>Sélectionnez un mode de paiement</option>
+            <option value="carte_bancaire">Carte Bancaire</option>
+            <option value="paypal">PayPal</option>
+            <option value="virement">Virement Bancaire</option>
+        </select>
+    </div>
+
+    <!-- Bouton de Soumission -->
+    <div>
+        <button type="submit">Passer la Commande</button>
+    </div>
+</form>
