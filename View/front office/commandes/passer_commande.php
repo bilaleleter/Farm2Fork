@@ -33,7 +33,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         'en attente', // L'état initial de la commande
         $quantite,
         1,
-        $id_produit
+        $id_produit,
+        null
     );
 
     // Ajouter la commande à la base de données

@@ -2,6 +2,30 @@
 include_once __DIR__ . "/../../../Controller/LivraisonController.php";
 include_once __DIR__ . "/../../../Model/Livraison.php";
 include_once __DIR__ . "/../../../Config.php";
+include_once __DIR__ . "/../../../Controller/CommandeController.php";
+include_once __DIR__ . "/../../../Model/Commande.php";
+$commandeController = new \Controller\CommandeController();
+$livraisonController = new \Controller\LivraisonController();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+    $ville = $_POST['ville'];
+    $codePostal = $_POST['codePostal'];
+    $Adresse = $_POST['Adresse'];
+    $date_d_envoi = date('Y-m-d H:i:s');
+    $statut_de_livraison = "aaaa";
+    $date_de_livraison =  date('Y-m-d H:i:s', strtotime('+7 days'));
+    $livraison = new \Model\Livraison(0, $ville, $codePostal, $Adresse, $date_d_envoi, $statut_de_livraison, $date_de_livraison);
+    $livraisonController->addLivraison($livraison);
+    $idLivraison = (int) $livraisonController->getLastInsertId();
+    $commandeController->livrerCommandes($idLivraison);
+
+    
+   
+    
+
+}
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -365,42 +389,35 @@ include_once __DIR__ . "/../../../Config.php";
                 </div>
               </div>
               <div class="col-md-5 p-3">
-               
-                <form>
+              
+              <form action="" method="POST">
+        
                   <div class="mb-3">
-                    <label for="name" class="form-label d-none">Name</label>
+                    <label for="name" class="form-label d-none">ville</label>
                     <input type="text"
-                      class="form-control rounded bg-light" name="name" id="name" placeholder="Name">
-                  </div>
-                  <div class="mb-3">
-                    <label for="email" class="form-label d-none">Email</label>
-                    <input type="email" class="form-control rounded bg-light" name="email" id="email" placeholder="Email Address">
-                  </div>
-                  <div class="mb-3">
-                    <label for="email" class="form-label d-none">telephone</label>
-                    <input type="email" class="form-control rounded bg-light" name="telephone" id="telephone" placeholder="telephone">
+                      class="form-control rounded bg-light"  name="ville" id="ville" placeholder="Ville">
                   </div>
                   
                   <div class="mb-3">
-                    <label for="name" class="form-label d-none">adresse_livraison</label>
+                    <label for="name" class="form-label d-none">codePostal</label>
                     <input type="text"
-                      class="form-control rounded bg-light"  name="adresse_livraison" id="adresse_livraison" placeholder="adresse_livraison">
+                      class="form-control rounded bg-light"  name="codePostal" id="codePostal" placeholder="Code Postal">
                   </div>
-                  <div class="mb-3">
-                    <label for="name" class="form-label d-none">Date_envoi</label>
-                    <input type="date"
-                      class="form-control rounded bg-light" name="Date_envoi" id="Date_envoi" placeholder="Date_envoi">
-                  </div>
+
+                  
+
                   
                   <div class="mb-3">
-                    <label for="name" class="form-label d-none">quantité</label>
-                    <input type="number"
-                      class="form-control rounded bg-light" name="quantité" id="quantité" placeholder="quantité">
+                    <label for="name" class="form-label d-none">Adresse</label>
+                    <input type="text"
+                      class="form-control rounded bg-light"  name="Adresse" id="Adresse" placeholder="Adresse">
                   </div>
-                  
                   <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-dark btn-md rounded-0">commander</button>
+                  
                   </div>
+                  <div>
+        <button type="submit">Passer la Commande</button>
+    </div>
                   
                 </form>
                 

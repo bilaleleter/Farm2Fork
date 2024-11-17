@@ -352,7 +352,7 @@
 
     <section style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #ffffff;">
       <div class="container col-md-8 col-lg-6 p-4 rounded shadow" style="background-color: #ffffff; border: 2px solid #408c148d;">
-          <h1 style="text-align: center; color: #1c5739;">Historique des Commandes</h1>
+          <h1 style="text-align: center; color: #1c5739;">Historique des Livraison</h1>
           <style>
               /* Style global */
               body {
@@ -443,39 +443,43 @@
           <table>
               <thead>
                   <tr>
-                      <th>ID Commande</th>
-                      <th>Date de Commande</th>
-                      <th>État</th>
-                      <th>Quantité</th>
-                      <th>Produit</th>
-                      <th>Actions</th>
+                      <th>ID Livraison</th>
+                      <th>Ville</th>
+                      <th>Code Postal</th>
+                      <th>Adresse</th>
+                      <th>Status</th>
+                      <th>Date d'envoi</th>
+                      <th>Date de livraison éstimée</th>
                       
                   </tr>
               </thead>
               <tbody>
                   <!-- Exemple de données statiques -->
                   <?php
-                  include_once __DIR__ . "/../../../Controller/CommandeController.php";
-                  include_once __DIR__ . "/../../../Controller/ProduitController.php";
                   include_once __DIR__ . "/../../../Controller/LivraisonController.php";
                   include_once __DIR__ . "/../../../Model/Livraison.php";
                   $livraisonController = new Controller\LivraisonController();
-                  $commandeController = new Controller\CommandeController();
-                  $produitController = new Controller\ProduitController();
+                  
+                  
+                  
 
                   	
-                  $commandes = $commandeController->getAllCommands();
                   
-                  foreach ($commandes as $commande) {
+                  $livraisons = $livraisonController->getAllLivraisons();
+
+                  
+                  foreach ($livraisons as $livraison) {
                   ?>
                       <tr>
-                      <td><?= $commande['ID_commande'] ?></td>
-                      <td><?= $commande['date_commande'] ?></td>
-                      <td><?= $commande['etat'] ?></td>
-                      <td><?= $commande['quantite'] ?></td>
-                      <td><?= $produitController->getProduitbyId($commande['id_produit'])['NomProduit'] ?></td>
+                      <td><?= $livraison['ID_livraison'] ?></td>
+                      <td><?= $livraison['ville'] ?></td>
+                      <td><?= $livraison['codePostal'] ?></td>
+                      <td><?= $livraison['Adresse_de_Livraison'] ?></td>
+                      <td><?= $livraison['Statut_de_Livraison'] ?></td>
+                      <td><?= $livraison['Date_d_envoi'] ?></td>
+                      <td><?= $livraison['Date_de_Livraison_Estimee'] ?></td>
                       <td>
-                          <a href="<?= $commandeController->deleteCommande($commande['ID_commande']) ?>" class="btn">annuler</a>                        
+                                    
                           
                       </tr>
                       

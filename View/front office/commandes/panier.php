@@ -352,7 +352,7 @@
 
     <section style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #ffffff;">
       <div class="container col-md-8 col-lg-6 p-4 rounded shadow" style="background-color: #ffffff; border: 2px solid #408c148d;">
-          <h1 style="text-align: center; color: #1c5739;">Historique des Commandes</h1>
+          <h1 style="text-align: center; color: #1c5739;">Commandes</h1>
           <style>
               /* Style global */
               body {
@@ -464,7 +464,7 @@
                   $produitController = new Controller\ProduitController();
 
                   	
-                  $commandes = $commandeController->getAllCommands();
+                  $commandes = $commandeController->getCommandesNotdilvered();
                   
                   foreach ($commandes as $commande) {
                   ?>
@@ -475,7 +475,9 @@
                       <td><?= $commande['quantite'] ?></td>
                       <td><?= $produitController->getProduitbyId($commande['id_produit'])['NomProduit'] ?></td>
                       <td>
-                          <a href="<?= $commandeController->deleteCommande($commande['ID_commande']) ?>" class="btn">annuler</a>                        
+                          <a href="<?= $commandeController->deleteCommande($commande['ID_commande']) ?>" class="btn">Supprimer</a>
+                          <a href="" class="btn">Livrer</a> 
+
                           
                       </tr>
                       
@@ -485,7 +487,8 @@
                   
               </tbody>
           </table>
-          <a href="/commande/nouvelle" class="btn">Nouvelle Commande</a>
+          <a href="/projetweb/View/front%20office/commandes/passer_commande.php" class="btn">Nouvelle Commande</a>
+          <a href="/projetweb/View/front%20office/commandes/index.php" class="btn">Livrer les produits</a>
 
       </div>
   </section>

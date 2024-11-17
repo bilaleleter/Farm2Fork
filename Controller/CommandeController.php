@@ -51,11 +51,30 @@ class CommandeController
             die("Erreur : " . $e->getMessage());
         }
     }
+    public function getCommandesNotdilvered(): array
+    {
+        $req = "SELECT * FROM commande WHERE etat = 'en attente'";
+        $db = Config::getConnection();
+
+        try {
+            $query = $db->prepare($req);
+            $query->execute();
+            $commandes = $query->fetchAll();
+
+            if ($commandes === false) {
+                throw new Exception("Aucune commande trouvée.");
+            }
+
+            return $commandes;
+        } catch (Exception $e) {
+            die("Erreur : " . $e->getMessage());
+        }
+    }
 
     public function addCommande(Commande $commande): void
     {
-        $req = "INSERT INTO commande (date_commande, etat, id_utilisateur, quantite, id_produit)
-        VALUES (:date_commande, :etat, :id_utilisateur, :quantite, :id_produit)";
+        $req = "INSERT INTO commande (date_commande, etat, id_utilisateur, quantite, id_produit,idLivraison)
+        VALUES (:date_commande, :etat, :id_utilisateur, :quantite, :id_produit, null)";
         $db = Config::getConnection();
 
         try {
@@ -65,12 +84,27 @@ class CommandeController
                 'etat' => $commande->etat,
                 'id_utilisateur' => $commande->id_utilisateur,
                 'quantite' => $commande->quantite,
-                'id_produit' => $commande->id_produit,
+                'id_produit' => $commande->id_produit
+               
+                
             ]);
         } catch (Exception $e) {
             die("Erreur : " . $e->getMessage());
         }
     }
+    public function livrerCommandes(int $id_livraison): void
+    {
+        $req = "UPDATE commande SET etat = 'livrée', idLivraison = :idLivraison WHERE etat = 'en attente'";
+        $db = Config::getConnection();
+
+        try {
+            $query = $db->prepare($req);
+            $query->execute(['idLivraison' => $id_livraison]);
+        } catch (Exception $e) {
+            die("Erreur : " . $e->getMessage());
+        }
+    }
+        
     public function updateCommande(Commande $commande): void
     {
         $req = "UPDATE commande SET date_commande = :date_commande, etat = :etat, id_utilisateur = :id_utilisateur, quantite = :quantite WHERE id_commande = :id_commande";
