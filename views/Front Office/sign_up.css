@@ -1,0 +1,256 @@
+body {
+  background-color: #fdf2e7;
+  /* Primary color */
+  color: #1c5739;
+  /* Secondary color */
+  font-family: "Neue Montreal Regular", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+#signup-form {
+  width: 300px;
+  margin-left: auto;
+  margin-right: auto;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.2);
+  border: 1px solid #1c5739;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(28, 87, 57, 0.2);
+}
+
+.form-step {
+  display: none;
+}
+
+.form-step.active {
+  display: block;
+}
+
+/* Button Styling */
+#submit-button {
+  visibility: hidden;
+  width: 100%;
+  padding: 8px;
+  margin-left: 10px;
+  font-size: 14px;
+  background-color: #1c5739;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.6s ease;
+}
+
+#submit-button:hover {
+  background-color: #164b2f;
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.nav-button {
+  width: 48%;
+  padding: 8px;
+  font-size: 14px;
+  background-color: #1c5739;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.5s ease;
+}
+
+.nav-button:hover {
+  background-color: #164b2f;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 6px;
+  font-size: 14px;
+  margin-bottom: 8px;
+  background-color: #EAD885;
+  color: #1c5739;
+  border: 1px solid #1c5739;
+  border-radius: 5px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #1c5739;
+  font-size: 13px;
+}
+
+label {
+  font-size: 14px;
+  margin-bottom: 5px;
+  display: block;
+}
+
+/* Styling for Localiser Moi Button */
+/*#locate-me-button_agri,
+#locate-me-button_cons {
+  font-size: 14px;
+  background-color: #1c5739;
+  transition: background-color 0.5s ease;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+#locate-me-button_agri:hover,
+#locate-me-button_cons:hover {
+  background-color: #164b2f;
+}
+
+#locate-me-button_agri:focus,
+#locate-me-button_cons:focus {
+  outline: none;
+  box-shadow: 0 0 4px rgba(28, 87, 57, 0.5);
+}*/
+
+input[type="password"]+small {
+  display: block;
+  font-size: 0.85rem;
+  color: #555;
+  font-style: italic;
+  margin-top: 4px;
+  padding-left: 5px;
+}
+
+input[type="password"]+small::before {
+  content: "🔒 ";
+  font-size: 0.9rem;
+  margin-right: 3px;
+}
+
+small {
+  display: block;
+  font-size: 0.75rem;
+  color: #555;
+  margin-top: 2px;
+  margin-bottom: 10px;
+  opacity: 0.8;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="tel"],
+select,
+textarea {
+  width: calc(100% - 12px);
+  max-width: 100%;
+  padding: 6px;
+  font-size: 14px;
+  margin-bottom: 8px;
+  background-color: #EAD885;
+  color: #1c5739;
+  border: 1px solid #1c5739;
+  border-radius: 5px;
+  box-sizing: border-box;
+}
+
+button {
+  /*width: calc(100% - 12px);*/
+  max-width: 100%;
+  border: none;
+  font-size: 14px;
+  box-sizing: content-box;
+  margin-bottom: 8px;
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 4%;
+}
+
+.nav-button {
+  width: 48%;
+}
+
+.location-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 48px;
+  height: 48px;
+  border: none;
+  border-radius: 50%;
+  background-color: #007BFF;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.location-button:hover {
+  background-color: #0056b3;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+}
+
+.location-button:active {
+  background-color: #004085;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px 20px;
+  z-index: 1000;
+}
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.navbar-logo {
+  flex: 0 0 auto;
+}
+
+.navbar-logo img {
+  height: 80px;
+  display: block;
+}
+
+.navbar-links {
+  list-style-type: none;
+  display: flex;
+  gap: 20px;
+}
+
+.navbar-links li {
+  flex: 0 0 auto;
+}
+
+.navbar-links a {
+  text-decoration: none;
+  color: #043623;
+  font-family: "Neue Montreal Regular", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 5px 10px;
+  transition: color 0.3s;
+}
+
+.navbar-links a:hover {
+  color: #EAD885;
+}
