@@ -94,12 +94,12 @@ class CommandeController
     }
     public function livrerCommandes(int $id_livraison): void
     {
-        $req = "UPDATE commande SET etat = 'livrée', idLivraison = :idLivraison WHERE etat = 'en attente'";
+        $req = "UPDATE commande SET etat = 'livrée', idLivraison = :id_livraison WHERE etat = 'en attente'";
         $db = Config::getConnection();
 
         try {
             $query = $db->prepare($req);
-            $query->execute(['idLivraison' => $id_livraison]);
+            $query->execute(['id_livraison' => $id_livraison]);
         } catch (Exception $e) {
             die("Erreur : " . $e->getMessage());
         }

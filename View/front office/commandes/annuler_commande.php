@@ -18,7 +18,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   // Créer une nouvelle commande avec les données du formulaire
  
   
-  $commandeController->deleteCommande($id_commande);
+  
 
 
 }
