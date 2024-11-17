@@ -1,4 +1,8 @@
-
+<?php
+include_once __DIR__ . "/../../../Controller/LivraisonController.php";
+include_once __DIR__ . "/../../../Model/Livraison.php";
+include_once __DIR__ . "/../../../Config.php";
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -11,7 +15,6 @@
     <meta name="author" content="">
     <meta name="keywords" content="">
     <meta name="description" content="">
-
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-KK94CHFLLe+nY2dmCWGMq91rCGa5gtU4mk92HdvYe+M/SXH301p5ILy+dN9+nJOZ" crossorigin="anonymous">
     <link rel="stylesheet" type="text/css" href="css/vendor.css">
@@ -345,178 +348,218 @@
         </div>
       </div>
     </header>
-    <section style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: hsl(65, 87%, 94%);">
-        <div class="col-md-6 col-lg-4 p-4 rounded shadow" style="background-color: #ffffff; border: 2px solid #408c148d;">
-            <h2 class="text-center mb-4" style="color: #1c5739;">Annuler une Commande</h2>
-            <form action="/commande/annuler" method="post">
-                <div class="mb-3">
-                    <label for="commande-id" style="font-size: 14px; color: #388e3c;">ID de la Commande :</label>
-                    <input type="text" id="commande-id" name="commande_id" required style="width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #388e3c; background-color: #f0f4c3;">
-                </div>
-                <div class="w-100 btn btn-primary btn-lg">
-                    <button type="submit" class="btn-annuler" style="width: 100%; padding: 10px; background-color: #cdb9604d; color: #ffffff; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;">Annuler une commande</button>
-                </div>
-            </form>
-        </div>
-    
-        
-    </section>
-    
-
     
    
          
     
 
+    <section>
+      <div class="container-lg">
 
-
-
-
-<footer class="py-5">
-    <div class="container-lg">
-      <div class="row">
-
-        <div class="col-lg-3 col-md-6 col-sm-6">
-          <div class="footer-menu">
-            <img src="images/logo.svg" width="240" height="70" alt="logo">
-            <div class="social-links mt-3">
-              <ul class="d-flex list-unstyled gap-2">
-                <li>
-                  <a href="#" class="btn btn-outline-light">
-                    <svg width="16" height="16"><use xlink:href="#facebook"></use></svg>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="btn btn-outline-light">
-                    <svg width="16" height="16"><use xlink:href="#twitter"></use></svg>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="btn btn-outline-light">
-                    <svg width="16" height="16"><use xlink:href="#youtube"></use></svg>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="btn btn-outline-light">
-                    <svg width="16" height="16"><use xlink:href="#instagram"></use></svg>
-                  </a>
-                </li>
-                <li>
-                  <a href="#" class="btn btn-outline-light">
-                    <svg width="16" height="16"><use xlink:href="#amazon"></use></svg>
-                  </a>
-                </li>
-              </ul>
+        <div class="bg-secondary text-light py-5 my-5" style="background: url('images/banner-newsletter.jpg') no-repeat; background-size: cover;">
+          <div class="container">
+            <div class="row justify-content-center">
+              <div class="col-md-5 p-3">
+                <div class="section-header">
+                  <h2 class="section-title display-5 text-light">"Vos produits préférés à portée de clic"</h2>
+                </div>
+              </div>
+              <div class="col-md-5 p-3">
+               
+                <form>
+                  <div class="mb-3">
+                    <label for="name" class="form-label d-none">Name</label>
+                    <input type="text"
+                      class="form-control rounded bg-light" name="name" id="name" placeholder="Name">
+                  </div>
+                  <div class="mb-3">
+                    <label for="email" class="form-label d-none">Email</label>
+                    <input type="email" class="form-control rounded bg-light" name="email" id="email" placeholder="Email Address">
+                  </div>
+                  <div class="mb-3">
+                    <label for="email" class="form-label d-none">telephone</label>
+                    <input type="email" class="form-control rounded bg-light" name="telephone" id="telephone" placeholder="telephone">
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="name" class="form-label d-none">adresse_livraison</label>
+                    <input type="text"
+                      class="form-control rounded bg-light"  name="adresse_livraison" id="adresse_livraison" placeholder="adresse_livraison">
+                  </div>
+                  <div class="mb-3">
+                    <label for="name" class="form-label d-none">Date_envoi</label>
+                    <input type="date"
+                      class="form-control rounded bg-light" name="Date_envoi" id="Date_envoi" placeholder="Date_envoi">
+                  </div>
+                  
+                  <div class="mb-3">
+                    <label for="name" class="form-label d-none">quantité</label>
+                    <input type="number"
+                      class="form-control rounded bg-light" name="quantité" id="quantité" placeholder="quantité">
+                  </div>
+                  
+                  <div class="d-grid gap-2">
+                    <button type="submit" class="btn btn-dark btn-md rounded-0">commander</button>
+                  </div>
+                  
+                </form>
+                
+              </div>
+              
             </div>
-          </div>
-        </div>
-
-        <div class="col-md-2 col-sm-6">
-          <div class="footer-menu">
-            <h5 class="widget-title">Organic</h5>
-            <ul class="menu-list list-unstyled">
-              <li class="menu-item">
-                <a href="#" class="nav-link">About us</a>
-              </li>
-              <li class="menu-item">
-                <a href="#" class="nav-link">Conditions </a>
-              </li>
-              <li class="menu-item">
-                <a href="#" class="nav-link">Our Journals</a>
-              </li>
-              <li class="menu-item">
-                <a href="#" class="nav-link">Careers</a>
-              </li>
-              <li class="menu-item">
-                <a href="#" class="nav-link">Affiliate Programme</a>
-              </li>
-              <li class="menu-item">
-                <a href="#" class="nav-link">Ultras Press</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="col-md-2 col-sm-6">
-          <div class="footer-menu">
-            <h5 class="widget-title">Quick Links</h5>
-            <ul class="menu-list list-unstyled">
-              <li class="menu-item">
-                <a href="#" class="nav-link">Offers</a>
-              </li>
-              <li class="menu-item">
-                <a href="#" class="nav-link">Discount Coupons</a>
-              </li>
-              <li class="menu-item">
-                <a href="#" class="nav-link">Stores</a>
-              </li>
-              <li class="menu-item">
-                <a href="#" class="nav-link">Track Order</a>
-              </li>
-              <li class="menu-item">
-                <a href="#" class="nav-link">Shop</a>
-              </li>
-              <li class="menu-item">
-                <a href="#" class="nav-link">Info</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="col-md-2 col-sm-6">
-          <div class="footer-menu">
-            <h5 class="widget-title">Customer Service</h5>
-            <ul class="menu-list list-unstyled">
-              <li class="menu-item">
-                <a href="#" class="nav-link">FAQ</a>
-              </li>
-              <li class="menu-item">
-                <a href="#" class="nav-link">Contact</a>
-              </li>
-              <li class="menu-item">
-                <a href="#" class="nav-link">Privacy Policy</a>
-              </li>
-              <li class="menu-item">
-                <a href="#" class="nav-link">Returns & Refunds</a>
-              </li>
-              <li class="menu-item">
-                <a href="#" class="nav-link">Cookie Guidelines</a>
-              </li>
-              <li class="menu-item">
-                <a href="#" class="nav-link">Delivery Information</a>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div class="col-lg-3 col-md-6 col-sm-6">
-          <div class="footer-menu">
-            <h5 class="widget-title">Subscribe Us</h5>
-            <p>Subscribe to our newsletter to get updates about our grand offers.</p>
-            <form class="d-flex mt-3 gap-0" action="index.html">
-              <input class="form-control rounded-start rounded-0 bg-light" type="email" placeholder="Email Address" aria-label="Email Address">
-              <button class="btn btn-dark rounded-end rounded-0" type="submit">Subscribe</button>
-            </form>
+            
           </div>
         </div>
         
       </div>
-    </div>
-  </footer>
-  <div id="footer-bottom">
-    <div class="container-lg">
-      <div class="row">
-        <div class="col-md-6 copyright">
-          <p>© 2024 Organic. All rights reserved.</p>
+    </section>
+
+          
+
+    <footer class="py-5">
+      <div class="container-lg">
+        <div class="row">
+
+          <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="footer-menu">
+              <img src="images/logo.svg" width="240" height="70" alt="logo">
+              <div class="social-links mt-3">
+                <ul class="d-flex list-unstyled gap-2">
+                  <li>
+                    <a href="#" class="btn btn-outline-light">
+                      <svg width="16" height="16"><use xlink:href="#facebook"></use></svg>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" class="btn btn-outline-light">
+                      <svg width="16" height="16"><use xlink:href="#twitter"></use></svg>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" class="btn btn-outline-light">
+                      <svg width="16" height="16"><use xlink:href="#youtube"></use></svg>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" class="btn btn-outline-light">
+                      <svg width="16" height="16"><use xlink:href="#instagram"></use></svg>
+                    </a>
+                  </li>
+                  <li>
+                    <a href="#" class="btn btn-outline-light">
+                      <svg width="16" height="16"><use xlink:href="#amazon"></use></svg>
+                    </a>
+                  </li>
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-md-2 col-sm-6">
+            <div class="footer-menu">
+              <h5 class="widget-title">Organic</h5>
+              <ul class="menu-list list-unstyled">
+                <li class="menu-item">
+                  <a href="#" class="nav-link">About us</a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="nav-link">Conditions </a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="nav-link">Our Journals</a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="nav-link">Careers</a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="nav-link">Affiliate Programme</a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="nav-link">Ultras Press</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-2 col-sm-6">
+            <div class="footer-menu">
+              <h5 class="widget-title">Quick Links</h5>
+              <ul class="menu-list list-unstyled">
+                <li class="menu-item">
+                  <a href="#" class="nav-link">Offers</a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="nav-link">Discount Coupons</a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="nav-link">Stores</a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="nav-link">Track Order</a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="nav-link">Shop</a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="nav-link">Info</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-md-2 col-sm-6">
+            <div class="footer-menu">
+              <h5 class="widget-title">Customer Service</h5>
+              <ul class="menu-list list-unstyled">
+                <li class="menu-item">
+                  <a href="#" class="nav-link">FAQ</a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="nav-link">Contact</a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="nav-link">Privacy Policy</a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="nav-link">Returns & Refunds</a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="nav-link">Cookie Guidelines</a>
+                </li>
+                <li class="menu-item">
+                  <a href="#" class="nav-link">Delivery Information</a>
+                </li>
+              </ul>
+            </div>
+          </div>
+          <div class="col-lg-3 col-md-6 col-sm-6">
+            <div class="footer-menu">
+              <h5 class="widget-title">Subscribe Us</h5>
+              <p>Subscribe to our newsletter to get updates about our grand offers.</p>
+              <form class="d-flex mt-3 gap-0" action="index.html">
+                <input class="form-control rounded-start rounded-0 bg-light" type="email" placeholder="Email Address" aria-label="Email Address">
+                <button class="btn btn-dark rounded-end rounded-0" type="submit">Subscribe</button>
+              </form>
+            </div>
+          </div>
+          
         </div>
-        <div class="col-md-6 credit-link text-start text-md-end">
-          <p>HTML Template by <a href="https://templatesjungle.com/">TemplatesJungle</a> Distributed By <a href="https://themewagon.com">ThemeWagon</a> </p>
+      </div>
+    </footer>
+    <div id="footer-bottom">
+      <div class="container-lg">
+        <div class="row">
+          <div class="col-md-6 copyright">
+            <p>© 2024 Organic. All rights reserved.</p>
+          </div>
+          <div class="col-md-6 credit-link text-start text-md-end">
+            <p>HTML Template by <a href="https://templatesjungle.com/">TemplatesJungle</a> Distributed By <a href="https://themewagon.com">ThemeWagon</a> </p>
+          </div>
         </div>
       </div>
     </div>
-  </div>
-  <script src="js/jquery-1.11.0.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-  <script src="js/plugins.js"></script>
-  <script src="js/script.js"></script>
-</body>
+    <script src="js/jquery-1.11.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+    <script src="js/plugins.js"></script>
+    <script src="js/script.js"></script>
+  </body>
 </html>
-

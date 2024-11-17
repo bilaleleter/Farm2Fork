@@ -1,3 +1,31 @@
+<?php
+include_once __DIR__ . "/../../../Controller/CommandeController.php";
+include_once __DIR__ . "/../../../Model/Commande.php";
+include_once __DIR__ . "/../../../Controller/ProduitController.php";
+include_once __DIR__ . "/../../../Config.php";
+$commandeController = new Controller\CommandeController();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+  $id_commande = (int) $_POST['id_commande'];
+  
+  
+
+
+
+  // Associer un id_utilisateur (par exemple, 1 pour un utilisateur fictif ou depuis la session utilisateur)
+  
+
+  // Créer une nouvelle commande avec les données du formulaire
+ 
+  
+  $commandeController->deleteCommande($id_commande);
+
+
+}
+
+
+
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -81,7 +109,11 @@
       </defs>
     </svg>
 
- 
+    <div class="preloader-wrapper">
+      <div class="preloader">
+      </div>
+    </div>
+
     <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasCart">
       <div class="offcanvas-header justify-content-center">
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -340,149 +372,31 @@
         </div>
       </div>
     </header>
+    <section style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: hsl(65, 87%, 94%);">
+        <div class="col-md-6 col-lg-4 p-4 rounded shadow" style="background-color: #ffffff; border: 2px solid #408c148d;">
+            <h2 class="text-center mb-4" style="color: #1c5739;">Annuler une Commande</h2>
+            <form action="" method="post">
+                <div class="mb-3">
+                    <label for="id_commande" style="font-size: 14px; color: #388e3c;">ID de la Commande :</label>
+                    <input type="text" id="id_commande" name="id_commande" required style="width: 100%; padding: 10px; margin: 10px 0; border-radius: 5px; border: 1px solid #388e3c; background-color: #f0f4c3;">
+                </div>
+                <div class="w-100 btn btn-primary btn-lg">
+                    <button type="submit" class="btn-annuler" style="width: 100%; padding: 10px; background-color: #cdb9604d; color: #ffffff; border: none; border-radius: 5px; font-size: 16px; cursor: pointer;">Annuler une commande</button>
+                </div>
+            </form>
+        </div>
+    
+        
+    </section>
+    
+
+    
+   
+         
     
 
 
 
-
-
-
-
-
-    <section style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #ffffff;">
-      <div class="container col-md-8 col-lg-6 p-4 rounded shadow" style="background-color: #ffffff; border: 2px solid #408c148d;">
-          <h1 style="text-align: center; color: #1c5739;">Historique des Commandes</h1>
-          <style>
-              /* Style global */
-              body {
-                  font-family: Arial, sans-serif;
-                  background-color: #fdf2e7;
-                  color: #1c5739;
-                  margin: 0;
-                  padding: 20px;
-              }
-  
-              .container {
-                  max-width: 1200px;
-                  margin: 0 auto;
-                  padding: 20px;
-                  background-color: #fff;
-                  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-                  border-radius: 10px;
-              }
-  
-              table {
-                  width: 100%;
-                  border-collapse: collapse;
-                  margin-top: 20px;
-              }
-  
-              th {
-                  background-color: #1c5739;
-                  color: #fdf2e7;
-                  padding: 15px;
-                  text-align: left;
-                  font-size: 16px;
-              }
-  
-              td {
-                  padding: 15px;
-                  text-align: left;
-                  border-bottom: 1px solid #ead885;
-              }
-  
-              tr:hover {
-                  background-color: #ead885;
-                  color: #1c5739;
-              }
-  
-              /* Transition pour les champs */
-              input[type="text"],
-              input[type="number"],
-              input[type="date"],
-              select {
-                  width: 100%;
-                  padding: 10px;
-                  margin-bottom: 10px;
-                  border: 2px solid #4fa579;
-                  border-radius: 5px;
-                  background-color: #408c148d;
-                  transition: background-color 0.3s, border-color 0.3s;
-              }
-  
-              input[type="text"]:hover,
-              input[type="number"]:hover,
-              input[type="date"]:hover,
-              select:hover {
-                  background-color: #ead885;
-                  border-color: #1c5739;
-              }
-  
-              /* Bouton */
-              .btn {
-                  display: block;
-                  width: 100%;
-                  padding: 10px;
-                  background-color: #4fa579;
-                  color: #ffffff;
-                  text-align: center;
-                  text-decoration: none;
-                  border-radius: 5px;
-                  margin-top: 20px;
-                  font-weight: bold;
-                  transition: background-color 0.3s, color 0.3s;
-              }
-  
-              .btn:hover {
-                  background-color: #ead885;
-                  color: #1c5739;
-              }
-          </style>
-  
-          <table>
-              <thead>
-                  <tr>
-                      <th>ID Commande</th>
-                      <th>Date de Commande</th>
-                      <th>État</th>
-                      <th>ID Livraison</th>
-                      <th>Adresse de Livraison</th>
-                      <th>Statut de Livraison</th>
-                  </tr>
-              </thead>
-              <tbody>
-                  <!-- Exemple de données statiques -->
-                  <tr>
-                      <td>12345</td>
-                      <td>2024-11-10</td>
-                      <td>En cours</td>
-                      <td>56789</td>
-                      <td>123 Rue Exemple, Paris</td>
-                      <td>En cours</td>
-                  </tr>
-                  <tr>
-                      <td>12346</td>
-                      <td>2024-11-12</td>
-                      <td>Terminée</td>
-                      <td>56790</td>
-                      <td>456 Avenue Test, Lyon</td>
-                      <td>Livrée</td>
-                  </tr>
-                  <tr>
-                      <td>12347</td>
-                      <td>2024-11-14</td>
-                      <td>Annulée</td>
-                      <td>56791</td>
-                      <td>789 Boulevard Démo, Marseille</td>
-                      <td>Annulée</td>
-                  </tr>
-              </tbody>
-          </table>
-          <a href="/commande/nouvelle" class="btn">Nouvelle Commande</a>
-      </div>
-  </section>
-  
-  
 
 
 <footer class="py-5">

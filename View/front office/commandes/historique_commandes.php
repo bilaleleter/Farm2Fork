@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -81,11 +82,7 @@
       </defs>
     </svg>
 
-    <div class="preloader-wrapper">
-      <div class="preloader">
-      </div>
-    </div>
-
+ 
     <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasCart">
       <div class="offcanvas-header justify-content-center">
         <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
@@ -345,217 +342,291 @@
       </div>
     </header>
     
-   
-         
-    
 
-    <section>
-      <div class="container-lg">
 
-        <div class="bg-secondary text-light py-5 my-5" style="background: url('images/banner-newsletter.jpg') no-repeat; background-size: cover;">
-          <div class="container">
-            <div class="row justify-content-center">
-              <div class="col-md-5 p-3">
-                <div class="section-header">
-                  <h2 class="section-title display-5 text-light">"Vos produits préférés à portée de clic"</h2>
-                </div>
-              </div>
-              <div class="col-md-5 p-3">
-               
-                <form>
-                  <div class="mb-3">
-                    <label for="name" class="form-label d-none">Name</label>
-                    <input type="text"
-                      class="form-control rounded bg-light" name="name" id="name" placeholder="Name">
-                  </div>
-                  <div class="mb-3">
-                    <label for="email" class="form-label d-none">Email</label>
-                    <input type="email" class="form-control rounded bg-light" name="email" id="email" placeholder="Email Address">
-                  </div>
-                  <div class="mb-3">
-                    <label for="email" class="form-label d-none">telephone</label>
-                    <input type="email" class="form-control rounded bg-light" name="telephone" id="telephone" placeholder="telephone">
-                  </div>
+
+
+
+
+
+
+    <section style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #ffffff;">
+      <div class="container col-md-8 col-lg-6 p-4 rounded shadow" style="background-color: #ffffff; border: 2px solid #408c148d;">
+          <h1 style="text-align: center; color: #1c5739;">Historique des Commandes</h1>
+          <style>
+              /* Style global */
+              body {
+                  font-family: Arial, sans-serif;
+                  background-color: #fdf2e7;
+                  color: #1c5739;
+                  margin: 0;
+                  padding: 20px;
+              }
+  
+              .container {
+                  max-width: 1200px;
+                  margin: 0 auto;
+                  padding: 20px;
+                  background-color: #fff;
+                  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                  border-radius: 10px;
+              }
+  
+              table {
+                  width: 100%;
+                  border-collapse: collapse;
+                  margin-top: 20px;
+              }
+  
+              th {
+                  background-color: #1c5739;
+                  color: #fdf2e7;
+                  padding: 15px;
+                  text-align: left;
+                  font-size: 16px;
+              }
+  
+              td {
+                  padding: 15px;
+                  text-align: left;
+                  border-bottom: 1px solid #ead885;
+              }
+  
+              tr:hover {
+                  background-color: #ead885;
+                  color: #1c5739;
+              }
+  
+              /* Transition pour les champs */
+              input[type="text"],
+              input[type="number"],
+              input[type="date"],
+              select {
+                  width: 100%;
+                  padding: 10px;
+                  margin-bottom: 10px;
+                  border: 2px solid #4fa579;
+                  border-radius: 5px;
+                  background-color: #408c148d;
+                  transition: background-color 0.3s, border-color 0.3s;
+              }
+  
+              input[type="text"]:hover,
+              input[type="number"]:hover,
+              input[type="date"]:hover,
+              select:hover {
+                  background-color: #ead885;
+                  border-color: #1c5739;
+              }
+  
+              /* Bouton */
+              .btn {
+                  display: block;
+                  width: 100%;
+                  padding: 10px;
+                  background-color: #4fa579;
+                  color: #ffffff;
+                  text-align: center;
+                  text-decoration: none;
+                  border-radius: 5px;
+                  margin-top: 20px;
+                  font-weight: bold;
+                  transition: background-color 0.3s, color 0.3s;
+              }
+  
+              .btn:hover {
+                  background-color: #ead885;
+                  color: #1c5739;
+              }
+          </style>
+  
+          <table>
+              <thead>
+                  <tr>
+                      <th>ID Commande</th>
+                      <th>Date de Commande</th>
+                      <th>État</th>
+                      <th>Quantité</th>
+                      <th>Produit</th>
+                      
+                  </tr>
+              </thead>
+              <tbody>
+                  <!-- Exemple de données statiques -->
+                  <?php
+                  include_once __DIR__ . "/../../../Controller/CommandeController.php";
+                  include_once __DIR__ . "/../../../Controller/ProduitController.php";
+                  $commandeController = new Controller\CommandeController();
+                  $produitController = new Controller\ProduitController();	
+                  $commandes = $commandeController->getAllCommands();
                   
-                  <div class="mb-3">
-                    <label for="name" class="form-label d-none">adresse_livraison</label>
-                    <input type="text"
-                      class="form-control rounded bg-light"  name="adresse_livraison" id="adresse_livraison" placeholder="adresse_livraison">
-                  </div>
-                  <div class="mb-3">
-                    <label for="name" class="form-label d-none">Date_envoi</label>
-                    <input type="date"
-                      class="form-control rounded bg-light" name="Date_envoi" id="Date_envoi" placeholder="Date_envoi">
-                  </div>
+                  foreach ($commandes as $commande) {
+                  ?>
+                      <tr>
+                      <td><?= $commande['ID_commande'] ?></td>
+                      <td><?= $commande['date_commande'] ?></td>
+                      <td><?= $commande['etat'] ?></td>
+                      <td><?= $commande['quantite'] ?></td>
+                      <td><?= $produitController->getProduitbyId($commande['id_produit'])['NomProduit'] ?></td>
+                      </tr>
+                  <?php
+                  }
+                  ?>
                   
-                  <div class="mb-3">
-                    <label for="name" class="form-label d-none">quantité</label>
-                    <input type="number"
-                      class="form-control rounded bg-light" name="quantité" id="quantité" placeholder="quantité">
-                  </div>
-                  
-                  <div class="d-grid gap-2">
-                    <button type="submit" class="btn btn-dark btn-md rounded-0">commander</button>
-                  </div>
-                  
-                </form>
-                
-              </div>
-              
+              </tbody>
+          </table>
+          <a href="/commande/nouvelle" class="btn">Nouvelle Commande</a>
+      </div>
+  </section>
+  
+  
+
+
+<footer class="py-5">
+    <div class="container-lg">
+      <div class="row">
+
+        <div class="col-lg-3 col-md-6 col-sm-6">
+          <div class="footer-menu">
+            <img src="images/logo.svg" width="240" height="70" alt="logo">
+            <div class="social-links mt-3">
+              <ul class="d-flex list-unstyled gap-2">
+                <li>
+                  <a href="#" class="btn btn-outline-light">
+                    <svg width="16" height="16"><use xlink:href="#facebook"></use></svg>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="btn btn-outline-light">
+                    <svg width="16" height="16"><use xlink:href="#twitter"></use></svg>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="btn btn-outline-light">
+                    <svg width="16" height="16"><use xlink:href="#youtube"></use></svg>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="btn btn-outline-light">
+                    <svg width="16" height="16"><use xlink:href="#instagram"></use></svg>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="btn btn-outline-light">
+                    <svg width="16" height="16"><use xlink:href="#amazon"></use></svg>
+                  </a>
+                </li>
+              </ul>
             </div>
-            
+          </div>
+        </div>
+
+        <div class="col-md-2 col-sm-6">
+          <div class="footer-menu">
+            <h5 class="widget-title">Organic</h5>
+            <ul class="menu-list list-unstyled">
+              <li class="menu-item">
+                <a href="#" class="nav-link">About us</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Conditions </a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Our Journals</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Careers</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Affiliate Programme</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Ultras Press</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-2 col-sm-6">
+          <div class="footer-menu">
+            <h5 class="widget-title">Quick Links</h5>
+            <ul class="menu-list list-unstyled">
+              <li class="menu-item">
+                <a href="#" class="nav-link">Offers</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Discount Coupons</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Stores</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Track Order</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Shop</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Info</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-2 col-sm-6">
+          <div class="footer-menu">
+            <h5 class="widget-title">Customer Service</h5>
+            <ul class="menu-list list-unstyled">
+              <li class="menu-item">
+                <a href="#" class="nav-link">FAQ</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Contact</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Privacy Policy</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Returns & Refunds</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Cookie Guidelines</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Delivery Information</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+          <div class="footer-menu">
+            <h5 class="widget-title">Subscribe Us</h5>
+            <p>Subscribe to our newsletter to get updates about our grand offers.</p>
+            <form class="d-flex mt-3 gap-0" action="index.html">
+              <input class="form-control rounded-start rounded-0 bg-light" type="email" placeholder="Email Address" aria-label="Email Address">
+              <button class="btn btn-dark rounded-end rounded-0" type="submit">Subscribe</button>
+            </form>
           </div>
         </div>
         
       </div>
-    </section>
-
-          
-
-    <footer class="py-5">
-      <div class="container-lg">
-        <div class="row">
-
-          <div class="col-lg-3 col-md-6 col-sm-6">
-            <div class="footer-menu">
-              <img src="images/logo.svg" width="240" height="70" alt="logo">
-              <div class="social-links mt-3">
-                <ul class="d-flex list-unstyled gap-2">
-                  <li>
-                    <a href="#" class="btn btn-outline-light">
-                      <svg width="16" height="16"><use xlink:href="#facebook"></use></svg>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="btn btn-outline-light">
-                      <svg width="16" height="16"><use xlink:href="#twitter"></use></svg>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="btn btn-outline-light">
-                      <svg width="16" height="16"><use xlink:href="#youtube"></use></svg>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="btn btn-outline-light">
-                      <svg width="16" height="16"><use xlink:href="#instagram"></use></svg>
-                    </a>
-                  </li>
-                  <li>
-                    <a href="#" class="btn btn-outline-light">
-                      <svg width="16" height="16"><use xlink:href="#amazon"></use></svg>
-                    </a>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
-
-          <div class="col-md-2 col-sm-6">
-            <div class="footer-menu">
-              <h5 class="widget-title">Organic</h5>
-              <ul class="menu-list list-unstyled">
-                <li class="menu-item">
-                  <a href="#" class="nav-link">About us</a>
-                </li>
-                <li class="menu-item">
-                  <a href="#" class="nav-link">Conditions </a>
-                </li>
-                <li class="menu-item">
-                  <a href="#" class="nav-link">Our Journals</a>
-                </li>
-                <li class="menu-item">
-                  <a href="#" class="nav-link">Careers</a>
-                </li>
-                <li class="menu-item">
-                  <a href="#" class="nav-link">Affiliate Programme</a>
-                </li>
-                <li class="menu-item">
-                  <a href="#" class="nav-link">Ultras Press</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-md-2 col-sm-6">
-            <div class="footer-menu">
-              <h5 class="widget-title">Quick Links</h5>
-              <ul class="menu-list list-unstyled">
-                <li class="menu-item">
-                  <a href="#" class="nav-link">Offers</a>
-                </li>
-                <li class="menu-item">
-                  <a href="#" class="nav-link">Discount Coupons</a>
-                </li>
-                <li class="menu-item">
-                  <a href="#" class="nav-link">Stores</a>
-                </li>
-                <li class="menu-item">
-                  <a href="#" class="nav-link">Track Order</a>
-                </li>
-                <li class="menu-item">
-                  <a href="#" class="nav-link">Shop</a>
-                </li>
-                <li class="menu-item">
-                  <a href="#" class="nav-link">Info</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-md-2 col-sm-6">
-            <div class="footer-menu">
-              <h5 class="widget-title">Customer Service</h5>
-              <ul class="menu-list list-unstyled">
-                <li class="menu-item">
-                  <a href="#" class="nav-link">FAQ</a>
-                </li>
-                <li class="menu-item">
-                  <a href="#" class="nav-link">Contact</a>
-                </li>
-                <li class="menu-item">
-                  <a href="#" class="nav-link">Privacy Policy</a>
-                </li>
-                <li class="menu-item">
-                  <a href="#" class="nav-link">Returns & Refunds</a>
-                </li>
-                <li class="menu-item">
-                  <a href="#" class="nav-link">Cookie Guidelines</a>
-                </li>
-                <li class="menu-item">
-                  <a href="#" class="nav-link">Delivery Information</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-          <div class="col-lg-3 col-md-6 col-sm-6">
-            <div class="footer-menu">
-              <h5 class="widget-title">Subscribe Us</h5>
-              <p>Subscribe to our newsletter to get updates about our grand offers.</p>
-              <form class="d-flex mt-3 gap-0" action="index.html">
-                <input class="form-control rounded-start rounded-0 bg-light" type="email" placeholder="Email Address" aria-label="Email Address">
-                <button class="btn btn-dark rounded-end rounded-0" type="submit">Subscribe</button>
-              </form>
-            </div>
-          </div>
-          
+    </div>
+  </footer>
+  <div id="footer-bottom">
+    <div class="container-lg">
+      <div class="row">
+        <div class="col-md-6 copyright">
+          <p>© 2024 Organic. All rights reserved.</p>
         </div>
-      </div>
-    </footer>
-    <div id="footer-bottom">
-      <div class="container-lg">
-        <div class="row">
-          <div class="col-md-6 copyright">
-            <p>© 2024 Organic. All rights reserved.</p>
-          </div>
-          <div class="col-md-6 credit-link text-start text-md-end">
-            <p>HTML Template by <a href="https://templatesjungle.com/">TemplatesJungle</a> Distributed By <a href="https://themewagon.com">ThemeWagon</a> </p>
-          </div>
+        <div class="col-md-6 credit-link text-start text-md-end">
+          <p>HTML Template by <a href="https://templatesjungle.com/">TemplatesJungle</a> Distributed By <a href="https://themewagon.com">ThemeWagon</a> </p>
         </div>
       </div>
     </div>
-    <script src="js/jquery-1.11.0.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
-    <script src="js/plugins.js"></script>
-    <script src="js/script.js"></script>
-  </body>
+  </div>
+  <script src="js/jquery-1.11.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+  <script src="js/plugins.js"></script>
+  <script src="js/script.js"></script>
+</body>
 </html>
+

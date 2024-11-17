@@ -1,5 +1,56 @@
-<form action="/passer_commande" method="POST">
+<?php
+// Inclure les fichiers nécessaires
+include_once __DIR__ . "/../../../Controller/CommandeController.php";
+include_once __DIR__ . "/../../../Model/Commande.php";
+include_once __DIR__ . "/../../../Controller/ProduitController.php";
+include_once __DIR__ . "/../../../Config.php";
+
+// Instancier le contrôleur
+$commandeController = new Controller\CommandeController();
+$produitController = new Controller\ProduitController();
+
+// Traitement du formulaire lors de la soumission
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Récupérer les données du formulaire
+    $nom = $_POST['nom'];
+    $email = $_POST['email'];
+    $telephone = $_POST['telephone'];
+    $adresse = $_POST['adresse'];
+    $produit = $_POST['produit'];
+    $id_produit = (int) $produit;
+    $quantite = (int) $_POST['quantite'];
+    $adresse_livraison = $_POST['adresse_livraison'];
+    $date_livraison = $_POST['date_livraison'] ?: null; // Date peut être vide
+    $mode_paiement = $_POST['mode_paiement'];
+
+    // Associer un id_utilisateur (par exemple, 1 pour un utilisateur fictif ou depuis la session utilisateur)
+    
+
+    // Créer une nouvelle commande avec les données du formulaire
+    $commande = new Model\Commande(
+        0, // ID commande sera auto-généré par la base de données
+        date('Y-m-d H:i:s'), // Date de la commande
+        'en attente', // L'état initial de la commande
+        $quantite,
+        1,
+        $id_produit
+    );
+
+    // Ajouter la commande à la base de données
+    $commandeController->addCommande($commande);
+
+    // Rediriger l'utilisateur après l'ajout de la commande
+    echo "Commande passée avec succès !";
+    // Vous pouvez également rediriger vers une autre page si nécessaire :
+    // header('Location: /confirmation');
+}
+?>
+
+<!-- HTML pour le formulaire -->
+<form action="" method="POST">
     <!-- Informations Client -->
+    
+
     <h2>Informations Client</h2>
     <div>
         <label for="nom">Nom :</label>
@@ -27,9 +78,15 @@
         <label for="produit">Produit :</label>
         <select id="produit" name="produit" required>
             <option value="" disabled selected>Sélectionnez un produit</option>
-            <option value="produit1">Produit 1</option>
-            <option value="produit2">Produit 2</option>
-            <option value="produit3">Produit 3</option>
+            <?php
+            
+            $produits = $produitController->getAllProduits();
+           
+            foreach ($produits as $produit) {
+                echo "<option value='{$produit['idProduit']}' >{$produit['NomProduit']}</option>";
+            }
+            ?>
+            
         </select>
     </div>
 

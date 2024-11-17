@@ -1,17 +1,28 @@
 <?php
-// database.php
 
-$host = 'localhost';
-$db = 'gestion_commande';
-$user = 'root';
-$pass = '';
+declare(strict_types=1);
 
-try {
-    $pdo = new PDO("mysql:host=$host;dbname=$db;charset=utf8", $user, $pass);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-    
-} catch (PDOException $e) {
-    
-    die("Could not connect to the database $db :" . $e->getMessage());
+class Config
+{
+    private static $pdo = null;
+
+    public static function getConnection(): PDO
+    {
+        if (!isset(self::$pdo)) {
+            try {
+                self::$pdo = new PDO(
+                    "mysql:host=localhost;dbname=gestion_commande;",
+                    'root',
+                    '',
+                    [
+                        PDO::ATTR_ERRMODE => PDO::ERRMODE_EXCEPTION,
+                        PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+                    ]
+                );
+            } catch (PDOException $e) {
+                die("Database connection failed: " . $e->getMessage());
+            }
+        }
+        return self::$pdo;
+    }
 }
-?>

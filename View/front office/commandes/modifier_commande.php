@@ -1,3 +1,36 @@
+<?php
+include_once __DIR__ . "/../../../Controller/CommandeController.php";
+include_once __DIR__ . "/../../../Model/Commande.php";
+include_once __DIR__ . "/../../../Controller/ProduitController.php";
+include_once __DIR__ . "/../../../Config.php";
+$commandeController = new Controller\CommandeController();
+$produitController = new Controller\ProduitController();
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+  $id_commande = (int) $_POST['id_commande'];
+  $quantite = (int) $_POST['quantite'];
+  
+
+
+
+  // Associer un id_utilisateur (par exemple, 1 pour un utilisateur fictif ou depuis la session utilisateur)
+  
+
+  // Créer une nouvelle commande avec les données du formulaire
+  $commande = new Model\Commande(
+      $id_commande, 
+      date('Y-m-d H:i:s'),
+      'en attente',
+      $quantite,
+      1,
+      5
+  );
+  
+  $commandeController->updateCommande($commande);
+
+
+}
+?>
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -344,36 +377,19 @@
     <section style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: hsl(65, 87%, 94%);">
         <div class="col-md-6 col-lg-4 p-4 rounded shadow" style="background-color: #ffffff; border: 2px solid #408c148d;">
             <h2 class="text-center mb-4" style="color: #1c5739;">Modifier une Commande</h2>
-            <form action="/commande/modifier" method="post">
+            <form action="" method="post">
                 <!-- ID de la commande -->
                 <div class="mb-3">
                     <label for="commande-id" class="form-label d-none">ID de la Commande</label>
-                    <input type="text" id="commande-id" name="commande_id" class="form-control rounded" placeholder="Entrez l'ID de la commande" required style="background-color: #408c148d; border-color: #4fa579;">
+                    <input type="text" id="id_commande" name="id_commande" class="form-control rounded" placeholder="Entrez l'ID de la commande" required style="background-color: #408c148d; border-color: #4fa579;">
                 </div>
     
                 <!-- Nouvelle quantité -->
                 <div class="mb-3">
                     <label for="nouvelle-quantite" class="form-label d-none">Nouvelle Quantité</label>
-                    <input type="number" id="nouvelle-quantite" name="quantite" min="1" class="form-control rounded" placeholder="Entrez la nouvelle quantité" required style="background-color: #408c148d; border-color: #4fa579;">
+                    <input type="number" id="quantite" name="quantite" min="1" class="form-control rounded" placeholder="Entrez la nouvelle quantité" required style="background-color: #408c148d; border-color: #4fa579;">
                 </div>
     
-                <!-- Adresse de livraison -->
-                <div class="mb-3">
-                    <label for="adresse-livraison" class="form-label d-none">Adresse de Livraison</label>
-                    <input type="text" id="adresse-livraison" name="adresse_livraison" class="form-control rounded" placeholder="Adresse de livraison" required style="background-color: #408c148d; border-color: #4fa579;">
-                </div>
-    
-                <!-- Date d'envoi -->
-                <div class="mb-3">
-                    <label for="date-envoi" class="form-label d-none">Date d'Envoi</label>
-                    <input type="date" id="date-envoi" name="date_envoi" class="form-control rounded" required style="background-color: #408c148d; border-color: #4fa579;">
-                </div>
-    
-                <!-- Quantité -->
-                <div class="mb-3">
-                    <label for="quantite" class="form-label d-none">Quantité</label>
-                    <input type="number" id="quantite" name="quantite" min="1" class="form-control rounded" placeholder="Quantité" required style="background-color: #408c148d; border-color: #4fa579;">
-                </div>
     
                 <!-- Bouton de soumission -->
                 <div class="d-grid gap-2">
