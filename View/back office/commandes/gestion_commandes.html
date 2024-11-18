@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Commandes - Back Office</title>
+    <link rel="stylesheet" href="styles/back-office.css">
+</head>
+<body>
+    <!-- En-tête de la page -->
+    <header>
+        <h1>Gestion des Commandes</h1>
+    </header>
+
+    <!-- Section de filtre pour rechercher des commandes -->
+    <section id="filtre-commandes">
+        <h2>Rechercher une Commande</h2>
+        <form id="formFiltre">
+            <label for="recherche">ID Commande ou Client :</label>
+            <input type="text" id="recherche" placeholder="Rechercher...">
+            <button type="submit">Rechercher</button>
+        </form>
+    </section>
+
+    <!-- Section pour afficher la liste des commandes -->
+    <section id="liste-commandes">
+        <h2>Liste des Commandes</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Commande</th>
+                    <th>Client</th>
+                    <th>Date</th>
+                    <th>Statut</th>
+                    <th>Montant Total</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody id="tableBodyCommandes">
+                <!-- Les commandes seront insérées ici dynamiquement -->
+            </tbody>
+        </table>
+    </section>
+
+    <!-- Script JavaScript pour la gestion dynamique -->
+    <script src="scripts/gestion_commande.js"></script>
+</body>
+</html>
