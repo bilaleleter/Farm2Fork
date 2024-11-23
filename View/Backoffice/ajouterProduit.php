@@ -1,6 +1,6 @@
 <?php
-include('./../../Controller/Farm2ForkController.php');
-$produitcontroll=new Farm2ForkController();
+include('./../../Controller/ProduitController.php');
+$produitcontroll=new ProduitController();
 $produitcontroll->ajouterProduit($produit);
 header("Location:listeProduit.php");
 ?>

@@ -8,9 +8,9 @@ class Produit {
     private $prix;
     private $quantite_produit;
     private $stock_produit;
+    private $categorie; // ID de la catégorie
 
-
-    public function __construct($id_produit, $nom_produit, $image_produit, $description_produit, $prix, $quantite_produit, $stock_produit) {
+    public function __construct($id_produit, $nom_produit, $image_produit, $description_produit, $prix, $quantite_produit, $stock_produit, $categorie = null) {
         $this->id_produit = $id_produit;
         $this->nom_produit = $nom_produit;
         $this->image_produit = $image_produit;
@@ -18,8 +18,8 @@ class Produit {
         $this->prix = $prix;
         $this->quantite_produit = $quantite_produit;
         $this->stock_produit = $stock_produit;
+        $this->categorie = $categorie; // Assignation de l'ID de la catégorie
     }
-
     public function getIdProduit() {
         return $this->id_produit;
     }
@@ -48,6 +48,10 @@ class Produit {
         return $this->stock_produit;
     }
 
+    public function getCategorie() {
+        return $this->categorie;
+    }
+
     public function setNomProduit($nom_produit) {
         $this->nom_produit = $nom_produit;
     }
@@ -72,6 +76,11 @@ class Produit {
         $this->stock_produit = $stock_produit;
     }
 
+    public function setCategorie($categorie) {
+        $this->categorie = $categorie;
+    }
+
+    
 }
 
 ?>

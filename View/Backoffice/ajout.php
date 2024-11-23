@@ -1,16 +1,32 @@
+
+<!--
+=========================================================
+* Material Dashboard 2 - v3.0.0
+=========================================================
+
+* Product Page: https://www.creative-tim.com/product/material-dashboard
+* Copyright 2021 Creative Tim (https://www.creative-tim.com)
+* Licensed under MIT (https://www.creative-tim.com/license)
+* Coded by Creative Tim
+
+=========================================================
+
+* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+-->
+
 <?php
-include '../../Controller/Farm2ForkController.php';
+include '../../Controller/ProduitController.php';
 include '../../Model/Produit.php';
 
 $produit=null;
 
 if (isset($_POST['nom_produit']) && isset($_FILES['image_produit']) 
     && isset($_POST['description_produit']) && isset($_POST['prix']) 
-    && isset($_POST['quantite_produit']) && isset($_POST['stock_produit'])) {
+    && isset($_POST['quantite_produit']) && isset($_POST['stock_produit']) && isset($_POST['categorie'])) {
     
     if (!empty($_POST["nom_produit"]) && !empty($_FILES["image_produit"]["name"]) 
         && !empty($_POST["description_produit"]) && !empty($_POST["prix"]) 
-        && !empty($_POST["quantite_produit"]) && !empty($_POST["stock_produit"])) {
+        && !empty($_POST["quantite_produit"]) && !empty($_POST["stock_produit"]) && !empty($_POST["categorie"])) {
 
        
         $target_dir = "uploads/"; 
@@ -28,10 +44,11 @@ if (isset($_POST['nom_produit']) && isset($_FILES['image_produit'])
                 $_POST['description_produit'],
                 $_POST['prix'],
                 $_POST['quantite_produit'],
-                $_POST['stock_produit']
+                $_POST['stock_produit'],
+                $_POST['categorie']
             );
 
-            $produitController = new Farm2ForkController();
+            $produitController = new ProduitController();
             $produitController->ajouterProduit($produit);
             header('Location: listeProduit.php');
             exit;
@@ -43,13 +60,28 @@ if (isset($_POST['nom_produit']) && isset($_FILES['image_produit'])
 ?>
 
 
-
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Ajouter</title>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="apple-touch-icon" sizes="76x76" href="./assets/img/apple-icon.png">
+  <link rel="icon" type="image/png" href="./assets/img/favicon.png">
+  <title>
+  Ajouter
+  </title>
+  <!--     Fonts and icons     -->
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+  <!-- Nucleo Icons -->
+  <link href="./assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="./assets/css/nucleo-svg.css" rel="stylesheet" />
+  <!-- Font Awesome Icons -->
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <!-- Material Icons -->
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <!-- CSS Files -->
+  <link id="pagestyle" href="./assets/css/material-dashboard.css?v=3.0.0" rel="stylesheet" />
   <style>
    
     body {
@@ -60,13 +92,13 @@ if (isset($_POST['nom_produit']) && isset($_FILES['image_produit'])
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      height: 110vh;
     }
 
     h1 {
       text-align: center;
       color: #333;
-      margin-bottom: 20px;
+      margin-bottom: 5px;
     }
 
    
@@ -128,36 +160,212 @@ if (isset($_POST['nom_produit']) && isset($_FILES['image_produit'])
     br {
       line-height: 20px;
     }
+
+     label[for="categorie"] {
+            font-size: 16px;
+            font-weight: bold;
+            margin-bottom: 8px;
+            display: block;
+            color: #444;
+        }
+
+        /* Style de base pour le select */
+        select#categorie {
+            width: 100%; /* Adapte la largeur */
+            max-width: 400px; /* Limite la largeur à 400px */
+            padding: 10px; /* Espacement interne */
+            border: 1px solid #ccc; /* Bordure */
+            border-radius: 5px; /* Coins arrondis */
+            background-color: #fff; /* Couleur de fond */
+            font-size: 16px; /* Taille de police */
+            color: #333; /* Couleur du texte */
+            cursor: pointer; /* Curseur "main" */
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre légère */
+            transition: border-color 0.3s ease, box-shadow 0.3s ease;
+        }
+
+        /* Style au survol */
+        select#categorie:hover {
+            border-color: #888;
+        }
+
+        /* Style au focus */
+        select#categorie:focus {
+            border-color: #555;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Augmente l'ombre au focus */
+            outline: none; /* Supprime le contour bleu par défaut */
+        }
+
+        /* Style des options */
+        select#categorie option {
+            padding: 8px;
+            font-size: 16px;
+            background-color: #fff; /* Fond des options */
+            color: #333;
+        }
+
+        /* Placeholder (option par défaut) */
+        select#categorie option[value=""] {
+            color: #999; /* Texte en gris pour le placeholder */
+        }
   </style>
 </head>
-<body>
 
+<body class="g-sidenav-show  bg-gray-200">
+  <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark" id="sidenav-main">
+    <div class="sidenav-header">
+      <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
+      <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
+        <img src="./assets/img/logo-ct.png" class="navbar-brand-img h-100" alt="main_logo">
+        <span class="ms-1 font-weight-bold text-white">Farm2Fork Dashboard</span>
+      </a>
+    </div>
+    <hr class="horizontal light mt-0 mb-2">
+    <div class="collapse navbar-collapse  w-auto  max-height-vh-100" id="sidenav-collapse-main">
+    <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link text-white" href="./pages/dashboard.html">
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="material-icons opacity-10">dashboard</i>
+            </div>
+            <span class="nav-link-text ms-1">First page</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="listeProduit.php">
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="material-icons opacity-10">Afficher les produits</i>
+            </div>
+            <span class="nav-link-text ms-1">Affichage</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="ajout.php">
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="material-icons opacity-10">Ajouter un produit</i>
+            </div>
+            <span class="nav-link-text ms-1">Ajout</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="supprimerProduit.php">
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="material-icons opacity-10">Supprimer un produit</i>
+            </div>
+            <span class="nav-link-text ms-1">Suppression</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-white" href="listeProduit.php">
+            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
+              <i class="material-icons opacity-10">Mettre a jour un produit</i>
+            </div>
+            <span class="nav-link-text ms-1">Mise a jour</span>
+          </a>
+        </li>
+      </ul>
+    </div>
+  </aside>
   <div>
-    <h1>Ajouter un produit</h1>
+    
     <form action="ajout.php" method="POST" id="form_produit" enctype="multipart/form-data">
-      
-      <label for="nom_produit">Nom du produit:</label>
-      <input type="text" id="nom_produit" name="nom_produit" placeholder="ex: Tomates" pattern="[A-Za-z\s]+" required>
+    <h1>Ajouter un produit</h1>
+    <label for="nom_produit">Nom du produit:</label>
+      <input type="text" id="nom_produit" name="nom_produit" placeholder="ex: Tomates">
       
       <label for="image_produit">Image du produit:</label>
-      <input type="file" id="image_produit" name="image_produit" accept=".png, .jpeg, .jpg" required>
+      <input type="file" id="image_produit" name="image_produit">
       
       <label for="description_produit">Description du produit:</label>
-      <textarea id="description_produit" name="description_produit" placeholder="Les tomates sont des fruits rouges ou jaunes, appréciés pour leur goût juteux et légèrement sucré." required></textarea>
+      <textarea id="description_produit" name="description_produit" placeholder="Les tomates sont des fruits rouges ou jaunes, appréciés pour leur goût juteux et légèrement sucré."></textarea>
       
       <label for="prix">Prix du produit:</label>
-      <input type="number" id="prix" name="prix" step="0.01" min="0" required>
+      <input type="text" id="prix" name="prix">
       
       <label for="quantite_produit">Quantité du produit:</label>
-      <input type="number" id="quantite_produit" name="quantite_produit" min="0" required>
+      <input type="text" id="quantite_produit" name="quantite_produit">
       
       <label for="stock_produit">Stock du produit:</label>
-      <input type="number" id="stock_produit" name="stock_produit" min="0" required>
+      <input type="text" id="stock_produit" name="stock_produit">
       
+      <label for="categorie">Catégorie :</label>
+    <select id="categorie" name="categorie" required>
+        <option value="1">Fruits et Légumes</option>
+        <option value="2">Produits Laitiers</option>
+        <option value="3">Viandes</option>
+    </select>
+        <br><br>
       <input type="submit" name="envoyer" value="Ajouter le produit" id="envoyer">
     </form>
   </div>
+  <script src="formulaireajout.js"></script>
+  <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
+    <!-- Navbar -->
+    
+    <!-- End Navbar -->
+    <div class="container-fluid py-4">
+      <div class="row min-vh-80 h-100">
+        <div class="col-12">
+          
+        </div>
+    </div>
+    
+  </div>
+  </main>
+  <div class="fixed-plugin">
+    <a class="fixed-plugin-button text-dark position-fixed px-3 py-2">
+      <i class="material-icons py-2">settings</i>
+    </a>
+    <div class="card shadow-lg">
+      <div class="card-header pb-0 pt-3">
+        <div class="float-start">
+          <p>See our dashboard options.</p>
+        </div>
+        <div class="float-end mt-4">
+          <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
+            <i class="material-icons">clear</i>
+          </button>
+        </div>
+        <!-- End Toggle Button -->
+      </div>
+      <hr class="horizontal dark my-1">
+      <div class="card-body pt-sm-3 pt-0">
+        <!-- Sidebar Backgrounds -->
+        <div>
+          <h6 class="mb-0">Sidebar Colors</h6>
+        </div>
+        <!-- Sidenav Type -->
+        <div class="mt-3">
+          <h6 class="mb-0">Sidenav Type</h6>
+          <p class="text-sm">Choose between 2 different sidenav types.</p>
+        </div>
+        <div class="d-flex">
+          <button class="btn bg-gradient-dark px-3 mb-2 active" data-class="bg-gradient-dark" onclick="sidebarType(this)">Dark</button>
+          <button class="btn bg-gradient-dark px-3 mb-2 ms-2" data-class="bg-transparent" onclick="sidebarType(this)">Transparent</button>
+          <button class="btn bg-gradient-dark px-3 mb-2 ms-2" data-class="bg-white" onclick="sidebarType(this)">White</button>
+        </div>
 
+      </div>
+    </div>
+  </div>
+  <!--   Core JS Files   -->
+  <script src="./assets/js/core/popper.min.js"></script>
+  <script src="./assets/js/core/bootstrap.min.js"></script>
+  <script src="./assets/js/plugins/perfect-scrollbar.min.js"></script>
+  <script src="./assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <script>
+    var win = navigator.platform.indexOf('Win') > -1;
+    if (win && document.querySelector('#sidenav-scrollbar')) {
+      var options = {
+        damping: '0.5'
+      }
+      Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
+    }
+  </script>
+  <!-- Github buttons -->
+  <script async defer src="https://buttons.github.io/buttons.js"></script>
+  <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+  <script src="./assets/js/material-dashboard.min.js?v=3.0.0"></script>
 </body>
-</html>
 
+</html>
