@@ -11,7 +11,7 @@
         <div class="navbar-container">
             <div class="navbar-logo">
                 <a href="start_page.php">
-                    <img src="assets\farm2fork v1.png" alt="Logo" />
+                    <img src="assets\img\farm2fork v1.png" alt="Logo" />
                 </a>
             </div>
             <ul class="navbar-links">
@@ -24,12 +24,13 @@
     </nav>
 </header>
 i
+
 <body>
-    <form id="signup-form" action="..\..\register.php" method="POST">
+    <form id="signup-form" action="..\..\register.php" method="POST" autocomplete="off">
         <!-- Role Selection -->
         <div id="role-selection" class="form-step active">
             <label for="role-select">Sélectionnez un rôle</label>
-            <select id="role-select" name="role" >
+            <select id="role-select" name="role">
                 <option value="0" disabled selected>Choisissez votre rôle</option>
                 <option value="1">Agriculteur</option>
                 <option value="2">Consommateur</option>
@@ -42,21 +43,28 @@ i
         <!-- Agriculteur Form Fields -->
         <div id="agriculteur-fields" class="form-step">
             <label for="nom_ferme_agri">Nom de la Ferme</label>
-            <input type="text" id="nom_ferme_agri" name="nom_ferme_agri" placeholder="Nom de la Ferme" >
+            <input type="text" id="nom_ferme_agri" name="nom_ferme_agri" placeholder="Nom de la Ferme">
 
             <label for="nom_prop_agri">Nom du Propriétaire</label>
-            <input type="text" id="nom_prop_agri" name="nom_prop_agri" placeholder="Nom du Propriétaire" >
-
+            <input type="text" id="nom_prop_agri" name="nom_prop_agri" placeholder="Nom du Propriétaire">
             <label for="email_agri">Email</label>
-            <input type="email" id="email_agri" name="email_agri" placeholder="Email" >
-
+            <div class="input-container">
+                <input type="email" id="email_agri" name="email_agri" placeholder="Email">
+                <span class="info-icon" data-tooltip="Please enter a valid email address.">&#9432;</span>
+            </div>
             <label for="mdp_agri">Mot de Passe</label>
-            <input type="password" id="mdp_agri" name="mdp_agri" placeholder="Mot de passe" >
-            <small>Mot de passe: 8 caractères minimum, 1 majuscule, 1 minuscule, 1 chiffre, 1 spécial (@$!%*?&)</small>
+            <div class="input-container">
+                <input type="password" id="mdp_agri" name="mdp_agri" placeholder="Mot de passe">
+                <span class="info-icon"
+                    data-tooltip="Password must contain at least 8 characters, including one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)">&#9432;</span>
+            </div>
+
+
+
             <label for="phone_agri">Numéro de Téléphone</label>
-            <input type="tel" id="phone_agri" name="phone_agri" placeholder="Exemple: 52 789 111" >
+            <input type="tel" id="phone_agri" name="phone_agri" placeholder="Exemple: 52 789 111">
             <label for="country_agri">Pays</label>
-            <select id="country_agri" name="country_agri" >
+            <select id="country_agri" name="country_agri">
                 <option value="" disabled selected>Sélectionnez votre pays</option>
                 <option value="AF">Afghanistan</option>
                 <option value="DZ">Algeria</option>
@@ -87,10 +95,10 @@ i
             </select>
 
             <label for="city_agri">Ville</label>
-            <input type="text" id="city_agri" name="city_agri" placeholder="Ville" >
+            <input type="text" id="city_agri" name="city_agri" placeholder="Ville">
             <div style="display: flex; align-items: center; justify-content:space-between; padding-right: 5px; ">
                 <label for="address_agri" style="margin-right:15px;">Adresse</label>
-                <input type="text" id="address_agri" name="address_agri" placeholder="Adresse complète" >
+                <input type="text" id="address_agri" name="address_agri" placeholder="Adresse complète">
                 <button type="button" id="locate-me-button_agri">
                     <img style="width: 30px; height: 30px;"
                         src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAqpJREFUSEvFlj1oFFEQx/+zGz9AkFRCchviRzSIjVgk2bvCmEZbhcsGNUEbRbAQhRR2ImgR0UIsRJD4gd67KyyDghjR7AsEv0DEIopm312joFhIPsyObkji5dy9fRcX8rpl/jO/nZk3wyOs0KEV4qJmcMPBdLPp8y4GbwQTG4xPs2y8LBVGJmpJQhdMqe6O40R0GsDWCMB7EC6pnLwJgON+Ihbc1JNpZPgPwGiLCzZvf+Yb0wdK9198raavCk45bduIzWEQGjSh8zLyfJrJlHJjXpRfJLjlUPv6yV/GawCbaoMuql+t/VFvjw8NTYX5R4Itx74NoDcC+hlEg3M25iMAmsN0DLpcFO4ZbbDV09EOptHITAlPVU52Bnarxx4GY3eE1oePVlWQ45X20IybHPsKA6cSAAch+pWQA1pgy7HfAtiREPiREnKvLvgbgPolYuI9C988a3wvFtzg4iGVTe8k0/+rZXpSAfmohNyiC54GsKpcrISMnfm5njt25fL4+afU63TBHwBsTijjcSXkP9suNAur234MQldCPX6ohNynm/FVACcTAg8oIfv1wMnNMQjU4gk3aN3SzkVllXLsdwRs/5/NBWBYCbk4DeWxIm9qyrH7CLgVWW4NA7PRVcyPVI7XnGfVEbEcewRAWoMRJrmjhOyL8q0KbsxmWg3DfwNgTY3wL4Zptk7cex4sotATuxSanPRRBgevCt0zQ6CMJ9yxag6x4PltdB3AMS0yU6/Ku3fjtFpgdHbWWRum8iDsr5oF4aKXk2fjoLGXa0mAbNa0TG8QTIfDm8Y3VG5UrypxtzoEQCknfY3AJ8psPojOq5x7Tud1ueCnV+qKP7AcO1inFwAYAGeVGB3SKa/WAokLFLxADdSt9oQbPBpqPsvKuGZKWM+SCLKcGL8BBPT3H5JVgiYAAAAASUVORK5CYII=" />
@@ -106,20 +114,27 @@ i
         <!-- Consommateur Form Fields -->
         <div id="consommateur-fields" class="form-step">
             <label for="nom_cons">Nom</label>
-            <input type="text" id="nom_cons" name="nom_cons" placeholder="Votre Nom" >
+            <input type="text" id="nom_cons" name="nom_cons" placeholder="Votre Nom">
 
             <label for="prenom_cons">Prénom</label>
-            <input type="text" id="prenom_cons" name="prenom_cons" placeholder="Votre Prénom" >
-
+            <input type="text" id="prenom_cons" name="prenom_cons" placeholder="Votre Prénom">
             <label for="email_cons">Email</label>
-            <input type="email" id="email_cons" name="email_cons" placeholder="Email" >
+            <div class="input-container">
+                <input type="email" id="email_cons" name="email_cons" placeholder="Email">
+                <span class="info-icon" data-tooltip="Please enter a valid email address.">&#9432;</span>
+            </div>
             <label for="password_cons">Mot de Passe</label>
-            <input type="password" id="password_cons" name="password_cons" placeholder="Mot de Passe" >
-            <small>Mot de passe: 8 caractères minimum, 1 majuscule, 1 minuscule, 1 chiffre, 1 spécial (@$!%*?&)</small>
+            <div class="input-container">
+                <input type="password" id="password_cons" name="password_cons" placeholder="Mot de Passe">
+                <span class="info-icon"
+                    data-tooltip="Password must contain at least 8 characters, including one uppercase letter, one lowercase letter, one number, and one special character (@$!%*?&)">&#9432;</span>
+            </div>
+
+
             <label for="phone_cons">Numéro de Téléphone</label>
-            <input type="tel" id="phone_cons" name="phone_cons" placeholder="Exemple: 52 789 111" >
+            <input type="tel" id="phone_cons" name="phone_cons" placeholder="Exemple: 52 789 111">
             <label for="country_cons">Pays</label>
-            <select id="country_cons" name="country_cons" >
+            <select id="country_cons" name="country_cons">
                 <option value="" disabled selected>Sélectionnez votre pays</option>
                 <option value="AF">Afghanistan</option>
                 <option value="DZ">Algeria</option>
@@ -150,11 +165,11 @@ i
             </select>
 
             <label for="city_cons">Ville</label>
-            <input type="text" id="city_cons" name="city_cons" placeholder="Ville" >
+            <input type="text" id="city_cons" name="city_cons" placeholder="Ville">
 
             <div style="display: flex; align-items: center; justify-content:space-between; padding-right: 5px; ">
                 <label for="address_cons" style="margin-right:15px;">Adresse</label>
-                <input type="text" id="address_cons" name="address_cons" placeholder="Adresse complète" >
+                <input type="text" id="address_cons" name="address_cons" placeholder="Adresse complète">
                 <button type="button" id="locate-me-button_cons">
                     <img style="width: 30px; height: 30px;"
                         src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAqpJREFUSEvFlj1oFFEQx/+zGz9AkFRCchviRzSIjVgk2bvCmEZbhcsGNUEbRbAQhRR2ImgR0UIsRJD4gd67KyyDghjR7AsEv0DEIopm312joFhIPsyObkji5dy9fRcX8rpl/jO/nZk3wyOs0KEV4qJmcMPBdLPp8y4GbwQTG4xPs2y8LBVGJmpJQhdMqe6O40R0GsDWCMB7EC6pnLwJgON+Ihbc1JNpZPgPwGiLCzZvf+Yb0wdK9198raavCk45bduIzWEQGjSh8zLyfJrJlHJjXpRfJLjlUPv6yV/GawCbaoMuql+t/VFvjw8NTYX5R4Itx74NoDcC+hlEg3M25iMAmsN0DLpcFO4ZbbDV09EOptHITAlPVU52Bnarxx4GY3eE1oePVlWQ45X20IybHPsKA6cSAAch+pWQA1pgy7HfAtiREPiREnKvLvgbgPolYuI9C988a3wvFtzg4iGVTe8k0/+rZXpSAfmohNyiC54GsKpcrISMnfm5njt25fL4+afU63TBHwBsTijjcSXkP9suNAur234MQldCPX6ohNynm/FVACcTAg8oIfv1wMnNMQjU4gk3aN3SzkVllXLsdwRs/5/NBWBYCbk4DeWxIm9qyrH7CLgVWW4NA7PRVcyPVI7XnGfVEbEcewRAWoMRJrmjhOyL8q0KbsxmWg3DfwNgTY3wL4Zptk7cex4sotATuxSanPRRBgevCt0zQ6CMJ9yxag6x4PltdB3AMS0yU6/Ku3fjtFpgdHbWWRum8iDsr5oF4aKXk2fjoLGXa0mAbNa0TG8QTIfDm8Y3VG5UrypxtzoEQCknfY3AJ8psPojOq5x7Tud1ueCnV+qKP7AcO1inFwAYAGeVGB3SKa/WAokLFLxADdSt9oQbPBpqPsvKuGZKWM+SCLKcGL8BBPT3H5JVgiYAAAAASUVORK5CYII=" />
@@ -162,7 +177,7 @@ i
             </div>
 
             <label for="gender_cons">Genre</label>
-            <select id="gender_cons" name="gender_cons" >
+            <select id="gender_cons" name="gender_cons">
                 <option value="" disabled selected>Choisissez</option>
                 <option value="M">Homme</option>
                 <option value="F">Femme</option>
@@ -213,7 +228,7 @@ i
 
     </script>
     <script src="user_geolocation.js"></script>
-    <script src="sign_up_validation.js"></script>
+    <script src="FormValidation.js"></script>
 </body>
 
 </html>

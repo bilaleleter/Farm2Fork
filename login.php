@@ -1,45 +1,41 @@
 <?php
-include('config/config.php');
+header('Content-Type: application/json');
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+include_once(__DIR__.'/../gest_utilisateur/core/config.php');
+include(__DIR__.'/../gest_utilisateur/controllers/UserController.php');
+
+session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
+    $controller = new UserController();
 
-    try {
-        $db = config::getConnexion();
-        $sql = "SELECT * FROM Utilisateurs WHERE email = :email";
-        $stmt = $db->prepare($sql);
-        $stmt->execute([':email' => $email]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-        
-        if ($user) {
-            if (password_verify($password, $user['pwd'])) {
-                session_start();//fi oudh manestaamlou cookie bech l user yokeed remembered fel session hedhika hata ken yhel paget okhrin
-                $_SESSION['user_id'] = $user['user_id']; 
-                $_SESSION['email'] = $user['email'];
-                $_SESSION['role_id'] = $user['role_id'];
-                if ($user['role_id'] == 1) {
-                    echo "Bienvenu Agriculteur ";
-                    //header("Location: agriculteur_dashboard.php");
-                    exit();
-                } elseif ($user['role_id'] == 2) {
-                    echo "Bienvenu Consomateur";
-                    //header("Location: consommateur_dashboard.php");
-                    exit();
-                }
-                else if($user['role_id'] == 0){
-                    echo "Bienvenu Admin";
-                    //header("Location: admin_dashboard.php");
-                    exit();
-                }
-            } else {
-                echo "Email ou Mot de passe Incorrect. pwd check";
-            }
+    // Check if email exists and validate password
+    if (!$controller->isEmailExists($email)) {
+        echo json_encode(['success' => false, 'message' => 'Email does not exist.', 'field' => 'email']);
+        exit();
+    } else {
+        $user = $controller->getUserByEmail($email);
+        $user_password = $user['password'];
+        if (password_verify($password, $user_password)) {
+            $_SESSION['user_id'] = $user['user_id'];
+            $_SESSION['role'] = $user['role_id'];
+            $_SESSION['logged_in'] = true;
+            $user_role  = $user['role_id'];
+            $redirectUrl = match ($user_role) {
+                1 => '../BackOffice/agriculteur_dashboard.php',
+                2 => '../BackOffice/consomateur_dashboard.php',
+                0 => '../BackOffice/admin_dashboard.php',
+                default => 'start_page.php',
+            };
+            echo json_encode(['success' => true, 'redirect' => $redirectUrl]);
         } else {
-            echo "Email ou Mot de passe Incorrect. user check";
+            echo json_encode(['success' => false, 'message' => 'Incorrect password.', 'field'=> 'password']);
         }
-    } catch (Exception $e) {
-        die('Error: ' . $e->getMessage());
+        exit();
     }
 }
 ?>

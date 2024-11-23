@@ -1,122 +1,77 @@
 <?php
-include('config\config.php');
+header('Content-Type: application/json');
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+include_once(__DIR__.'/../gest_utilisateur/core/config.php');
+include(__DIR__.'/../gest_utilisateur/controllers/UserController.php');
 
-function hashPassword($password) {
-    return password_hash($password, PASSWORD_DEFAULT);
-}
+session_start();
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $controller = new UserController();
+
     $role = $_POST['role'];
-    $email = '';
-    $password = '';
-    $phone = '';
-    $country = '';
-    $city = '';
-    $address = '';
-    $first_name = '';
-    $last_name = '';
-    $farm_name = '';
-    $farm_owner_name = '';
-    $gender = '';
+    $email = $_POST[$role == '1' ? 'email_agri' : 'email_cons'];
 
-    if ($role == '1') {
-        // donnée mtaa aggriculteur
-        $farm_name = $_POST['nom_ferme_agri'];
-        $farm_owner_name = $_POST['nom_prop_agri'];
-        $email = $_POST['email_agri'];
-        $password = $_POST['mdp_agri'];
-        $phone = $_POST['phone_agri'];
-        $country = $_POST['country_agri'];
-        $city = $_POST['city_agri'];
-        $address = $_POST['address_agri'];
-
-    } elseif ($role == '2') {
-        // donnée mtaa Consommateur 
-        $first_name = $_POST['nom_cons'];
-        $last_name = $_POST['prenom_cons'];
-        $email = $_POST['email_cons'];
-        $password = $_POST['password_cons'];
-        $phone = $_POST['phone_cons'];
-        $country = $_POST['country_cons'];
-        $city = $_POST['city_cons'];
-        $address = $_POST['address_cons'];
-        $gender = $_POST['gender_cons'];
+    // Check if email exists
+    if ($controller->isEmailExists($email)) {
+        echo json_encode(['success' => false, 'message' => 'Email already exists.']);
+        exit();
     }
 
-    try {
-        $db = config::getConnexion();
-        if ($role == '1') {
-            $sql = "INSERT INTO Utilisateurs (role_id, email,pwd, phone_number, country, city, addr) 
-                    VALUES (:role, :email, :password, :phone, :country, :city, :address)";
-            try {
+    // Proceed with registration...
+    $password = $_POST[$role == '1' ? 'mdp_agri' : 'password_cons'];
+    $phone_number = $_POST[$role == '1' ? 'phone_agri' : 'phone_cons'];
+    $country = $_POST[$role == '1' ? 'country_agri' : 'country_cons'];
+    $city = $_POST[$role == '1' ? 'city_agri' : 'city_cons'];
+    $address = $_POST[$role == '1' ? 'address_agri' : 'address_cons'];
 
-                $stmt = $db->prepare($sql);
-                $stmt->execute([
-                    ':role' => $role,
-                    ':email' => $email,
-                    ':password' => hashPassword($password),
-                    ':phone' => $phone,
-                    ':country' => $country,
-                    ':city' => $city,
-                    ':address' => $address,
-                ]);
+    if ($role == '1') { 
+        $farm_name = $_POST['nom_ferme_agri'];
+        $farm_owner_name = $_POST['nom_prop_agri'];
+        $farm_description = NULL;
+        $nom_consomateur = NULL;
+        $prenom_consomateur = NULL;
+        $genre = NULL;
+    } else {
+        $nom_consomateur = $_POST['nom_cons'];
+        $prenom_consomateur = $_POST['prenom_cons'];
+        $genre = $_POST['gender_cons'];
+        $farm_name = NULL;
+        $farm_description = NULL;
+        $farm_owner_name = NULL;
+    }
 
-            } catch (Exception $e) {
-                echo 'Error: ' . $e->getMessage();
-            }
-            try {
+    $ban_until = NULL;
+    $farm_pics = NULL;
+    $farm_vids = NULL;
+    $profile_pic = NULL;
+    $userModel = new UserModel(
+        null, $role, $nom_consomateur, $prenom_consomateur,
+        $phone_number, $email, $password, $country,
+        $city, $address, $profile_pic, $ban_until,
+        $genre, $farm_pics, $farm_vids, $farm_name,
+        $farm_description, farm_owner_name: $farm_owner_name
+    );
+    $result = $controller->addUser($userModel);
+    if ($result == true) {
+        $_SESSION['user_id'] = $controller->getLastInsertId();
+        $_SESSION['role'] = $role;
+        $_SESSION['logged_in'] = true;
 
-                $userId = $db->lastInsertId();
-                $farmSql = "INSERT INTO Agriculteurs (user_id, farm_name, farm_owner_name) 
-                        VALUES (:user_id, :farm_name, :farm_owner_name)";
-                $farmStmt = $db->prepare($farmSql);
-                $farmStmt->execute([
-                    ':user_id' => $userId,
-                    ':farm_name' => $farm_name,
-                    ':farm_owner_name' => $farm_owner_name
-                ]);
-                echo "Aggriculteur Account successfully created!";
-            } catch (Exception $e) {
-                echo '' . $e->getMessage();
-            }
+        $redirectUrl = match ($role) {
+            '1' => '..\BackOffice\agriculteur_dashboard.php',
+            '2' => '../BackOffice\consomateur_dashboard.php',
+            default => 'start_page.php',
+        };
 
-        } elseif ($role == '2') {
-            $sql = "INSERT INTO Utilisateurs (role_id, email, pwd, phone_number, country, city, addr) 
-                    VALUES (:role, :email, :password, :phone, :country, :city, :address)";
-            try {
-
-                $stmt = $db->prepare($sql);
-                $stmt->execute([
-                    ':role' => $role,
-                    ':email' => $email,
-                    ':password' => hashPassword($password),
-                    ':phone' => $phone,
-                    ':country' => $country,
-                    ':city' => $city,
-                    ':address' => $address
-                ]);
-            } catch (Exception $e) {
-                echo "here";
-                echo '' . $e->getMessage();
-            }
-            try {
-                $userId = $db->lastInsertId();
-                $consSql = "INSERT INTO Consomateurs(user_id, genre) 
-                        VALUES (:user_id, :genre)";
-                $consStmt = $db->prepare($consSql);
-                $consStmt->execute([
-                    ':user_id' => $userId,
-                    ':genre' => $gender
-                ]);
-                
-                echo "Consomateur Account successfully created!";
-            } catch (Exception $e) {
-                echo '' . $e->getMessage();
-            }
-        }
-
-    } catch (Exception $e) {
-        die('Error: ' . $e->getMessage());
+        echo json_encode(['success' => true, 'redirect' => $redirectUrl]);
+        exit();
+    } else {
+        echo json_encode(['success' => false, 'message' => 'Registration failed.']);
+        exit();
     }
 }
 ?>
+

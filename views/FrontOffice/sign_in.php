@@ -11,7 +11,7 @@
         <div class="navbar-container">
             <div class="navbar-logo">
                 <a href="start_page.php">
-                    <img src="assets\farm2fork v1.png" alt="Logo" />
+                    <img src="assets\img\farm2fork v1.png" alt="Logo" />
                 </a>
             </div>
             <ul class="navbar-links">
@@ -24,7 +24,7 @@
     </nav>
 </header>
 <body>
-    <form id="signin-form" action="..\..\login.php" method="POST">
+    <form id="login-form" action="..\..\login.php" method="POST" autocomplete="off" novalidate="true">
         <div id="signin-fields" class="form-step active">
             <label for="email">Email</label>
             <input type="email" id="email" name="email" placeholder="Email" required>
@@ -42,5 +42,6 @@
         </div>
     </form>
 </body>
+<script src="sign_in_validation.js"></script>
 
 </html>

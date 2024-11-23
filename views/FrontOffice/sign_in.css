@@ -134,3 +134,18 @@ input[type="email"] {
 .navbar-links a:hover {
   color: #ead885;
 }
+
+input.invalid, select.invalid {
+  border: 2px solid red;
+}
+
+input.valid, select.valid {
+  border: 2px solid green;
+}
+
+.error-message {
+  display: block;
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 5px; /* Adjust spacing as necessary */
+}
