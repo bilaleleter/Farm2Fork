@@ -6,7 +6,7 @@
     <title>Farm2Fork Sign In</title>
     <link rel="stylesheet" href="sign_in.css">
 </head>
-<header>
+<header class="overlay">
     <nav class="navbar">
         <div class="navbar-container">
             <div class="navbar-logo">
@@ -24,7 +24,7 @@
     </nav>
 </header>
 <body>
-    <form id="login-form" action="..\..\login.php" method="POST" autocomplete="off" novalidate="true">
+    <form id="login-form" action="..\..\login.php" method="POST" autocomplete="off" novalidate="true" class="overlay">
         <div id="signin-fields" class="form-step active">
             <label for="email">Email</label>
             <input type="email" id="email" name="email" placeholder="Email" required>
@@ -38,10 +38,37 @@
         </div>
         
         <div class="signup-link">
-            <p>Pas de compte? <a href="sign_up.php">S'inscrire</a></p>
+            <p>Mot de passe oublié? <a href="forgot_password.php">Reset Password</a></p>
         </div>
     </form>
+    <spline-viewer url="https://prod.spline.design/W9FvZRtvN7bpFnEI/scene.splinecode"></spline-viewer>
 </body>
+<script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.42/build/spline-viewer.js"></script>
+<script>
+    const viewer = document.querySelector('spline-viewer');
+    window.addEventListener('load', () => {
+        if (viewer) {
+            const style = document.createElement('style');
+            const style2 = document.createElement('style');
+            const logoElement = viewer.shadowRoot.getElementById('logo');
+            const element = viewer.shadowRoot.getElementById('spline');
+            style.innerHTML = `
+            #logo {
+                display: none !important;
+            }
+        `;
+            style2.innerHTML = `
+            #spline {
+                display: unset !important;
+            }
+        `;
+            viewer.shadowRoot.appendChild(style);
+            viewer.shadowRoot.appendChild(style2);
+        }
+    });
+
+
+</script>
 <script src="sign_in_validation.js"></script>
 
 </html>

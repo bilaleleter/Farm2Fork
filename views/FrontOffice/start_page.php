@@ -12,7 +12,7 @@
         <div class="navbar-container">
             <div class="navbar-logo">
                 <a href="#">
-                    <img src="assets\farm2fork v1.png" alt="Logo" />
+                    <img src="assets/img/farm2fork v1.png" alt="Logo" />
                 </a>
             </div>
             <ul class="navbar-links">

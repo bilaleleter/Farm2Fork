@@ -43,5 +43,11 @@ CREATE TABLE BanLog (
     CONSTRAINT fk_user FOREIGN KEY (user_id) REFERENCES Utilisateur(user_id)   
 );
 
+CREATE TABLE password_resets (
+    email VARCHAR(255) NOT NULL,
+    token VARCHAR(255) NOT NULL,
+    expires_at DATETIME NOT NULL,
+    PRIMARY KEY (email)
+);
 
 INSERT INTO Utilisateur(email, password, role_id) VALUES ('admin@admin.admin', MD5('admin'), 0);

@@ -144,6 +144,56 @@ class UserController
             return null;
         }
     }
+
+    //password reset functions
+
+    public function storePasswordResetToken($email, $token, $expires) {
+        try {
+            $sql = "INSERT INTO password_resets (email, token, expires_at) VALUES (:email, :token, :expires_at)
+                    ON DUPLICATE KEY UPDATE token = :token, expires_at = :expires_at";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':email', $email);
+            $stmt->bindParam(':token', $token);
+            $stmt->bindParam(':expires_at', $expires);
+            $stmt->execute();
+            return true;
+        } catch (PDOException $e) {
+            return false;
+        }
+    }
+    
+    public function resetPassword($token, $newPassword) {
+        try {
+            $sql = "SELECT email FROM password_resets WHERE token = :token AND expires_at >= NOW()";
+            $stmt = $this->db->prepare($sql);
+            $stmt->bindParam(':token', $token);
+            $stmt->execute();
+            $userEmail = $stmt->fetch(PDO::FETCH_ASSOC);
+    
+            if ($userEmail) {
+                $hashedPassword = password_hash($newPassword, PASSWORD_DEFAULT);
+                $sqlUpdate = "UPDATE Utilisateur SET password = :password WHERE email = :email";
+                $stmtUpdate = $this->db->prepare($sqlUpdate);
+                $stmtUpdate->bindParam(':password', $hashedPassword);
+                $stmtUpdate->bindParam(':email', $userEmail['email']);
+                $stmtUpdate->execute();
+    
+                // Delete the token so it can't be reused
+                $sqlDelete = "DELETE FROM password_resets WHERE email = :email";
+                $stmtDelete = $this->db->prepare($sqlDelete);
+                $stmtDelete->bindParam(':email', $userEmail['email']);
+                $stmtDelete->execute();
+    
+                return ['success' => true, 'message' => 'Password has been reset successfully.'];
+            } else {
+                return ['success' => false, 'message' => 'Invalid or expired reset token.'];
+            }
+        } catch (PDOException $e) {
+            // Optionally, log this error
+            return ['success' => false, 'message' => 'Error updating password.'];
+        }
+    }
+    
     
     
 }
