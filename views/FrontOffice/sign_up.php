@@ -96,10 +96,10 @@ i
 
             <label for="city_agri">Ville</label>
             <input type="text" id="city_agri" name="city_agri" placeholder="Ville">
+            <label for="address_agri">Adresse</label>
             <div style="display: flex; align-items: center; justify-content:space-between; padding-right: 5px; ">
-                <label for="address_agri" style="margin-right:15px;">Adresse</label>
                 <input type="text" id="address_agri" name="address_agri" placeholder="Adresse complète">
-                <button type="button" id="locate-me-button_agri">
+                <button type="button" id="locate-me-button_agri" class="location-button">
                     <img style="width: 30px; height: 30px;"
                         src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAB4AAAAeCAYAAAA7MK6iAAAAAXNSR0IArs4c6QAAAqpJREFUSEvFlj1oFFEQx/+zGz9AkFRCchviRzSIjVgk2bvCmEZbhcsGNUEbRbAQhRR2ImgR0UIsRJD4gd67KyyDghjR7AsEv0DEIopm312joFhIPsyObkji5dy9fRcX8rpl/jO/nZk3wyOs0KEV4qJmcMPBdLPp8y4GbwQTG4xPs2y8LBVGJmpJQhdMqe6O40R0GsDWCMB7EC6pnLwJgON+Ihbc1JNpZPgPwGiLCzZvf+Yb0wdK9198raavCk45bduIzWEQGjSh8zLyfJrJlHJjXpRfJLjlUPv6yV/GawCbaoMuql+t/VFvjw8NTYX5R4Itx74NoDcC+hlEg3M25iMAmsN0DLpcFO4ZbbDV09EOptHITAlPVU52Bnarxx4GY3eE1oePVlWQ45X20IybHPsKA6cSAAch+pWQA1pgy7HfAtiREPiREnKvLvgbgPolYuI9C988a3wvFtzg4iGVTe8k0/+rZXpSAfmohNyiC54GsKpcrISMnfm5njt25fL4+afU63TBHwBsTijjcSXkP9suNAur234MQldCPX6ohNynm/FVACcTAg8oIfv1wMnNMQjU4gk3aN3SzkVllXLsdwRs/5/NBWBYCbk4DeWxIm9qyrH7CLgVWW4NA7PRVcyPVI7XnGfVEbEcewRAWoMRJrmjhOyL8q0KbsxmWg3DfwNgTY3wL4Zptk7cex4sotATuxSanPRRBgevCt0zQ6CMJ9yxag6x4PltdB3AMS0yU6/Ku3fjtFpgdHbWWRum8iDsr5oF4aKXk2fjoLGXa0mAbNa0TG8QTIfDm8Y3VG5UrypxtzoEQCknfY3AJ8psPojOq5x7Tud1ueCnV+qKP7AcO1inFwAYAGeVGB3SKa/WAokLFLxADdSt9oQbPBpqPsvKuGZKWM+SCLKcGL8BBPT3H5JVgiYAAAAASUVORK5CYII=" />
                 </button>
@@ -167,8 +167,8 @@ i
             <label for="city_cons">Ville</label>
             <input type="text" id="city_cons" name="city_cons" placeholder="Ville">
 
+            <label for="address_cons">Adresse</label>
             <div style="display: flex; align-items: center; justify-content:space-between; padding-right: 5px; ">
-                <label for="address_cons" style="margin-right:15px;">Adresse</label>
                 <input type="text" id="address_cons" name="address_cons" placeholder="Adresse complète">
                 <button type="button" id="locate-me-button_cons">
                     <img style="width: 30px; height: 30px;"
@@ -229,7 +229,7 @@ i
 
     </script>
     <script src="user_geolocation.js"></script>
-    <script src="FormValidation.js"></script>
+    <script src="sign_up_validation.js"></script>
     <script type="module" src="https://unpkg.com/@splinetool/viewer@1.9.42/build/spline-viewer.js"></script>
     <script>
         const viewer = document.querySelector('spline-viewer');

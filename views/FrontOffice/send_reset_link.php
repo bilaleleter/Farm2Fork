@@ -1,4 +1,5 @@
 <?php
+header('Content-Type: application/json');
 include_once(__DIR__.'/../../../vendor\autoload.php');
 include_once(__DIR__.'/../../core/config.php');
 include(__DIR__.'/../../controllers/UserController.php');
@@ -16,24 +17,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'])) {
     if ($controller->isEmailExists($email)) {
         $token = bin2hex(random_bytes(32)); // Generate a secure random token
         $expires = time() + 3600; // Token valid for 1 hour
+        $expires_at = date('Y-m-d H:i:s', $expires);
 
         // Store the token in the database associated with the user
-        if ($controller->storePasswordResetToken($email, $token, $expires)) {
+        if ($controller->storePasswordResetToken($email, $token, $expires_at)) {
             // Prepare PHPMailer to send the reset link
             $mail = new PHPMailer(true);
             try {
                 //Server settings
                 $mail->isSMTP();
-                $mail->SMTPDebug = 2;
+                //$mail->SMTPDebug = 2;
                 $mail->Host = 'smtp.office365.com';
                 $mail->SMTPAuth = true;
-                $mail->Username = 'farm2fork0@outlook.com';  // SMTP username
-                $mail->Password = 'amiffdklsifcazov';           // SMTP password
+                $mail->Username = 'mohamedislam.athmani@esprit.tn';  // SMTP username
+                $mail->Password = 'tvmthvggvjbzvydt';           // SMTP password
                 $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
                 $mail->Port = 587;
 
                 //Recipients
-                $mail->setFrom('no-reply@farm2fork.com', 'Farm2Fork');
+                $mail->setFrom('mohamedislam.athmani@esprit.tn', 'Farm2Fork');
                 $mail->addAddress($email);     // Add a recipient
 
                 // Content
@@ -45,7 +47,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['email'])) {
                 $mail->send();
                 echo json_encode(['success' => true, 'message' => 'Check your email for the password reset link.']);
             } catch (Exception $e) {
-                echo json_encode(['success' => false, 'message' => "Mailer Error: " . $mail->ErrorInfo]);
+                echo json_encode(['success' => false, 'message' => 'Mailer Error: '.$mail->ErrorInfo]);
             }
         } else {
             echo json_encode(['success' => false, 'message' => 'Failed to store reset token.']);

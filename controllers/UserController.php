@@ -194,6 +194,17 @@ class UserController
         }
     }
     
+    public function getCurrentPasswordHashByToken($token) {
+        try {
+            $stmt = $this->db->prepare("SELECT Utilisateur.password FROM Utilisateur JOIN password_resets ON Utilisateur.email = password_resets.email WHERE password_resets.token = ?");
+            $stmt->execute([$token]);
+            $result = $stmt->fetch();
+            return $result ? $result['password'] : null;
+        } catch (PDOException $e) {
+            error_log("Database error in getCurrentPasswordHashByToken: " . $e->getMessage());
+            return null;  
+        }
+    }
     
     
 }

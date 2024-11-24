@@ -1,102 +1,135 @@
-function validateAgriculteurFields() {
-    let verif = 1; // init 1 =valid
-    const agriFields = [
-        "nom_ferme_agri",
-        "nom_prop_agri",
-        "email_agri",
-        "mdp_agri",
-        "phone_agri",
-        "country_agri",
-        "city_agri",
-        "address_agri",
-    ];
+document.addEventListener('DOMContentLoaded', function() {
+    
+    const form = document.getElementById('signup-form');
+    const roleSelect = document.getElementById('role-select');
 
-    agriFields.forEach((fieldId) => {
-        const field = document.getElementById(fieldId);
-        if (field) {
-            field.addEventListener("input", () => {
-                if (isFieldValid(field)) {
-                    field.style.border = "2px solid green"; 
-                } else {
-                    field.style.border = "2px solid red"; 
-                }
-            });
-            if (!isFieldValid(field)) {
-                field.style.border = "2px solid red";
-                verif = 0;
-            } else {
-                field.style.border = "2px solid green";
-            }
-        }
+    form.setAttribute('novalidate', true); // Disable HTML5 validation.
+
+    form.addEventListener('submit', function(event) {
+        event.preventDefault();
+        validateForm();
     });
 
-    return verif;
-}
+    function validateForm() {
+        let isValid = true;
+        let firstError = null;
 
-function validateConsommateurFields() {
-    let verif = 1; 
-    const consFields = [
-        "nom_cons",
-        "prenom_cons",
-        "email_cons",
-        "password_cons",
-        "phone_cons",
-        "country_cons", 
-        "gender_cons"
-    ];
+        // Clear previous errors
+        document.querySelectorAll('.error-message').forEach(e => e.remove());
+        document.querySelectorAll('input, select').forEach(input => {
+            input.classList.remove('invalid');
+            input.style.borderColor = '#ccc';
+        });
 
-    consFields.forEach((fieldId) => {
-        const field = document.getElementById(fieldId);
-        if (field) {
-            field.addEventListener("input", () => {
-                if (isFieldValid(field)) {
-                    field.style.border = "2px solid green"; 
-                } else {
-                    field.style.border = "2px solid red"; 
-                }
-            });
-            if (!isFieldValid(field)) {
-                field.style.border = "2px solid red";
-                verif = 0;
-            } else {
-                field.style.border = "2px solid green";
+        // Determine fields based on the active role
+        const activeFields = roleSelect.value === '1' ? document.querySelectorAll('#agriculteur-fields input, #agriculteur-fields select') : document.querySelectorAll('#consommateur-fields input, #consommateur-fields select');
+
+        activeFields.forEach(field => {
+            if (!field.value.trim()) {
+                setError(field, 'This field is required');
+                isValid = false;
+                if (!firstError) firstError = field;
+            } else if (field.type === 'email' && !validateEmail(field.value)) {
+                setError(field, 'Please enter a valid email address');
+                isValid = false;
+                if (!firstError) firstError = field;
+            } else if (field.type === 'tel' && !validatePhone(field.value)) {
+                setError(field, 'Phone number must be numeric and at least 8 digits');
+                isValid = false;
+                if (!firstError) firstError = field;
+            } else if (field.type === 'password' && !validatePassword(field.value)) {
+                setError(field, 'Password must meet complexity requirements');
+                isValid = false;
+                if (!firstError) firstError = field;
+            } else if ((field.id.includes('address') && !validateAddress(field.value))) {
+                setError(field, 'Address can only contain numbers and letters');
+                isValid = false;
+                if (!firstError) firstError = field;
+            } 
+            else if(field.type === "text" && !validateText(field.value) && !field.id.includes('address')){
+                setError(field, 'Can only contain characters and spaces');
+                isValid = false;
+                if (!firstError) firstError = field;
             }
-        }
-    });
+            else {
+                setSuccess(field);
+            }
+        });
 
-    return verif;
-}
+        if (firstError) firstError.focus();
 
-function isFieldValid(field) {
-    if (!field.value.trim()) return false; // Check if the field is empty
-
-    switch (field.type) {
-        case "email":
-            return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(field.value); // Validate email format
-        case "password":
-            // Password: min 8 characters, 1 uppercase, 1 lowercase, 1 number, 1 special character
-            return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(field.value);
-        case "tel":
-            // Phone number: digits only, length check (e.g., 8-15 digits)
-            return /^[0-9]{8,15}$/.test(field.value);
-        case "select-one":
-            return field.value !== ""; 
-        default:
-            return field.value !== ""; 
+        if (isValid) submitForm();
     }
-}
 
-document.addEventListener("submit", (event) => {
+    function validateEmail(email) {
+        return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+    }
 
-    if (roleSelect.value == 1) {
-        if (!validateAgriculteurFields()) {
-            alert("Check Form");
-            event.preventDefault(); 
-        }
-    } else if (roleSelect.value == 2) {
-        if (!validateConsommateurFields()) {
-            alert("Check Form");
-            event.preventDefault(); 
+    function validatePhone(phone) {
+        return /^\d{8,}$/.test(phone); // Remove non-digits and test
+    }
+
+    function validatePassword(password) {
+        return /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/.test(password);
+    }
+
+    function validateAddress(address) {
+        return /^[a-zA-Z0-9\s,.'-]+$/.test(address);
+    }
+    
+    function validateText(input) {
+        return /^[a-zA-Z\s]+$/.test(input);
+    }
+    
+    function setError(input, message) {
+        input.classList.add('invalid');
+        input.style.borderColor = 'red';
+        const error = document.createElement('small');
+        error.className = 'error-message';
+        error.textContent = message;
+        error.style.color = 'red';
+    
+        if (input.type === 'email' || input.type === 'password') {
+            const container = input.closest('.input-container'); // Find the closest input container
+            if (container) {
+                container.parentNode.insertBefore(error, container.nextSibling); // Insert the error after the container
+            } else {
+                input.parentNode.insertBefore(error, input.nextSibling); // Fallback if no container is found
+            }
+        } else {
+            input.parentNode.insertBefore(error, input.nextSibling); // Normal insertion for other input types
         }
     }
+    
+
+    function setSuccess(input) {
+        input.classList.remove('invalid');
+        input.style.borderColor = 'green';
+    }
+
+    function submitForm() {
+        const formData = new FormData(form);
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        }).then(response => response.json())
+        .then(data => {
+            if (!data.success) {
+                // Make sure you are targeting the right input field for the role selected
+                const emailInput = document.querySelector(`[name="${roleSelect.value === '1' ? 'email_agri' : 'email_cons'}"]`);
+                if (emailInput) {
+                    setError(emailInput, data.message);
+                    emailInput.focus();
+                } else {
+                    console.error('Email input field not found');
+                }
+            } else {
+                window.location.href = data.redirect;
+            }
+        }).catch(error => {
+            console.error('Error:', error);
+        });
+    }
+    
 });
+

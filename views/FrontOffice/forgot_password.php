@@ -14,7 +14,7 @@
     <form id="forgot-password-form" action="send_reset_link.php" method="post" autocomplete="off" novalidate="true"
         class="overlay">
         <h1>Forgot Your Password?</h1>
-        <label for="email">Enter your email address:</label>
+        <label for="email" style="font-size:17px; display:flex; align-items:start">Enter your email address:</label>
         <input type="email" id="email" name="email" required>
         <button type="submit" class="nav-button">Send Reset Link</button>
     </form>

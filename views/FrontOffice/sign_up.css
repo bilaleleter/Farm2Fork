@@ -123,28 +123,8 @@ label {
   justify-content: flex-start;
 }
 
-/* Styling for Localiser Moi Button */
-/*#locate-me-button_agri,
-#locate-me-button_cons {
-  font-size: 14px;
-  background-color: #1c5739;
-  transition: background-color 0.5s ease;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
-}
 
-#locate-me-button_agri:hover,
-#locate-me-button_cons:hover {
-  background-color: #164b2f;
-}
 
-#locate-me-button_agri:focus,
-#locate-me-button_cons:focus {
-  outline: none;
-  box-shadow: 0 0 4px rgba(28, 87, 57, 0.5);
-}*/
 
 input[type="password"]+small {
   display: block;
@@ -194,23 +174,25 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 48px;
-  height: 48px;
+  width: 32px;
+  height: 32px;
   border: none;
   border-radius: 50%;
-  background-color: #007BFF;
+  background-color: #fff;
   cursor: pointer;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-  transition: background-color 0.2s ease, box-shadow 0.2s ease;
+  transition: 0.4s ease, box-shadow 0.2s ease;
+  margin-left: 10px;
 }
 
 .location-button:hover {
-  background-color: #0056b3;
+  background-color: #EAD885;
   box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  padding: 8px;
 }
 
 .location-button:active {
-  background-color: #004085;
+  background-color: #fff;
   box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
 }
 
