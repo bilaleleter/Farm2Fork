@@ -1,6 +1,6 @@
 <?php
 include_once(__DIR__ . '/../core/config.php');
-include(__DIR__ . '/../models/UserModel.php');
+include_once(__DIR__ . '/../models/UserModel.php');
 
 class UserController
 {
@@ -12,7 +12,7 @@ class UserController
     }
 
     // List all users
-    public function listUsers()
+    public function listAllUsers()
     {
         $sql = "SELECT * FROM Utilisateur";
         try {
@@ -65,8 +65,7 @@ class UserController
                 'farm_owner_name' => $user->getFarmOwnerName(),
             ]);
         } catch (PDOException $e) {
-            error_log("Database error: " . $e->getMessage());
-            return "Database error: " . $e->getMessage();
+            return false;
         }
     }
 
@@ -96,8 +95,8 @@ class UserController
                 'farm_owner_name'=> $user->getFarmOwnerName()
             ]);
         } catch (PDOException $e) {
+            echo 'Error: ' . $e->getMessage();
             return false;
-            //die('Error: ' . $e->getMessage());
         }
     }
 
@@ -205,6 +204,38 @@ class UserController
             return null;  
         }
     }
+
+    //READ----------
+    // List all consommateurs
+public function getConsommateurs()
+{
+    $sql = "SELECT * FROM Utilisateur WHERE role_id = :role_id";
+    try {
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':role_id', 2);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error in getConsommateurs: " . $e->getMessage());
+        return [];
+    }
+}
+
+// List all agriculteurs
+public function getAgriculteurs()
+{
+    $sql = "SELECT * FROM Utilisateur WHERE role_id = :role_id";
+    try {
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindValue(':role_id', 1);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error in getAgriculteurs: " . $e->getMessage());
+        return [];
+    }
+}
+
     
     
 }

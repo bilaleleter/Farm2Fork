@@ -1,5 +1,5 @@
+<?php session_start();?>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -26,7 +26,7 @@
 i
 
 <body>
-    <form id="signup-form" action="..\..\register.php" method="POST" autocomplete="off" class="overlay">
+    <form id="signup-form" action="register.php" method="POST" autocomplete="off" class="overlay">
         <!-- Role Selection -->
         <div id="role-selection" class="form-step active">
             <label for="role-select">Sélectionnez un rôle</label>

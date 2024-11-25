@@ -1,5 +1,5 @@
+<?php session_start();?>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -24,7 +24,7 @@
     </nav>
 </header>
 <body>
-    <form id="login-form" action="..\..\login.php" method="POST" autocomplete="off" novalidate="true" class="overlay">
+    <form id="login-form" action="login.php" method="POST" autocomplete="off" novalidate="true" class="overlay">
         <div id="signin-fields" class="form-step active">
             <label for="email">Email</label>
             <input type="email" id="email" name="email" placeholder="Email" required>
