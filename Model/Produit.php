@@ -8,7 +8,7 @@ class Produit {
     private $prix;
     private $quantite_produit;
     private $stock_produit;
-    private $categorie; // ID de la catégorie
+    private $categorie; 
 
     public function __construct($id_produit, $nom_produit, $image_produit, $description_produit, $prix, $quantite_produit, $stock_produit, $categorie = null) {
         $this->id_produit = $id_produit;
@@ -18,7 +18,7 @@ class Produit {
         $this->prix = $prix;
         $this->quantite_produit = $quantite_produit;
         $this->stock_produit = $stock_produit;
-        $this->categorie = $categorie; // Assignation de l'ID de la catégorie
+        $this->categorie = $categorie; 
     }
     public function getIdProduit() {
         return $this->id_produit;

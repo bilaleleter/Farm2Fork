@@ -18,7 +18,9 @@
 include '../../Controller/ProduitController.php';
 include '../../Model/Produit.php';
 
-$produit=null;
+$produit = null;
+$produitcontroller = new ProduitController();
+$categories = $produitcontroller->getAllCategories();  // Récupérer toutes les catégories depuis la base de données
 
 if (isset($_POST['nom_produit']) && isset($_FILES['image_produit']) 
     && isset($_POST['description_produit']) && isset($_POST['prix']) 
@@ -28,15 +30,11 @@ if (isset($_POST['nom_produit']) && isset($_FILES['image_produit'])
         && !empty($_POST["description_produit"]) && !empty($_POST["prix"]) 
         && !empty($_POST["quantite_produit"]) && !empty($_POST["stock_produit"]) && !empty($_POST["categorie"])) {
 
-       
         $target_dir = "uploads/"; 
         $target_file = $target_dir . basename($_FILES["image_produit"]["name"]);
         $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
 
-
-    
         if (move_uploaded_file($_FILES["image_produit"]["tmp_name"], $target_file)) {
-           
             $produit = new Produit(
                 NULL,
                 $_POST['nom_produit'],
@@ -48,8 +46,7 @@ if (isset($_POST['nom_produit']) && isset($_FILES['image_produit'])
                 $_POST['categorie']
             );
 
-            $produitController = new ProduitController();
-            $produitController->ajouterProduit($produit);
+            $produitcontroller->ajouterProduit($produit);
             header('Location: listeProduit.php');
             exit;
         } else {
@@ -58,6 +55,7 @@ if (isset($_POST['nom_produit']) && isset($_FILES['image_produit'])
     }
 }
 ?>
+
 
 
 <!DOCTYPE html>
@@ -71,17 +69,23 @@ if (isset($_POST['nom_produit']) && isset($_FILES['image_produit'])
   <title>
   Ajouter
   </title>
-  <!--     Fonts and icons     -->
-  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+   <!-- Fonts and icons -->
+   <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700,900|Roboto+Slab:400,700" />
+  <link href="./assets/css/nucleo-icons.css" rel="stylesheet" />
+  <link href="./assets/css/nucleo-svg.css" rel="stylesheet" />
+  <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
+  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <link id="pagestyle" href="./assets/css/material-dashboard.css?v=3.0.0" rel="stylesheet" />
+  <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Inter:300,400,500,600,700,900" />
   <!-- Nucleo Icons -->
   <link href="./assets/css/nucleo-icons.css" rel="stylesheet" />
   <link href="./assets/css/nucleo-svg.css" rel="stylesheet" />
   <!-- Font Awesome Icons -->
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   <!-- Material Icons -->
-  <link href="https://fonts.googleapis.com/icon?family=Material+Icons+Round" rel="stylesheet">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
   <!-- CSS Files -->
-  <link id="pagestyle" href="./assets/css/material-dashboard.css?v=3.0.0" rel="stylesheet" />
+  <link id="pagestyle" href="./assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
   <style>
    
     body {
@@ -211,56 +215,45 @@ if (isset($_POST['nom_produit']) && isset($_FILES['image_produit'])
   </style>
 </head>
 
-<body class="g-sidenav-show  bg-gray-200">
-  <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-0 border-radius-xl my-3 fixed-start ms-3   bg-gradient-dark" id="sidenav-main">
+<body class="g-sidenav-show  bg-gray-100">
+  <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2" id="sidenav-main">
     <div class="sidenav-header">
-      <i class="fas fa-times p-3 cursor-pointer text-white opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
-      <a class="navbar-brand m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
-        <img src="./assets/img/logo-ct.png" class="navbar-brand-img h-100" alt="main_logo">
-        <span class="ms-1 font-weight-bold text-white">Farm2Fork Dashboard</span>
+      <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
+      <a class="navbar-brand px-4 py-3 m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
+      <span class="ms-1 text-sm text-dark">Farm2Fork</span>
       </a>
     </div>
-    <hr class="horizontal light mt-0 mb-2">
-    <div class="collapse navbar-collapse  w-auto  max-height-vh-100" id="sidenav-collapse-main">
-    <ul class="navbar-nav">
+    <hr class="horizontal dark mt-0 mb-2">
+    <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
+      <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link text-white" href="./pages/dashboard.html">
-            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="material-icons opacity-10">dashboard</i>
-            </div>
-            <span class="nav-link-text ms-1">First page</span>
+          <a class="nav-link active bg-gradient-dark text-white" href="./pages/dashboard.html">
+            <i class="material-symbols-rounded opacity-5">dashboard</i>
+            <span class="nav-link-text ms-1">Dashboard</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white" href="listeProduit.php">
-            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="material-icons opacity-10">Afficher les produits</i>
-            </div>
-            <span class="nav-link-text ms-1">Affichage</span>
+          <a class="nav-link text-dark" href="listeProduit.php">
+            <i class="material-symbols-rounded opacity-5">view_list</i>
+            <span class="nav-link-text ms-1">Afficher les Produits</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white" href="ajout.php">
-            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="material-icons opacity-10">Ajouter un produit</i>
-            </div>
-            <span class="nav-link-text ms-1">Ajout</span>
+          <a class="nav-link text-dark" href="ajout.php">
+            <i class="material-symbols-rounded opacity-5">add_circle</i>
+           <span class="nav-link-text ms-1">Ajouter un Produit</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white" href="supprimerProduit.php">
-            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="material-icons opacity-10">Supprimer un produit</i>
-            </div>
-            <span class="nav-link-text ms-1">Suppression</span>
+          <a class="nav-link text-dark" href="listeProduit.php">
+            <i class="material-symbols-rounded opacity-5">edit</i>
+             <span class="nav-link-text ms-1">Mettre a jour un produit</span>
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link text-white" href="listeProduit.php">
-            <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="material-icons opacity-10">Mettre a jour un produit</i>
-            </div>
-            <span class="nav-link-text ms-1">Mise a jour</span>
+          <a class="nav-link text-dark" href="listeProduit.php">
+            <i class="material-symbols-rounded opacity-5">delete</i>
+            <span class="nav-link-text ms-1">Supprimer un produit</span>
           </a>
         </li>
       </ul>
@@ -289,16 +282,21 @@ if (isset($_POST['nom_produit']) && isset($_FILES['image_produit'])
       <input type="text" id="stock_produit" name="stock_produit">
       
       <label for="categorie">Catégorie :</label>
-    <select id="categorie" name="categorie" required>
-        <option value="1">Fruits et Légumes</option>
-        <option value="2">Produits Laitiers</option>
-        <option value="3">Viandes</option>
-    </select>
+<select id="categorie" name="categorie">
+  <option value="">-- Sélectionnez une catégorie --</option>
+  <?php foreach ($categories as $categorie) { ?>
+      <option value="<?= htmlspecialchars($categorie['id_categorie']) ?>">
+          <?= htmlspecialchars($categorie['nom_categorie']) ?>
+      </option>
+  <?php } ?>
+</select>
+
         <br><br>
       <input type="submit" name="envoyer" value="Ajouter le produit" id="envoyer">
     </form>
+    <script src="formulaireajout.js"></script>
   </div>
-  <script src="formulaireajout.js"></script>
+  
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
     <!-- Navbar -->
     

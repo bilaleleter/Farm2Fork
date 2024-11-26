@@ -1,12 +1,15 @@
 <?php
 include_once './../../Controller/ProduitController.php';
-$produitcontroller=new ProduitController();
+$produitcontroller = new ProduitController();
 
-$categorieId = isset($_GET['categorie']) ? $_GET['categorie'] : null;
+// Récupérer l'ID de la catégorie sélectionnée via GET
+$categorieId = isset($_GET['categorie']) ? intval($_GET['categorie']) : null;
 
-// Récupérer la liste des produits, filtrée ou non par catégorie
-$liste = $produitcontroller->listeProduit($categorieId);
-$list = $categorieId ? $produitcontroller->listeProduit($categorieId) : [];
+// Récupérer les produits : filtrés si une catégorie est sélectionnée, sinon tous les produits
+$liste = $categorieId ? $produitcontroller->listeProduit($categorieId) : $produitcontroller->listeProduit();
+
+// Récupérer les catégories pour le filtre
+$categories = $produitcontroller->getAllCategories();
 ?>
 
 <!DOCTYPE html>
@@ -251,19 +254,11 @@ $list = $categorieId ? $produitcontroller->listeProduit($categorieId) : [];
           </div>
           
           
-          <div class="d-flex justify-content-between align-items-center">
-  <form method="GET" action="" class="filter-form d-flex align-items-center">
-    <label for="categorie">Filtrer par catégorie :</label>
-    <select name="categorie" id="categorie" class="mx-2">
-      <option value="">Toutes les catégories</option>
-      <option value="1" <?= $categorieId == 1 ? 'selected' : '' ?>>Fruits et Légumes</option>
-      <option value="2" <?= $categorieId == 2 ? 'selected' : '' ?>>Produits Laitiers</option>
-      <option value="3" <?= $categorieId == 3 ? 'selected' : '' ?>>Viandes</option>
-    </select>
-    <button type="submit">Filtrer</button>
-  </form>
+        
+
   
-  <div class="col-sm-8 col-lg-2 d-flex gap-5 align-items-center justify-content-end">
+<div class="d-flex justify-content-end align-items-center">
+  <div class="col-auto d-flex gap-4 align-items-center">
     <ul class="d-flex list-unstyled m-0">
       <li>
         <a href="#" class="p-2 mx-1">
@@ -283,6 +278,7 @@ $list = $categorieId ? $produitcontroller->listeProduit($categorieId) : [];
     </ul>
   </div>
 </div>
+
 
         </div>
       </div>
@@ -374,17 +370,6 @@ $list = $categorieId ? $produitcontroller->listeProduit($categorieId) : [];
       </div>
     </section>
 
-    <?php
-include_once './../../Controller/ProduitController.php';
-$produitcontroller = new ProduitController();
-
-// Récupérer l'ID de la catégorie sélectionnée
-$categorieId = isset($_GET['categorie']) ? intval($_GET['categorie']) : null;
-
-// Récupérer les produits (tous les produits si aucune catégorie sélectionnée)
-$liste = $categorieId ? $produitcontroller->listeProduit($categorieId) : $produitcontroller->listeProduit();
-?>
-
 <section class="py-5 overflow-hidden">
   <div class="container-lg">
     <div class="row">
@@ -430,95 +415,106 @@ $liste = $categorieId ? $produitcontroller->listeProduit($categorieId) : $produi
         <div class="section-header d-flex flex-wrap justify-content-between my-4">
         <div class="row mt-5">
       <div class="col-md-12">
-        <h2>
-          Produits de la catégorie : 
-          <?php
-          if (!$categorieId) {
-              echo "Toutes les catégories";
-          } elseif ($categorieId == 1) {
-              echo "Fruits & Légumes";
-          } elseif ($categorieId == 3) {
-              echo "Viandes";
-          } elseif ($categorieId == 2) {
-              echo "Produits Laitiers";
-          }
-          ?>
-        </h2>
+      <h2>
+    <?php 
+    if (!$categorieId) {
+        echo "Toutes les catégories";
+    } else {
+        foreach ($categories as $categorie) {
+            if ($categorieId == $categorie['id_categorie']) {
+                echo htmlspecialchars($categorie['nom_categorie']);
+                break;
+            }
+        }
+    }
+    ?>
+</h2>
+
       </div>
     </div>
         </div>
       </div>
     </div>
-    
+    <form method="GET" action="" class="filter-form d-flex align-items-center">
+    <label for="categorie">Filtrer par catégorie :</label>
+    <select name="categorie" id="categorie" class="mx-2">
+        <option value="">Toutes les catégories</option>
+        <?php foreach ($categories as $categorie) { ?>
+            <option value="<?= htmlspecialchars($categorie['id_categorie']) ?>" 
+                <?= $categorieId == $categorie['id_categorie'] ? 'selected' : '' ?>>
+                <?= htmlspecialchars($categorie['nom_categorie']) ?>
+            </option>
+        <?php } ?>
+    </select>
+    <button type="submit" class="btn btn-primary">Filtrer</button>
+</form>
     <div class="row">
       <div class="col-md-12">
         <!-- Grille des produits -->
         <div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5">
-       <?php foreach ($liste as $produit): ?>
-<div class="col">
-  <div class="product-item">
-    <figure>
-      <!-- Image with Modal Trigger -->
-      <a href="#" data-bs-toggle="modal" data-bs-target="#productModal<?= $produit['id_produit'] ?>" title="<?= htmlspecialchars($produit['nom_produit']) ?>">
-        <img src="../Backoffice/<?= htmlspecialchars($produit['image_produit']) ?>" 
-             alt="<?= htmlspecialchars($produit['nom_produit']) ?>" 
-             class="tab-image">
-      </a>
-    </figure>
-    <div class="d-flex flex-column text-center">
-      <!-- Nom du produit -->
-      <h3 class="fs-6 fw-normal"><?= htmlspecialchars($produit['nom_produit']) ?></h3>
-      
-      <!-- Prix -->
-      <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
-        <span class="text-dark fw-semibold">$<?= htmlspecialchars($produit['prix']) ?></span>
-      </div>
-      
-      <!-- Stock et Quantité -->
-      <div class="d-flex justify-content-between px-3 mb-3">
-        <span class="text-muted small">Quantité : <strong><?= htmlspecialchars($produit['quantite_produit']) ?></strong></span>
-        <span class="text-muted small">Stock : <strong><?= htmlspecialchars($produit['stock_produit']) ?></strong></span>
-      </div>
-    </div>
-  </div>
+        <?php if (!empty($liste)) { ?>
+    <?php foreach ($liste as $produit): ?>
+        <div class="col">
+            <div class="product-item">
+                <figure>
+                    <a href="#" data-bs-toggle="modal" data-bs-target="#productModal<?= $produit['id_produit'] ?>" 
+                       title="<?= htmlspecialchars($produit['nom_produit']) ?>">
+                        <img src="../Backoffice/<?= htmlspecialchars($produit['image_produit']) ?>" 
+                             alt="<?= htmlspecialchars($produit['nom_produit']) ?>" 
+                             class="tab-image">
+                    </a>
+                </figure>
+                <div class="d-flex flex-column text-center">
+                    <h3 class="fs-6 fw-normal"><?= htmlspecialchars($produit['nom_produit']) ?></h3>
+                    <div class="d-flex justify-content-center align-items-center gap-2 mb-2">
+                        <span class="text-dark fw-semibold">$<?= htmlspecialchars($produit['prix']) ?></span>
+                    </div>
+                    <div class="d-flex justify-content-between px-3 mb-3">
+                        <span class="text-muted small">Quantité : <strong><?= htmlspecialchars($produit['quantite_produit']) ?></strong></span>
+                        <span class="text-muted small">Stock : <strong><?= htmlspecialchars($produit['stock_produit']) ?></strong></span>
+                    </div>
+                    <!-- Optional: Display product description on the main page (if desired) -->
+                    <p class="text-muted small"><?= htmlspecialchars($produit['description_produit']) ?></p>
+                </div>
+            </div>
 
-  <!-- Modal -->
-  <div class="modal fade" id="productModal<?= $produit['id_produit'] ?>" tabindex="-1" aria-labelledby="productModalLabel<?= $produit['id_produit'] ?>" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title" id="productModalLabel<?= $produit['id_produit'] ?>"><?= htmlspecialchars($produit['nom_produit']) ?></h5>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+            <!-- Modal -->
+            <div class="modal fade" id="productModal<?= $produit['id_produit'] ?>" tabindex="-1" aria-labelledby="productModalLabel<?= $produit['id_produit'] ?>" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="productModalLabel<?= $produit['id_produit'] ?>"><?= htmlspecialchars($produit['nom_produit']) ?></h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body text-center">
+                            <img src="../Backoffice/<?= htmlspecialchars($produit['image_produit']) ?>" 
+                                 alt="<?= htmlspecialchars($produit['nom_produit']) ?>" 
+                                 style="width: 100%; height: auto; max-width: 400px; border-radius: 8px;">
+                            <div class="mt-3">
+                                <p><strong>Prix :</strong> $<?= htmlspecialchars($produit['prix']) ?></p>
+                                <p><strong>Stock :</strong> <?= htmlspecialchars($produit['stock_produit']) ?></p>
+                                <p><strong>Quantité disponible :</strong> <?= htmlspecialchars($produit['quantite_produit']) ?></p>
+                                <!-- Display product description in modal -->
+                                <p><strong>Description :</strong> <?= nl2br(htmlspecialchars($produit['description_produit'])) ?></p>
+                            </div>
+                        </div>
+                        <div class="modal-footer">
+                            <div class="d-flex align-items-center gap-2">
+                                <input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" min="1" max="<?= htmlspecialchars($produit['quantite_produit']) ?>" value="1" style="width: 60px;">
+                                <a href="#" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart">
+                                    <svg width="18" height="18"><use xlink:href="#cart"></use></svg> Add to Cart
+                                </a>
+                            </div>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
-        <div class="modal-body text-center">
-          <!-- Large Image -->
-          <img src="../Backoffice/<?= htmlspecialchars($produit['image_produit']) ?>" 
-               alt="<?= htmlspecialchars($produit['nom_produit']) ?>" 
-               style="width: 100%; height: auto; max-width: 400px; border-radius: 8px;">
-          
-          <!-- Product Details -->
-          <div class="mt-3">
-            <p><strong>Prix :</strong> $<?= htmlspecialchars($produit['prix']) ?></p>
-            <p><strong>Stock :</strong> <?= htmlspecialchars($produit['stock_produit']) ?></p>
-            <p><strong>Quantité disponible :</strong> <?= htmlspecialchars($produit['quantite_produit']) ?></p>
-          </div>
-        </div>
-        <div class="modal-footer">
-          <!-- Quantity Selector -->
-          <div class="d-flex align-items-center gap-2">
-            <input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" min="1" max="<?= htmlspecialchars($produit['quantite_produit']) ?>" value="1" style="width: 60px;">
-            <!-- Add to Cart Button -->
-            <a href="#" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart">
-              <svg width="18" height="18"><use xlink:href="#cart"></use></svg> Add to Cart
-            </a>
-          </div>
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </div>
-  </div>
-</div>
-<?php endforeach; ?>
+    <?php endforeach; ?>
+<?php } else { ?>
+    <p>Aucun produit disponible pour cette catégorie.</p>
+<?php } ?>
 
 
 
