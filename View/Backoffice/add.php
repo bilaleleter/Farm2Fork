@@ -44,81 +44,81 @@ if (isset($_POST['nom_categorie'])) {
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
   <!-- CSS Files -->
   <link id="pagestyle" href="./assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
-    <style>
-        /* Global styling */
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #6a11cb, #2575fc);
-            color: #fff;
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
+  <style>
+    /* Global styling */
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to right, #f4d03f, #f5b041); /* Yellow-sand gradient */
+        color: #fff;
+        margin: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 100vh;
+    }
 
+    .form-container {
+        background-color: #fffbea; /* Light sand background */
+        color: #333;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        width: 100%;
+        max-width: 400px;
+    }
+
+    h1 {
+        text-align: center;
+        color: #f4d03f; /* Sand-yellow for headings */
+        font-size: 1.8rem;
+        margin-bottom: 20px;
+    }
+
+    label {
+        font-size: 1rem;
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    input[type="text"] {
+        width: 100%;
+        padding: 12px;
+        font-size: 1rem;
+        border: 1px solid #f7dc6f; /* Light sand-yellow for input border */
+        border-radius: 5px;
+        margin-bottom: 20px;
+        box-sizing: border-box;
+    }
+
+    input[type="text"]:focus {
+        border-color: #f4d03f; /* Sand-yellow for focused input */
+        outline: none;
+    }
+
+    input[type="submit"] {
+        background-color: #f4d03f; /* Sand-yellow for submit button */
+        color: #fff;
+        border: none;
+        padding: 10px 20px;
+        border-radius: 5px;
+        font-size: 1rem;
+        cursor: pointer;
+        transition: background 0.3s ease;
+        width: 100%;
+    }
+
+    input[type="submit"]:hover {
+        background-color: #f5b041; /* Slightly darker sand for hover effect */
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
         .form-container {
-            background-color: #ffffff;
-            color: #333;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-            width: 100%;
-            max-width: 400px;
+            width: 90%;
+            padding: 20px;
         }
-
-        h1 {
-            text-align: center;
-            color: #6a11cb;
-            font-size: 1.8rem;
-            margin-bottom: 20px;
-        }
-
-        label {
-            font-size: 1rem;
-            margin-bottom: 8px;
-            display: block;
-        }
-
-        input[type="text"] {
-            width: 100%;
-            padding: 12px;
-            font-size: 1rem;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            margin-bottom: 20px;
-            box-sizing: border-box;
-        }
-
-        input[type="text"]:focus {
-            border-color: #6a11cb;
-            outline: none;
-        }
-
-        input[type="submit"] {
-            background-color: #6a11cb;
-            color: #fff;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 5px;
-            font-size: 1rem;
-            cursor: pointer;
-            transition: background 0.3s ease;
-            width: 100%;
-        }
-
-        input[type="submit"]:hover {
-            background-color: #2575fc;
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            .form-container {
-                width: 90%;
-                padding: 20px;
-            }
-        }
-    </style>
+    }
+</style>
 </head>
 <body class="g-sidenav-show  bg-gray-100">
   <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2" id="sidenav-main">

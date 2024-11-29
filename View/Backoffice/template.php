@@ -59,9 +59,7 @@
     </div>
   </aside>
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-    <!-- Navbar -->
-    
-    <!-- End Navbar -->
+   
     <div class="container-fluid py-4">
       <div class="row min-vh-80 h-100">
         <div class="col-12">
@@ -85,15 +83,15 @@
             <i class="material-icons">clear</i>
           </button>
         </div>
-        <!-- End Toggle Button -->
+       
       </div>
       <hr class="horizontal dark my-1">
       <div class="card-body pt-sm-3 pt-0">
-        <!-- Sidebar Backgrounds -->
+       
         <div>
           <h6 class="mb-0">Sidebar Colors</h6>
         </div>
-        <!-- Sidenav Type -->
+       
         <div class="mt-3">
           <h6 class="mb-0">Sidenav Type</h6>
           <p class="text-sm">Choose between 2 different sidenav types.</p>
@@ -104,7 +102,7 @@
           <button class="btn bg-gradient-dark px-3 mb-2 ms-2" data-class="bg-white" onclick="sidebarType(this)">White</button>
         </div>
         <p class="text-sm d-xl-none d-block mt-2">You can change the sidenav type just on desktop view.</p>
-        <!-- Navbar Fixed -->
+       
         <hr class="horizontal dark my-3">
         <div class="mt-2 d-flex">
           <h6 class="mb-0">Light / Dark</h6>
@@ -116,7 +114,7 @@
       </div>
     </div>
   </div>
-  <!--   Core JS Files   -->
+  
   <script src="./assets/js/core/popper.min.js"></script>
   <script src="./assets/js/core/bootstrap.min.js"></script>
   <script src="./assets/js/plugins/perfect-scrollbar.min.js"></script>
@@ -130,9 +128,8 @@
       Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
   </script>
-  <!-- Github buttons -->
+  
   <script async defer src="https://buttons.github.io/buttons.js"></script>
-  <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
   <script src="./assets/js/material-dashboard.min.js?v=3.0.0"></script>
 </body>
 

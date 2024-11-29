@@ -2,14 +2,49 @@
 include_once './../../Controller/ProduitController.php';
 $produitcontroller = new ProduitController();
 
-// Récupérer l'ID de la catégorie sélectionnée via GET
+
 $categorieId = isset($_GET['categorie']) ? intval($_GET['categorie']) : null;
 
-// Récupérer les produits : filtrés si une catégorie est sélectionnée, sinon tous les produits
-$liste = $categorieId ? $produitcontroller->listeProduit($categorieId) : $produitcontroller->listeProduit();
+$searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
 
-// Récupérer les catégories pour le filtre
+
+$liste = $categorieId ? $produitcontroller->listeProduit($categorieId, $searchTerm) : $produitcontroller->listeProduit(null, $searchTerm);
+
+
+
 $categories = $produitcontroller->getAllCategories();
+
+session_start(); 
+
+
+if (isset($_GET['action']) && $_GET['action'] === 'viderPanier') {
+ 
+  unset($_SESSION['panier']);
+
+  header('Location: index.php');
+  exit();
+}
+
+
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_produit']) && isset($_POST['quantite'])) {
+   
+    $id_produit = $_POST['id_produit'];
+    $quantite = $_POST['quantite'];
+
+    
+    if (!isset($_SESSION['panier'])) {
+        $_SESSION['panier'] = [];
+    }
+
+   
+    if (isset($_SESSION['panier'][$id_produit])) {
+        $_SESSION['panier'][$id_produit] += $quantite; 
+    } else {
+        
+        $_SESSION['panier'][$id_produit] = $quantite;
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -34,6 +69,7 @@ $categories = $produitcontroller->getAllCategories();
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
     <style>
   .filter-form {
@@ -130,8 +166,31 @@ $categories = $produitcontroller->getAllCategories();
     object-fit: contain; /* Ensures the image stays within bounds without cutting off content */
     border-radius: 8px; 
   }
+  /* Style personnalisé pour réduire la taille de l'espace de saisie */
+#search {
+    border-radius: 15px;  /* Coins arrondis */
+    padding-left: 30px;  /* Décalage pour l'icône */
+    font-size: 14px;  /* Taille du texte dans le champ de recherche */
+    height: 35px;  /* Réduire la hauteur du champ */
+    width: 200px;  /* Largeur plus petite */
+}
+
+/* Supprimer le fond bleu sur l'icône de recherche */
+.input-group-text {
+    background-color: transparent;  /* Retirer la couleur de fond */
+    color: #333;  /* Icône noire ou grise */
+    border: 1px solid #ccc;  /* Ajouter une bordure gris clair */
+}
+
+/* Ajout d'une bordure fine autour de l'input sans l'icône */
+.input-group .form-control {
+    border-left: none;  /* Retirer la bordure gauche pour éviter la double bordure */
+    border: 1px solid #ccc;  /* Bordure grise autour du champ de texte */
+}
+
+
 </style>
-      
+
   </head>
   <body>
 
@@ -186,21 +245,68 @@ $categories = $produitcontroller->getAllCategories();
       </div>
     </div>
 
-    <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasCart">
-      <div class="offcanvas-header justify-content-center">
-        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-      </div>
-      <div class="offcanvas-body">
-        <div class="order-md-last">
-          <h4 class="d-flex justify-content-between align-items-center mb-3">
-            <span class="text-primary">Votre Panier</span>
-          </h4>
-        
-  
-          <button class="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button>
-        </div>
-      </div>
+
+<div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasCart">
+  <div class="offcanvas-header justify-content-center">
+    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+  </div>
+  <div class="offcanvas-body">
+    <h4 class="d-flex justify-content-between align-items-center mb-3">
+      <span class="text-primary">Votre Panier</span>
+    </h4>
+
+   
+    <div id="cart-items">
+    <?php
+    $total = 0; 
+   
+    if (!empty($_SESSION['panier'])) {
+        foreach ($_SESSION['panier'] as $id_produit => $quantite) {
+           
+            $produit = array_filter($liste, fn($item) => $item['id_produit'] == $id_produit);
+            $produit = reset($produit); 
+            if ($produit) {
+                
+                $prixTotal = $produit['prix'] * $quantite;
+                $total += $prixTotal; 
+                echo "
+                <div class='d-flex justify-content-between align-items-center mb-2'>
+                    <img src='../Backoffice/{$produit['image_produit']}' alt='{$produit['nom_produit']}' style='width: 50px; height: auto; margin-right: 10px;'>
+                    <span>{$produit['nom_produit']}</span>
+                    <span>Quantité: $quantite</span>
+                    <span>\${$prixTotal}</span>
+                </div>";
+            }
+        }
+    } else {
+        echo "<p>Votre panier est vide.</p>";
+    }
+    ?>
     </div>
+
+  
+    <?php if (!empty($_SESSION['panier'])): ?>
+        <div class="d-flex justify-content-between align-items-center mt-3">
+            <span>Total :</span>
+            <strong>$<?= number_format($total, 2) ?></strong>
+        </div>
+        <div class="mt-3">
+    <a href="index.php?action=viderPanier" class="btn btn-danger w-100 d-flex align-items-center justify-content-center p-3 rounded-3 shadow-sm"
+       style="transition: background-color 0.3s ease, transform 0.3s ease;">
+        <i class="bi bi-trash3-fill me-2" style="font-size: 20px;"></i> Vider le Panier
+    </a>
+</div>
+    <?php endif; ?>
+    
+    <?php if (!empty($_SESSION['panier'])): ?>
+        <button class="w-100 btn btn-primary btn-lg mt-3">Continue to checkout</button>
+    <?php endif; ?>
+  </div>
+</div>
+
+
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
     
     <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar">
 
@@ -383,17 +489,17 @@ $categories = $produitcontroller->getAllCategories();
       <div class="col-md-12">
         <div class="category-carousel swiper">
           <div class="swiper-wrapper">
-            <!-- Fruits et Légumes -->
+         
             <a href="?categorie=1" class="nav-link swiper-slide text-center">
               <img src="images/category-thumb-1.jpg" class="rounded-circle" alt="Fruits & Légumes">
               <h4 class="fs-6 mt-3 fw-normal category-title">Fruits & Légumes</h4>
             </a>
-            <!-- Viandes -->
+            
             <a href="?categorie=3" class="nav-link swiper-slide text-center">
               <img src="images/category-thumb-5.jpg" class="rounded-circle" alt="Viandes">
               <h4 class="fs-6 mt-3 fw-normal category-title">Viandes</h4>
             </a>
-            <!-- Produits Laitiers -->
+            
             <a href="?categorie=2" class="nav-link swiper-slide text-center">
               <img src="images/category-thumb-7.jpg" class="rounded-circle" alt="Produits Laitiers">
               <h4 class="fs-6 mt-3 fw-normal category-title">Produits Laitiers</h4>
@@ -411,7 +517,7 @@ $categories = $produitcontroller->getAllCategories();
   <div class="container-lg">
     <div class="row">
       <div class="col-md-12">
-        <!-- En-tête de la section -->
+       
         <div class="section-header d-flex flex-wrap justify-content-between my-4">
         <div class="row mt-5">
       <div class="col-md-12">
@@ -446,11 +552,23 @@ $categories = $produitcontroller->getAllCategories();
             </option>
         <?php } ?>
     </select>
+
+
+    <div class="input-group mx-2">
+        <span class="input-group-text" id="basic-addon1">
+            <i class="fa fa-search" aria-hidden="true"></i>
+        </span>
+        <input type="text" name="search" id="search" class="form-control" placeholder="Rechercher un produit..." value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>" />
+    </div>
+
     <button type="submit" class="btn btn-primary">Filtrer</button>
 </form>
+
+
+
     <div class="row">
       <div class="col-md-12">
-        <!-- Grille des produits -->
+        
         <div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5">
         <?php if (!empty($liste)) { ?>
     <?php foreach ($liste as $produit): ?>
@@ -473,12 +591,17 @@ $categories = $produitcontroller->getAllCategories();
                         <span class="text-muted small">Quantité : <strong><?= htmlspecialchars($produit['quantite_produit']) ?></strong></span>
                         <span class="text-muted small">Stock : <strong><?= htmlspecialchars($produit['stock_produit']) ?></strong></span>
                     </div>
-                    <!-- Optional: Display product description on the main page (if desired) -->
-                    <p class="text-muted small"><?= htmlspecialchars($produit['description_produit']) ?></p>
+                   
+                    <form method="POST" action="index.php" class="add-to-cart-form">
+                        <input type="hidden" name="id_produit" value="<?= $produit['id_produit'] ?>" />
+                        <label for="quantite">Quantité:</label>
+                        <input type="number" name="quantite" min="1" max="<?= $produit['quantite_produit'] ?>" value="1" class="form-control mb-2" style="width: 80px; display: inline-block;">
+                        <button type="submit" class="btn btn-primary">Ajouter au Panier</button>
+                    </form>
                 </div>
             </div>
 
-            <!-- Modal -->
+          
             <div class="modal fade" id="productModal<?= $produit['id_produit'] ?>" tabindex="-1" aria-labelledby="productModalLabel<?= $produit['id_produit'] ?>" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered">
                     <div class="modal-content">
@@ -494,18 +617,21 @@ $categories = $produitcontroller->getAllCategories();
                                 <p><strong>Prix :</strong> $<?= htmlspecialchars($produit['prix']) ?></p>
                                 <p><strong>Stock :</strong> <?= htmlspecialchars($produit['stock_produit']) ?></p>
                                 <p><strong>Quantité disponible :</strong> <?= htmlspecialchars($produit['quantite_produit']) ?></p>
-                                <!-- Display product description in modal -->
                                 <p><strong>Description :</strong> <?= nl2br(htmlspecialchars($produit['description_produit'])) ?></p>
                             </div>
                         </div>
                         <div class="modal-footer">
-                            <div class="d-flex align-items-center gap-2">
-                                <input type="number" name="quantity" class="form-control border-dark-subtle input-number quantity" min="1" max="<?= htmlspecialchars($produit['quantite_produit']) ?>" value="1" style="width: 60px;">
-                                <a href="#" class="btn btn-primary rounded-1 p-2 fs-7 btn-cart">
-                                    <svg width="18" height="18"><use xlink:href="#cart"></use></svg> Add to Cart
-                                </a>
-                            </div>
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                            
+                            <form method="POST" action="index.php" class="add-to-cart-form">
+                                <input type="hidden" name="id_produit" value="<?= $produit['id_produit'] ?>" />
+                                <div class="d-flex align-items-center gap-2">
+                                    <input type="number" name="quantite" class="form-control border-dark-subtle input-number quantity" min="1" max="<?= htmlspecialchars($produit['quantite_produit']) ?>" value="1" style="width: 80px; display: inline-block;">
+                                    <button type="submit" class="btn btn-primary rounded-1 p-2 fs-7">
+                                        Ajouter au Panier
+                                    </button>
+                                </div>
+                            </form>
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Fermer</button>
                         </div>
                     </div>
                 </div>
@@ -518,13 +644,14 @@ $categories = $produitcontroller->getAllCategories();
 
 
 
+
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Icônes SVG pour le panier et le cœur -->
+
 <svg style="display: none;">
   <symbol id="cart" viewBox="0 0 24 24">
     <path fill="currentColor" d="M7 18c1.1 0 1.99.9 1.99 2S8.1 22 7 22s-2-.9-2-2 .9-2 2-2zm10 0c1.1 0 1.99.9 1.99 2s-.89 2-1.99 2-2-.9-2-2 .9-2 2-2zM7.82 6l1.38 6h8.43l1.47-6H7.82zM6.16 4h12.41c.48 0 .91.34.98.82L21 10H8l-.93-4H2V4h4.16z"/>
@@ -563,7 +690,7 @@ $categories = $produitcontroller->getAllCategories();
               </div>
 
             </div>
-            <!-- / Banner Blocks -->
+            
               
           </div>
         </div>

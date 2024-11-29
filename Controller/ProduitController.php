@@ -3,31 +3,54 @@ include_once(__DIR__ . '/../config.php');
 
 class ProduitController {
   
-    public function listeProduit($id_categorie = null) {
+    public function listeProduit($id_categorie = null, $searchTerm = '') {
         $sql = "SELECT p.*, c.nom_categorie
                 FROM gerer_p p
                 LEFT JOIN gerer_categorie c ON p.categorie = c.id_categorie";
-    
+        
+       
+        $conditions = [];
+        
+      
         if ($id_categorie) {
-            $sql .= " WHERE p.categorie = :id_categorie";
+            $conditions[] = "p.categorie = :id_categorie";
         }
     
+      
+        if ($searchTerm) {
+            $conditions[] = "p.nom_produit LIKE :searchTerm";
+        }
+    
+        
+        if (!empty($conditions)) {
+            $sql .= " WHERE " . implode(" AND ", $conditions);
+        }
+    
+       
         $db = config::getConnexion();
         try {
             $query = $db->prepare($sql);
-    
+            
+           
             if ($id_categorie) {
                 $query->bindValue(':id_categorie', $id_categorie, PDO::PARAM_INT);
             }
+            if ($searchTerm) {
+                $query->bindValue(':searchTerm', "%$searchTerm%", PDO::PARAM_STR);  
+            }
     
+
             $query->execute();
-            return $query->fetchAll(PDO::FETCH_ASSOC); // Retourne les données sous forme associative
+            
+
+            return $query->fetchAll(PDO::FETCH_ASSOC);
         } catch (PDOException $e) {
-            // Afficher ou journaliser l'erreur
+  
             error_log("Erreur dans listeProduit : " . $e->getMessage());
             die("Erreur lors de la récupération des produits.");
         }
     }
+    
     
     public function getAllCategories() {
         $sql = "SELECT * FROM gerer_categorie";
@@ -36,7 +59,7 @@ class ProduitController {
         try {
             $query = $db->prepare($sql);
             $query->execute();
-            return $query->fetchAll(PDO::FETCH_ASSOC); // Récupérer toutes les catégories
+            return $query->fetchAll(PDO::FETCH_ASSOC); 
         } catch (PDOException $e) {
             error_log("Erreur lors de la récupération des catégories : " . $e->getMessage());
             die("Erreur lors de la récupération des catégories.");

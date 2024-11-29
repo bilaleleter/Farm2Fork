@@ -45,7 +45,7 @@ class CategorieController {
         try {
             $query = $pdo->prepare($sql);
             $query->execute();
-            return $query->fetchAll(); // Récupère toutes les catégories
+            return $query->fetchAll(); 
         } catch (Exception $e) {
             die('Erreur: ' . $e->getMessage());
         }

@@ -20,7 +20,7 @@ include '../../Model/Produit.php';
 
 $produit = null;
 $produitcontroller = new ProduitController();
-$categories = $produitcontroller->getAllCategories();  // Récupérer toutes les catégories depuis la base de données
+$categories = $produitcontroller->getAllCategories();  
 
 if (isset($_POST['nom_produit']) && isset($_FILES['image_produit']) 
     && isset($_POST['description_produit']) && isset($_POST['prix']) 
@@ -87,132 +87,128 @@ if (isset($_POST['nom_produit']) && isset($_FILES['image_produit'])
   <!-- CSS Files -->
   <link id="pagestyle" href="./assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
   <style>
-   
     body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      padding: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 110vh;
-    }
+    font-family: Arial, sans-serif;
+    background: linear-gradient(to bottom, #194d33, #88b097); /* Gradient from vert sapin to soft green */
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 110vh;
+}
 
-    h1 {
-      text-align: center;
-      color: #333;
-      margin-bottom: 5px;
-    }
+h1 {
+    text-align: center;
+    color: #194d33; /* Vert sapin foncé */
+    margin-bottom: 5px;
+}
 
-   
-    form {
-      background-color: #fff;
-      padding: 30px;
-      border-radius: 8px;
-      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-      width: 100%;
-      max-width: 600px;
-      box-sizing: border-box;
-    }
-
-  
+form {
+    background-color: #ffffff;
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+}
     label {
-      font-size: 16px;
-      color: #333;
-      margin-bottom: 8px;
-      display: block;
+        font-size: 16px;
+        color: #194d33; /* Vert sapin foncé */
+        margin-bottom: 8px;
+        display: block;
     }
 
-   
     input[type="text"], input[type="number"], input[type="file"], textarea {
-      width: 100%;
-      padding: 10px;
-      margin-bottom: 20px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      box-sizing: border-box;
-      font-size: 14px;
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #88b097; /* Vert doux */
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 14px;
     }
 
     input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
-      border-color: #0056b3;
-      outline: none;
+        border-color: #194d33; /* Vert sapin foncé */
+        outline: none;
     }
 
     textarea {
-      height: 100px;
-      resize: vertical;
+        height: 100px;
+        resize: vertical;
     }
+
     input[type="submit"] {
-      background-color: #0056b3;
-      color: #fff;
-      padding: 12px 20px;
-      border: none;
-      border-radius: 4px;
-      font-size: 16px;
-      cursor: pointer;
-      width: 100%;
-      transition: background-color 0.3s;
+        background-color: #194d33; /* Vert sapin foncé */
+        color: #ffffff;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        width: 100%;
+        transition: background-color 0.3s;
     }
 
     input[type="submit"]:hover {
-      background-color: #003d80;
+        background-color: #145a40; /* Vert encore plus foncé */
     }
 
-    
     br {
-      line-height: 20px;
+        line-height: 20px;
     }
 
-     label[for="categorie"] {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 8px;
-            display: block;
-            color: #444;
-        }
+    label[for="categorie"] {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 8px;
+        display: block;
+        color: #194d33; /* Vert sapin foncé */
+    }
 
-        /* Style de base pour le select */
-        select#categorie {
-            width: 100%; /* Adapte la largeur */
-            max-width: 400px; /* Limite la largeur à 400px */
-            padding: 10px; /* Espacement interne */
-            border: 1px solid #ccc; /* Bordure */
-            border-radius: 5px; /* Coins arrondis */
-            background-color: #fff; /* Couleur de fond */
-            font-size: 16px; /* Taille de police */
-            color: #333; /* Couleur du texte */
-            cursor: pointer; /* Curseur "main" */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre légère */
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
+    /* Style de base pour le select */
+    select#categorie {
+        width: 100%;
+        max-width: 400px;
+        padding: 10px;
+        border: 1px solid #88b097; /* Vert doux */
+        border-radius: 5px;
+        background-color: #ffffff; /* Fond blanc */
+        font-size: 16px;
+        color: #194d33; /* Vert sapin foncé */
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
 
-        /* Style au survol */
-        select#categorie:hover {
-            border-color: #888;
-        }
+    /* Style au survol */
+    select#categorie:hover {
+        border-color: #194d33; /* Vert sapin foncé */
+    }
 
-        /* Style au focus */
-        select#categorie:focus {
-            border-color: #555;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Augmente l'ombre au focus */
-            outline: none; /* Supprime le contour bleu par défaut */
-        }
+    /* Style au focus */
+    select#categorie:focus {
+        border-color: #145a40; /* Vert encore plus foncé */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        outline: none;
+    }
 
-        /* Style des options */
-        select#categorie option {
-            padding: 8px;
-            font-size: 16px;
-            background-color: #fff; /* Fond des options */
-            color: #333;
-        }
+    /* Style des options */
+    select#categorie option {
+        padding: 8px;
+        font-size: 16px;
+        background-color: #ffffff; /* Fond blanc */
+        color: #194d33; /* Texte vert sapin */
+    }
 
-        /* Placeholder (option par défaut) */
-        select#categorie option[value=""] {
-            color: #999; /* Texte en gris pour le placeholder */
-        }
-  </style>
+    /* Placeholder (option par défaut) */
+    select#categorie option[value=""] {
+        color: #88b097; /* Texte vert clair */
+    }
+</style>
+
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
@@ -298,9 +294,9 @@ if (isset($_POST['nom_produit']) && isset($_FILES['image_produit'])
   </div>
   
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-    <!-- Navbar -->
+
     
-    <!-- End Navbar -->
+    
     <div class="container-fluid py-4">
       <div class="row min-vh-80 h-100">
         <div class="col-12">
@@ -324,15 +320,15 @@ if (isset($_POST['nom_produit']) && isset($_FILES['image_produit'])
             <i class="material-icons">clear</i>
           </button>
         </div>
-        <!-- End Toggle Button -->
+      
       </div>
       <hr class="horizontal dark my-1">
       <div class="card-body pt-sm-3 pt-0">
-        <!-- Sidebar Backgrounds -->
+        
         <div>
           <h6 class="mb-0">Sidebar Colors</h6>
         </div>
-        <!-- Sidenav Type -->
+        
         <div class="mt-3">
           <h6 class="mb-0">Sidenav Type</h6>
           <p class="text-sm">Choose between 2 different sidenav types.</p>
@@ -346,7 +342,7 @@ if (isset($_POST['nom_produit']) && isset($_FILES['image_produit'])
       </div>
     </div>
   </div>
-  <!--   Core JS Files   -->
+  
   <script src="./assets/js/core/popper.min.js"></script>
   <script src="./assets/js/core/bootstrap.min.js"></script>
   <script src="./assets/js/plugins/perfect-scrollbar.min.js"></script>
@@ -360,9 +356,9 @@ if (isset($_POST['nom_produit']) && isset($_FILES['image_produit'])
       Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
   </script>
-  <!-- Github buttons -->
+ 
   <script async defer src="https://buttons.github.io/buttons.js"></script>
-  <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+  
   <script src="./assets/js/material-dashboard.min.js?v=3.0.0"></script>
 </body>
 

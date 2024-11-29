@@ -22,7 +22,7 @@ $produit = null;
 
 $produitcontroller = new ProduitController();
 
-$categories = $produitcontroller->getAllCategories();  // Récupérer toutes les catégories depuis la base de données
+$categories = $produitcontroller->getAllCategories();  
 
 if (isset($_POST["nom_produit"]) && isset($_POST["description_produit"]) && isset($_POST["prix"]) && isset($_POST["quantite_produit"]) && isset($_POST["stock_produit"])  && isset($_POST["categorie"])) {
     if (!empty($_POST["nom_produit"]) && !empty($_POST["description_produit"]) && !empty($_POST["prix"]) && !empty($_POST["quantite_produit"]) && !empty($_POST["stock_produit"]) && !empty($_POST["categorie"])) {
@@ -103,132 +103,134 @@ if (isset($_POST['id_produit'])) {
   <!-- CSS Files -->
   <link id="pagestyle" href="./assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
   <style>
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
-            margin: 0;
-            padding: 0;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 130vh;
-        }
+       body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to bottom, #194d33, #88b097); /* Gradient applied to the body */
+        margin: 0;
+        padding: 0;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 130vh;
+    }
 
-        h1 {
-            text-align: center;
-            color: #333;
-            margin-bottom: 5px;
-        }
+h1 {
+    text-align: center;
+    color: #333;
+    margin-bottom: 5px;
+}
 
-        form {
-            background-color: #fff;
-            padding: 30px;
-            border-radius: 8px;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-            width: 100%;
-            max-width: 600px;
-            box-sizing: border-box;
-        }
+form {
+    background: linear-gradient(to bottom, #194d33, #88b097);
+    padding: 30px;
+    border-radius: 8px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    box-sizing: border-box;
+    color: #fff; /* Texte blanc pour contraste */
+}
 
-        label {
-            font-size: 16px;
-            color: #333;
-            margin-bottom: 8px;
-            display: block;
-        }
+label {
+    font-size: 16px;
+    color: #fff; /* Texte blanc pour s'accorder au fond */
+    margin-bottom: 8px;
+    display: block;
+}
 
-        input[type="text"], input[type="number"], input[type="file"], textarea {
-            width: 100%;
-            padding: 10px;
-            margin-bottom: 20px;
-            border: 1px solid #ddd;
-            border-radius: 4px;
-            box-sizing: border-box;
-            font-size: 14px;
-        }
+input[type="text"], input[type="number"], input[type="file"], textarea {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 20px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
 
-        input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
-            border-color: #0056b3;
-            outline: none;
-        }
+input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
+    border-color: #0056b3;
+    outline: none;
+}
 
-        textarea {
-            height: 100px;
-            resize: vertical;
-        }
+textarea {
+    height: 100px;
+    resize: vertical;
+}
 
-        input[type="submit"] {
-            background-color: #0056b3;
-            color: #fff;
-            padding: 12px 20px;
-            border: none;
-            border-radius: 4px;
-            font-size: 16px;
-            cursor: pointer;
-            width: 100%;
-            transition: background-color 0.3s;
-        }
+input[type="submit"] {
+    background-color: #0056b3;
+    color: #fff;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    width: 100%;
+    transition: background-color 0.3s;
+}
 
-        input[type="submit"]:hover {
-            background-color: #003d80;
-        }
+input[type="submit"]:hover {
+    background-color: #003d80;
+}
 
-        br {
-            line-height: 20px;
-        }
+br {
+    line-height: 20px;
+}
 
-        .current-image img {
-            max-width: 200px;
-            margin-bottom: 20px;
-        }
+.current-image img {
+    max-width: 200px;
+    margin-bottom: 20px;
+}
 
-        label[for="categorie"] {
-            font-size: 16px;
-            font-weight: bold;
-            margin-bottom: 8px;
-            display: block;
-            color: #444;
-        }
+label[for="categorie"] {
+    font-size: 16px;
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block;
+    color: #fff; /* Texte blanc pour cohérence */
+}
 
-        /* Style de base pour le select */
-        select#categorie {
-            width: 100%; /* Adapte la largeur */
-            max-width: 400px; /* Limite la largeur à 400px */
-            padding: 10px; /* Espacement interne */
-            border: 1px solid #ccc; /* Bordure */
-            border-radius: 5px; /* Coins arrondis */
-            background-color: #fff; /* Couleur de fond */
-            font-size: 16px; /* Taille de police */
-            color: #333; /* Couleur du texte */
-            cursor: pointer; /* Curseur "main" */
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre légère */
-            transition: border-color 0.3s ease, box-shadow 0.3s ease;
-        }
+/* Style de base pour le select */
+select#categorie {
+    width: 100%; /* Adapte la largeur */
+    max-width: 400px; /* Limite la largeur à 400px */
+    padding: 10px; /* Espacement interne */
+    border: 1px solid #ccc; /* Bordure */
+    border-radius: 5px; /* Coins arrondis */
+    background-color: #fff; /* Couleur de fond */
+    font-size: 16px; /* Taille de police */
+    color: #333; /* Couleur du texte */
+    cursor: pointer; /* Curseur "main" */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre légère */
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
 
-        /* Style au survol */
-        select#categorie:hover {
-            border-color: #888;
-        }
+/* Style au survol */
+select#categorie:hover {
+    border-color: #888;
+}
 
-        /* Style au focus */
-        select#categorie:focus {
-            border-color: #555;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Augmente l'ombre au focus */
-            outline: none; /* Supprime le contour bleu par défaut */
-        }
+/* Style au focus */
+select#categorie:focus {
+    border-color: #555;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Augmente l'ombre au focus */
+    outline: none; /* Supprime le contour bleu par défaut */
+}
 
-        /* Style des options */
-        select#categorie option {
-            padding: 8px;
-            font-size: 16px;
-            background-color: #fff; /* Fond des options */
-            color: #333;
-        }
+/* Style des options */
+select#categorie option {
+    padding: 8px;
+    font-size: 16px;
+    background-color: #fff; /* Fond des options */
+    color: #333;
+}
 
-        /* Placeholder (option par défaut) */
-        select#categorie option[value=""] {
-            color: #999; /* Texte en gris pour le placeholder */
-        }
+/* Placeholder (option par défaut) */
+select#categorie option[value=""] {
+    color: #999; /* Texte en gris pour le placeholder */
+}
+
     </style>
 </head>
 
@@ -329,9 +331,9 @@ if (isset($_POST['id_produit']) && $produit) {
 
     <script src="formulaireupdate.js"></script>
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
-    <!-- Navbar -->
     
-    <!-- End Navbar -->
+    
+   
     <div class="container-fluid py-4">
       <div class="row min-vh-80 h-100">
         <div class="col-12">
@@ -355,15 +357,15 @@ if (isset($_POST['id_produit']) && $produit) {
             <i class="material-icons">clear</i>
           </button>
         </div>
-        <!-- End Toggle Button -->
+       
       </div>
       <hr class="horizontal dark my-1">
       <div class="card-body pt-sm-3 pt-0">
-        <!-- Sidebar Backgrounds -->
+       
         <div>
           <h6 class="mb-0">Sidebar Colors</h6>
         </div>
-        <!-- Sidenav Type -->
+       
         <div class="mt-3">
           <h6 class="mb-0">Sidenav Type</h6>
           <p class="text-sm">Choose between 2 different sidenav types.</p>
@@ -374,7 +376,7 @@ if (isset($_POST['id_produit']) && $produit) {
           <button class="btn bg-gradient-dark px-3 mb-2 ms-2" data-class="bg-white" onclick="sidebarType(this)">White</button>
         </div>
         <p class="text-sm d-xl-none d-block mt-2">You can change the sidenav type just on desktop view.</p>
-        <!-- Navbar Fixed -->
+        
         <hr class="horizontal dark my-3">
         <div class="mt-2 d-flex">
           <h6 class="mb-0">Light / Dark</h6>
@@ -386,7 +388,7 @@ if (isset($_POST['id_produit']) && $produit) {
       </div>
     </div>
   </div>
-  <!--   Core JS Files   -->
+
   <script src="./assets/js/core/popper.min.js"></script>
   <script src="./assets/js/core/bootstrap.min.js"></script>
   <script src="./assets/js/plugins/perfect-scrollbar.min.js"></script>
@@ -400,9 +402,9 @@ if (isset($_POST['id_produit']) && $produit) {
       Scrollbar.init(document.querySelector('#sidenav-scrollbar'), options);
     }
   </script>
-  <!-- Github buttons -->
+
   <script async defer src="https://buttons.github.io/buttons.js"></script>
-  <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
+ 
   <script src="./assets/js/material-dashboard.min.js?v=3.0.0"></script>
 </body>
 

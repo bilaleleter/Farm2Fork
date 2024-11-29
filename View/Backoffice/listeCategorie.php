@@ -30,109 +30,110 @@ $listc = $categoriecontroller->afficherCategories();
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
   <!-- CSS Files -->
   <link id="pagestyle" href="./assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
-    <style>
-        /* Global styling */
-        body {
-            font-family: Arial, sans-serif;
-            background: linear-gradient(to right, #6a11cb, #2575fc);
-            color: #fff;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
+  <style>
+    /* Global styling */
+    body {
+        font-family: Arial, sans-serif;
+        background: linear-gradient(to right, #f4d03f, #f5b041); /* Yellow-sand gradient */
+        color: #fff;
+        margin: 0;
+        padding: 20px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
 
-        h1 {
-            margin-bottom: 20px;
-            font-size: 2rem;
-            text-align: center;
-            color: #ffdf70;
-        }
+    h1 {
+        margin-bottom: 20px;
+        font-size: 2rem;
+        text-align: center;
+        color: #d4ac0d; /* Sand-yellow for headings */
+    }
 
-        /* Table styling */
+    /* Table styling */
+    table {
+        width: 90%;
+        max-width: 800px;
+        margin: 0 auto;
+        border-collapse: collapse;
+        background-color: #fffbea; /* Light sand background */
+        color: #333;
+        border-radius: 8px;
+        overflow: hidden;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    th, td {
+        padding: 15px;
+        text-align: center;
+    }
+
+    th {
+        background-color: #f4d03f; /* Sand-yellow for table headers */
+        color: #fff;
+        text-transform: uppercase;
+        font-weight: bold;
+    }
+
+    td {
+        border-bottom: 1px solid #f7dc6f; /* Lighter yellow for borders */
+    }
+
+    tr:nth-child(even) {
+        background-color: #fef9e7; /* Very light sand for alternating rows */
+    }
+
+    tr:hover {
+        background-color: #fcf3cf; /* Highlight row on hover */
+    }
+
+    /* Button styles */
+    .btn {
+        text-decoration: none;
+        padding: 8px 15px;
+        border-radius: 5px;
+        font-size: 0.9rem;
+        font-weight: bold;
+        color: #fff;
+        transition: background 0.3s ease;
+        cursor: pointer;
+    }
+
+    .btn-danger {
+        background-color: #e74c3c;
+    }
+
+    .btn-danger:hover {
+        background-color: #c0392b;
+    }
+
+    .btn-warning {
+        background-color: #f39c12;
+    }
+
+    .btn-warning:hover {
+        background-color: #d35400;
+    }
+
+    .action-buttons {
+        display: flex;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    /* Responsive design */
+    @media (max-width: 768px) {
         table {
-            width: 90%;
-            max-width: 800px;
-            margin: 0 auto;
-            border-collapse: collapse;
-            background-color: #ffffff;
-            color: #333;
-            border-radius: 8px;
-            overflow: hidden;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            width: 100%;
         }
 
         th, td {
-            padding: 15px;
-            text-align: center;
-        }
-
-        th {
-            background-color: #6a11cb;
-            color: #fff;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        td {
-            border-bottom: 1px solid #ddd;
-        }
-
-        tr:nth-child(even) {
-            background-color: #f9f9f9;
-        }
-
-        tr:hover {
-            background-color: #f1f1f1;
-        }
-
-        /* Button styles */
-        .btn {
-            text-decoration: none;
-            padding: 8px 15px;
-            border-radius: 5px;
+            padding: 10px;
             font-size: 0.9rem;
-            font-weight: bold;
-            color: #fff;
-            transition: background 0.3s ease;
-            cursor: pointer;
         }
+    }
+</style>
 
-        .btn-danger {
-            background-color: #e74c3c;
-        }
-
-        .btn-danger:hover {
-            background-color: #c0392b;
-        }
-
-        .btn-warning {
-            background-color: #f39c12;
-        }
-
-        .btn-warning:hover {
-            background-color: #d35400;
-        }
-
-        .action-buttons {
-            display: flex;
-            justify-content: center;
-            gap: 10px;
-        }
-
-        /* Responsive design */
-        @media (max-width: 768px) {
-            table {
-                width: 100%;
-            }
-
-            th, td {
-                padding: 10px;
-                font-size: 0.9rem;
-            }
-        }
-    </style>
 </head>
 <body class="g-sidenav-show  bg-gray-100">
   <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2" id="sidenav-main">
