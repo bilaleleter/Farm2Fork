@@ -45,6 +45,36 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_produit']) && isse
         $_SESSION['panier'][$id_produit] = $quantite;
     }
 }
+
+$tri = isset($_GET['tri']) ? $_GET['tri'] : '';
+
+if ($tri === 'alphabet') {
+  usort($liste, fn($a, $b) => strcasecmp($a['nom_produit'], $b['nom_produit']));
+} else if ($tri === 'prix_asc') {
+    usort($liste, fn($a, $b) => $a['prix'] <=> $b['prix']);
+} else if ($tri === 'prix_desc') {
+    usort($liste, fn($a, $b) => $b['prix'] <=> $a['prix']);
+}
+
+if (!isset($_SESSION['favoris'])) {
+  $_SESSION['favoris'] = [];
+}
+
+// Gestion des actions sur les favoris
+if (isset($_GET['action']) && isset($_GET['id_produit'])) {
+  $id_produit = (int)$_GET['id_produit'];
+
+  if ($_GET['action'] === 'add_favoris') {
+      // Ajouter aux favoris si pas déjà présent
+      if (!in_array($id_produit, $_SESSION['favoris'])) {
+          $_SESSION['favoris'][] = $id_produit;
+      }
+  } elseif ($_GET['action'] === 'remove_favoris') {
+      // Retirer des favoris
+      $_SESSION['favoris'] = array_filter($_SESSION['favoris'], fn($id) => $id != $id_produit);
+  }
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -305,6 +335,37 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_produit']) && isse
 </div>
 
 
+
+<div class="offcanvas offcanvas-end" tabindex="-1" id="offcanvasFavoris">
+    <div class="offcanvas-header justify-content-center">
+        <h4>Favoris</h4>
+        <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
+    </div>
+    <div class="offcanvas-body">
+        <?php if (!empty($_SESSION['favoris'])): ?>
+            <?php foreach ($_SESSION['favoris'] as $id_favori): ?>
+                <?php 
+                $produit = array_filter($liste, fn($item) => $item['id_produit'] == $id_favori); 
+                $produit = reset($produit); 
+                ?>
+                <?php if ($produit): ?>
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <img src="../Backoffice/<?= htmlspecialchars($produit['image_produit']) ?>" alt="<?= htmlspecialchars($produit['nom_produit']) ?>" 
+                             style="width: 50px; height: auto;">
+                        <span><?= htmlspecialchars($produit['nom_produit']) ?></span>
+                        <a href="index.php?action=remove_favoris&id_produit=<?= $produit['id_produit'] ?>" 
+                           class="btn btn-sm btn-danger">
+                            Retirer
+                        </a>
+                    </div>
+                <?php endif; ?>
+            <?php endforeach; ?>
+        <?php else: ?>
+            <p class="text-muted">Aucun produit dans vos favoris.</p>
+        <?php endif; ?>
+    </div>
+</div>
+
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js"></script>
     
@@ -372,10 +433,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_produit']) && isse
         </a>
       </li>
       <li>
-        <a href="#" class="p-2 mx-1">
-          <svg width="24" height="24"><use xlink:href="#wishlist"></use></svg>
-        </a>
-      </li>
+      <a href="#" class="p-2 mx-1 text-dark" data-bs-toggle="offcanvas" data-bs-target="#offcanvasFavoris" aria-controls="offcanvasFavoris" style="text-decoration: none;">
+    <svg width="24" height="24" style="fill: black;"><use xlink:href="#wishlist"></use></svg>
+</a>
+    </li>
       <li>
         <a href="#" class="p-2 mx-1" data-bs-toggle="offcanvas" data-bs-target="#offcanvasCart" aria-controls="offcanvasCart">
           <svg width="24" height="24"><use xlink:href="#shopping-bag"></use></svg>
@@ -564,6 +625,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_produit']) && isse
     <button type="submit" class="btn btn-primary">Filtrer</button>
 </form>
 
+<form method="GET" action="index.php" class="d-flex align-items-center justify-content-end gap-3 mb-4 p-2 rounded shadow-sm" style="background-color: #f8f9fa; border: 1px solid #dee2e6;">
+    <label for="tri" class="form-label mb-0 fw-bold text-secondary">Trier par :</label>
+    <select name="tri" id="tri" class="form-select form-select-sm w-auto" onchange="this.form.submit()" style="border-color: #ced4da;">
+        <option value=""></option>
+        <option value="alphabet" <?= ($tri === 'alphabet') ? 'selected' : '' ?>>Nom (A-Z)</option>
+        <option value="prix_asc" <?= ($tri === 'prix_asc') ? 'selected' : '' ?>>Prix (croissant)</option>
+        <option value="prix_desc" <?= ($tri === 'prix_desc') ? 'selected' : '' ?>>Prix (décroissant)</option>
+    </select>
+</form>
 
 
     <div class="row">
@@ -592,6 +662,14 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_produit']) && isse
                         <span class="text-muted small">Stock : <strong><?= htmlspecialchars($produit['stock_produit']) ?></strong></span>
                     </div>
                    
+                    <a href="index.php?action=<?= in_array($produit['id_produit'], $_SESSION['favoris']) ? 'remove_favoris' : 'add_favoris' ?>&id_produit=<?= $produit['id_produit'] ?>" 
+                   class="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center gap-1">
+                    <svg class="icon" width="18" height="18">
+                        <use xlink:href="#wishlist"></use>
+                    </svg>
+                    <?= in_array($produit['id_produit'], $_SESSION['favoris']) ? 'Retirer' : 'Favoris' ?>
+                </a>
+
                     <form method="POST" action="index.php" class="add-to-cart-form">
                         <input type="hidden" name="id_produit" value="<?= $produit['id_produit'] ?>" />
                         <label for="quantite">Quantité:</label>
@@ -621,7 +699,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['id_produit']) && isse
                             </div>
                         </div>
                         <div class="modal-footer">
-                            
+                        <a href="index.php?action=<?= in_array($produit['id_produit'], $_SESSION['favoris']) ? 'remove_favoris' : 'add_favoris' ?>&id_produit=<?= $produit['id_produit'] ?>" 
+                   class="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center gap-1">
+                    <svg class="icon" width="18" height="18">
+                        <use xlink:href="#wishlist"></use>
+                    </svg>
+                    <?= in_array($produit['id_produit'], $_SESSION['favoris']) ? 'Retirer' : 'Favoris' ?>
+                </a>
                             <form method="POST" action="index.php" class="add-to-cart-form">
                                 <input type="hidden" name="id_produit" value="<?= $produit['id_produit'] ?>" />
                                 <div class="d-flex align-items-center gap-2">

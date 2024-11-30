@@ -103,135 +103,128 @@ if (isset($_POST['id_produit'])) {
   <!-- CSS Files -->
   <link id="pagestyle" href="./assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
   <style>
-       body {
+    body {
         font-family: Arial, sans-serif;
-        background: linear-gradient(to bottom, #194d33, #88b097); /* Gradient applied to the body */
+        background-color: #e6f2e6; /* Vert très clair */
         margin: 0;
         padding: 0;
         display: flex;
         justify-content: center;
         align-items: center;
-        height: 130vh;
+        height: 110vh;
     }
 
-h1 {
-    text-align: center;
-    color: #333;
-    margin-bottom: 5px;
-}
+    h1 {
+        text-align: center;
+        color: #194d33; /* Vert sapin foncé */
+        margin-bottom: 5px;
+    }
 
-form {
-    background: linear-gradient(to bottom, #194d33, #88b097);
-    padding: 30px;
-    border-radius: 8px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-    width: 100%;
-    max-width: 600px;
-    box-sizing: border-box;
-    color: #fff; /* Texte blanc pour contraste */
-}
+    form {
+        background-color: #ffffff;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        width: 100%;
+        max-width: 600px;
+        box-sizing: border-box;
+    }
 
-label {
-    font-size: 16px;
-    color: #fff; /* Texte blanc pour s'accorder au fond */
-    margin-bottom: 8px;
-    display: block;
-}
+    label {
+        font-size: 16px;
+        color: #194d33; /* Vert sapin foncé */
+        margin-bottom: 8px;
+        display: block;
+    }
 
-input[type="text"], input[type="number"], input[type="file"], textarea {
-    width: 100%;
-    padding: 10px;
-    margin-bottom: 20px;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    box-sizing: border-box;
-    font-size: 14px;
-}
+    input[type="text"], input[type="number"], input[type="file"], textarea {
+        width: 100%;
+        padding: 10px;
+        margin-bottom: 20px;
+        border: 1px solid #88b097; /* Vert doux */
+        border-radius: 4px;
+        box-sizing: border-box;
+        font-size: 14px;
+    }
 
-input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
-    border-color: #0056b3;
-    outline: none;
-}
+    input[type="text"]:focus, input[type="number"]:focus, textarea:focus {
+        border-color: #194d33; /* Vert sapin foncé */
+        outline: none;
+    }
 
-textarea {
-    height: 100px;
-    resize: vertical;
-}
+    textarea {
+        height: 100px;
+        resize: vertical;
+    }
 
-input[type="submit"] {
-    background-color: #0056b3;
-    color: #fff;
-    padding: 12px 20px;
-    border: none;
-    border-radius: 4px;
-    font-size: 16px;
-    cursor: pointer;
-    width: 100%;
-    transition: background-color 0.3s;
-}
+    input[type="submit"] {
+        background-color: #194d33; /* Vert sapin foncé */
+        color: #ffffff;
+        padding: 12px 20px;
+        border: none;
+        border-radius: 4px;
+        font-size: 16px;
+        cursor: pointer;
+        width: 100%;
+        transition: background-color 0.3s;
+    }
 
-input[type="submit"]:hover {
-    background-color: #003d80;
-}
+    input[type="submit"]:hover {
+        background-color: #145a40; /* Vert encore plus foncé */
+    }
 
-br {
-    line-height: 20px;
-}
+    br {
+        line-height: 20px;
+    }
 
-.current-image img {
-    max-width: 200px;
-    margin-bottom: 20px;
-}
+    label[for="categorie"] {
+        font-size: 16px;
+        font-weight: bold;
+        margin-bottom: 8px;
+        display: block;
+        color: #194d33; /* Vert sapin foncé */
+    }
 
-label[for="categorie"] {
-    font-size: 16px;
-    font-weight: bold;
-    margin-bottom: 8px;
-    display: block;
-    color: #fff; /* Texte blanc pour cohérence */
-}
+    /* Style de base pour le select */
+    select#categorie {
+        width: 100%;
+        max-width: 400px;
+        padding: 10px;
+        border: 1px solid #88b097; /* Vert doux */
+        border-radius: 5px;
+        background-color: #ffffff; /* Fond blanc */
+        font-size: 16px;
+        color: #194d33; /* Vert sapin foncé */
+        cursor: pointer;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        transition: border-color 0.3s ease, box-shadow 0.3s ease;
+    }
 
-/* Style de base pour le select */
-select#categorie {
-    width: 100%; /* Adapte la largeur */
-    max-width: 400px; /* Limite la largeur à 400px */
-    padding: 10px; /* Espacement interne */
-    border: 1px solid #ccc; /* Bordure */
-    border-radius: 5px; /* Coins arrondis */
-    background-color: #fff; /* Couleur de fond */
-    font-size: 16px; /* Taille de police */
-    color: #333; /* Couleur du texte */
-    cursor: pointer; /* Curseur "main" */
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); /* Ombre légère */
-    transition: border-color 0.3s ease, box-shadow 0.3s ease;
-}
+    /* Style au survol */
+    select#categorie:hover {
+        border-color: #194d33; /* Vert sapin foncé */
+    }
 
-/* Style au survol */
-select#categorie:hover {
-    border-color: #888;
-}
+    /* Style au focus */
+    select#categorie:focus {
+        border-color: #145a40; /* Vert encore plus foncé */
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        outline: none;
+    }
 
-/* Style au focus */
-select#categorie:focus {
-    border-color: #555;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Augmente l'ombre au focus */
-    outline: none; /* Supprime le contour bleu par défaut */
-}
+    /* Style des options */
+    select#categorie option {
+        padding: 8px;
+        font-size: 16px;
+        background-color: #ffffff; /* Fond blanc */
+        color: #194d33; /* Texte vert sapin */
+    }
 
-/* Style des options */
-select#categorie option {
-    padding: 8px;
-    font-size: 16px;
-    background-color: #fff; /* Fond des options */
-    color: #333;
-}
-
-/* Placeholder (option par défaut) */
-select#categorie option[value=""] {
-    color: #999; /* Texte en gris pour le placeholder */
-}
-
-    </style>
+    /* Placeholder (option par défaut) */
+    select#categorie option[value=""] {
+        color: #88b097; /* Texte vert clair */
+    }
+</style>
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
