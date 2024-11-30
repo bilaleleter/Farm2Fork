@@ -2,15 +2,22 @@
 
 session_start();
 
+if (!isset($_SESSION['email'])) {
+  $_SESSION = array();
+  session_destroy();
+  header("Location: ../../../FrontOffice/sign_in.php");
+  exit;
+}
+
 // Check if logout has been requested
 if (isset($_POST['logout'])) {
-    // Destroy the session
-    $_SESSION = array();
-    session_destroy();
+  // Destroy the session
+  $_SESSION = array();
+  session_destroy();
 
-    // Redirect to the login page
-    header("Location: ../../../FrontOffice/start_page.php");
-    exit;
+  // Redirect to the login page
+  header("Location: ../../../FrontOffice/start_page.php");
+  exit;
 }
 
 require_once '../../../../controllers/UserController.php';  // Adjust path as needed
@@ -109,9 +116,13 @@ $agriculteurs = $userController->getAgriculteurs();
           <div class="ms-md-auto pe-md-3 d-flex align-items-center">
             <div class="input-group input-group-outline">
               <label class="form-label">Search User</label>
-              <input type="text" class="form-control" />
+              <input type="text" class="form-control" id="user_search" />
+              <button onclick="performSearch()" class="btn btn-outline-primary"
+                style="border-left: 0px;">Search</button>
             </div>
           </div>
+
+
           <ul class="navbar-nav d-flex align-items-center justify-content-end">
             <li class="nav-item px-3 d-flex align-items-center">
               <a href="javascript:;" class="nav-link text-body p-0">
@@ -234,6 +245,9 @@ $agriculteurs = $userController->getAgriculteurs();
                   Agriculteur
                 </button>
               </li>
+              <!-- Place this in your HTML where it's visible above the tables -->
+              <div id="alertPlaceholder" style="padding: 0 1.5rem;"></div>
+
             </ul>
 
             <div class="tab-content" id="userTabContent">
@@ -259,12 +273,14 @@ $agriculteurs = $userController->getAgriculteurs();
                             <?= htmlspecialchars($user["nom_consomateur"]) . " " . htmlspecialchars($user["prenom_consomateur"]); ?>
                           </td>
                           <td><?= htmlspecialchars($user["email"]); ?></td>
-                          <td><?= htmlspecialchars($user["phone_number"]) . "(".htmlspecialchars($user['country'].")"); ?></td>
+                          <td>
+                            <?= htmlspecialchars($user["phone_number"]) . "(" . htmlspecialchars($user['country'] . ")"); ?>
+                          </td>
                           <td>
                             <form class="btn btn-success btn-sm">
                               <input type="hidden" name="user_id" value="<?= $user["user_id"]; ?>">
                               <button type="button" class="btn btn-success btn-sm edit-button" style="margin-bottom:0px;"
-                                 data-user-id="<?= $user['user_id']; ?>"
+                                data-user-id="<?= $user['user_id']; ?>"
                                 data-user-type="<?= $user['role_id']; ?>">Edit</button>
                             </form>
 
@@ -314,7 +330,7 @@ $agriculteurs = $userController->getAgriculteurs();
                             <form class="btn btn-success btn-sm">
                               <input type="hidden" name="user_id" value="<?= $user["user_id"]; ?>">
                               <button type="button" class="btn btn-success btn-sm edit-button" style="margin-bottom:0px;"
-                                 data-user-id="<?= $user['user_id']; ?>"
+                                data-user-id="<?= $user['user_id']; ?>"
                                 data-user-type="<?= $user['role_id']; ?>">Edit</button>
                             </form>
 
@@ -332,6 +348,7 @@ $agriculteurs = $userController->getAgriculteurs();
                             </form>
 
                           </td>
+                          
                         </tr>
                       <?php endforeach; ?>
                     </tbody>
@@ -599,17 +616,25 @@ $agriculteurs = $userController->getAgriculteurs();
   <!-- USER EDIT SCRIPT FORM-->
   <script>
     document.addEventListener("DOMContentLoaded", function () {
-      // Adding event listeners to all edit buttons
-      const editButtons = document.querySelectorAll('.edit-button');
-      editButtons.forEach(button => {
-        button.addEventListener('click', function () {
-          console.log("clicked on edit");
-          const userId = this.dataset.userId;
-          const userType = this.dataset.userType == 1 ? "Agriculteur" : "Consommateur";
-          console.log(userId, userType);
-          populateEditForm(userId, userType); // Function to populate the form based on user type
-        });
-      });
+  const userTabContent = document.getElementById('userTabContent');
+
+  // Event delegation for edit buttons
+  userTabContent.addEventListener('click', function (event) {
+    let target = event.target;
+    
+    // Traverse up to find the closest button if the clicked element isn't the button itself
+    while (target != this && !target.matches('.edit-button')) {
+      target = target.parentNode;
+    }
+
+    if (target.matches('.edit-button')) {
+      console.log("Edit button clicked: ", target);
+      const userId = target.getAttribute('data-user-id');
+      const userType = target.getAttribute('data-user-type') == 1 ? "Agriculteur" : "Consommateur";
+      console.log("User ID: ", userId, "User Type: ", userType);
+      populateEditForm(userId, userType); // Call your function to populate and show the modal form
+    }
+  });
 
       function populateEditForm(userId, userType) {
         console.log("inside populate edit form / user_id:", userId);
@@ -724,6 +749,167 @@ $agriculteurs = $userController->getAgriculteurs();
           .catch(error => console.error('Error loading user details:', error));
       }
     });
+
+  </script>
+  <!--USER SEARCH SCRIPT-->
+  <script>
+    function performSearch() {
+      const query = document.getElementById('user_search').value.trim();
+      let [searchType, searchTerm] = query.split(":");
+
+      if (searchType !== 'email' && searchType !== 'phone') {
+        displayAlert("Please enter a valid search query in the format 'email:example@mail.com' or 'phone:1234567890'", 'danger');
+        return;
+      }
+
+      searchTerm = searchTerm.trim();
+      fetch(`../../search_users.php?type=${searchType}&term=${encodeURIComponent(searchTerm)}`)
+        .then(response => response.json())
+        .then(data => {
+          if (data.error) {
+            console.log(data.error);
+            displayAlert(data.error, 'danger'); // Display error as an alert
+          } else {
+            updateTables(data);
+            if(data.length>0){
+              let userType = data[0].role_id == 1 ? "Agriculteur" : "Consommateur";
+              console.log("user type: ",userType);
+              setActiveTab(userType);
+            }
+          }
+        })
+        .catch(error => {
+          console.error('Error fetching data:', error);
+          displayAlert('Failed to fetch user data.', 'danger');
+        });
+    }
+    function updateTables(users) {
+      const consommateurTable = document.querySelector("#consommateur .table tbody");
+      const agriculteurTable = document.querySelector("#agriculteur .table tbody");
+
+      // Clear existing entries
+      consommateurTable.innerHTML = '';
+      agriculteurTable.innerHTML = '';
+
+      if (users.length === 0) {
+        displayAlert('No users found matching the search criteria.', 'warning');
+        return;
+      }
+
+      users.forEach(user => {
+        let userRow;
+        console.log("user fetched: ", user);
+        if (user.role_id === 1) { // Agriculteur
+          userRow = `
+                <tr>
+                    <td><img src="../assets/img/${user.profile_pic}" class="avatar avatar-sm me-3" alt="user">${user.farm_name}</td>
+                    <td>${user.farm_owner_name}</td>
+                    <td>${user.email}</td>
+                    <td>
+                            <form class="btn btn-success btn-sm">
+                              <input type="hidden" name="user_id" value="${user.user_id}">
+                              <button type="button" class="btn btn-success btn-sm edit-button" style="margin-bottom:0px;"
+                                data-user-id="${user.user_id}"
+                                data-user-type="${user.role_id}">Edit</button>
+                            </form>
+
+                            <form method="POST" action="../../ban_user.php" class="btn btn-warning btn-sm"
+                              onsubmit="return confirm('Are you sure you want to ban this user?');">
+                              <input type="hidden" name="user_id" value="${user.user_id}">
+                              <button type="submit" class="btn btn-warning btn-sm" style="margin-bottom:0px;">Ban</button>
+                            </form>
+
+                            <form method="POST" action="../../delete_user.php" class="btn btn-danger btn-sm"
+                              onsubmit="return confirm('Are you sure you want to delete this user?');">
+                              <input type="hidden" name="user_id" value="${user.user_id}">
+                              <button type="submit" class="btn btn-danger btn-sm"
+                                style="margin-bottom:0px;">Delete</button>
+                            </form>
+
+                          </td>
+                </tr>
+            `;
+          agriculteurTable.insertAdjacentHTML('beforeend', userRow);
+        } else if (user.role_id === 2) { // Consommateur
+          userRow = `
+                <tr>
+                    <td><img src="../assets/img/${user.profile_pic}" class="avatar avatar-sm me-3" alt="user">${user.nom_consomateur} ${user.prenom_consomateur}</td>
+                    <td>${user.email}</td>
+                    <td>${user.phone_number} (${user.country})</td>
+                    <td>
+                            <form class="btn btn-success btn-sm">
+                              <input type="hidden" name="user_id" value="${user.user_id}">
+                              <button type="button" class="btn btn-success btn-sm edit-button" style="margin-bottom:0px;"
+                                data-user-id="${user.user_id}"
+                                data-user-type="${user.role_id}">Edit</button>
+                            </form>
+
+                            <form method="POST" action="../../ban_user.php" class="btn btn-warning btn-sm"
+                              onsubmit="return confirm('Are you sure you want to ban this user?');">
+                              <input type="hidden" name="user_id" value="${user.user_id}">
+                              <button type="submit" class="btn btn-warning btn-sm" style="margin-bottom:0px;">Ban</button>
+                            </form>
+
+                            <form method="POST" action="../../delete_user.php" class="btn btn-danger btn-sm"
+                              onsubmit="return confirm('Are you sure you want to delete this user?');">
+                              <input type="hidden" name="user_id" value="${user.user_id}">
+                              <button type="submit" class="btn btn-danger btn-sm"
+                                style="margin-bottom:0px;">Delete</button>
+                            </form>
+
+                          </td>
+                </tr>
+            `;
+          consommateurTable.insertAdjacentHTML('beforeend', userRow);
+        }
+      });
+    }
+
+    function displayAlert(message, type) {
+      const alertBox = document.createElement('div');
+      alertBox.classList.add('alert', `alert-${type}`);
+      alertBox.innerHTML = `
+        ${message}
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close" style="display: flex; align-items-end; float:right;">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    `;
+
+
+
+      const container = document.querySelector('.card-body');
+      container.prepend(alertBox);
+
+      alertBox.querySelector('.close').addEventListener('click', function () {
+        alertBox.remove();
+      });
+
+
+    }
+
+    function setActiveTab(userType) {
+      const consommateurTab = document.getElementById('consommateur-tab');
+      const agriculteurTab = document.getElementById('agriculteur-tab');
+      const consommateurPane = document.getElementById('consommateur');
+      const agriculteurPane = document.getElementById('agriculteur');
+
+      // Reset all tabs to inactive
+      consommateurTab.classList.remove('active');
+      agriculteurTab.classList.remove('active');
+      consommateurPane.classList.remove('show', 'active');
+      agriculteurPane.classList.remove('show', 'active');
+
+      // Set the appropriate tab and pane active
+      if (userType === 'Consommateur') {
+        consommateurTab.classList.add('active');
+        consommateurPane.classList.add('show', 'active');
+      } else if (userType === 'Agriculteur') {
+        agriculteurTab.classList.add('active');
+        agriculteurPane.classList.add('show', 'active');
+      }
+    }
+
+
 
   </script>
 </body>

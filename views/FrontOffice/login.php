@@ -23,6 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if (password_verify($password, $user_password)) {
             $_SESSION['user_id'] = $user['user_id'];
             $_SESSION['role'] = $user['role_id'];
+            $_SESSION['email'] = $user['email'];
             $_SESSION['logged_in'] = true;
             $user_role  = $user['role_id'];
             $redirectUrl = match ($user_role) {

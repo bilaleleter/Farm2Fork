@@ -57,6 +57,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($result == true) {
         $_SESSION['user_id'] = $controller->getLastInsertId();
         $_SESSION['role'] = $role;
+        $_SESSION['email'] = $user['email'];
         $_SESSION['logged_in'] = true;
 
         $redirectUrl = match ($role) {

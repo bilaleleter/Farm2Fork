@@ -235,6 +235,28 @@ public function getAgriculteurs()
         return [];
     }
 }
+//search users
+// In UserController.php
+public function searchUsers($type, $term) {
+    $term = "%{$term}%"; // Prepare term for LIKE SQL query
+    try {
+        if ($type == 'email') {
+            $sql = "SELECT * FROM Utilisateur WHERE email LIKE :term";
+        } elseif ($type == 'phone') {
+            $sql = "SELECT * FROM Utilisateur WHERE phone_number LIKE :term";
+        } else {
+            return []; // Return empty if type is incorrect
+        }
+
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':term', $term);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Search error: " . $e->getMessage());
+        return [];
+    }
+}
 
     
     
