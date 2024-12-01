@@ -13,7 +13,6 @@ if (!isset($_SESSION['email'])) {
 if (isset($_POST['logout'])) {
   $_SESSION = array();
   session_destroy();
-
   header("Location: ../../../FrontOffice/start_page.php");
   exit;
 }
@@ -33,27 +32,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   $updatedUser->setCountry($user['country']);
   $updatedUser->setCity($user['city']);
   $updatedUser->setAddress($user['address']);
-  $updatedUser->setNomConsomateur($user['nom_consomateur']);
-  $updatedUser->setPrenomConsomateur($user['prenom_consomateur']);
-  $updatedUser->setGenre($user['genre']);
+  $updatedUser->setFarmName($user['farm_name']);
+  $updatedUser->setFarmOwnerName($user['farm_owner_name']);
+  $updatedUser->setFarmDescription($user['farm_description']);
   $updatedUser->setPassword($user['password']);
   $updatedUser->setRoleId($user['role_id']);
-  $updatedUser->setProfilePic($user['profile_pic']);//default
+  $updatedUser->setProfilePic($user['profile_pic']); //default
   // Handling profile update
   if (isset($_POST['updateProfile'])) {
-  $profile_pic = $_FILES['profile_pic'];
+    $profile_pic = $_FILES['profile_pic'];
 
     if (!empty($_POST['phone_number']) && $_POST['phone_number'] != $user['phone_number']) {
       $updatedUser->setPhoneNumber($_POST['phone_number']);
     }
-    if (!empty($_POST['firstName']) && $_POST['firstName'] != $user['nom_consomateur']) {
-      $updatedUser->setNomConsomateur($_POST['lastName']);
+    if (!empty($_POST['farmName']) && $_POST['farmName'] != $user['farm_name']) {
+      $updatedUser->setFarmName($_POST['farmName']);
     }
-    if (!empty($_POST['lastName']) && $_POST['lastName'] != $user['prenom_consomateur']) {
-      $updatedUser->setPrenomConsomateur($_POST['firstName']);
+    if (!empty($_POST['farmOwner']) && $_POST['farmOwner'] != $user['farm_owner_name']) {
+      $updatedUser->setFarmOwnerName($_POST['farmOwner']);
     }
     //pfp
-    if(!empty($profile_pic) && isset($profile_pic) && $profile_pic['error'] == UPLOAD_ERR_OK){
+    if (!empty($profile_pic) && isset($profile_pic) && $profile_pic['error'] == UPLOAD_ERR_OK) {
       $uploadDir = '../../../FrontOffice/assets/profile_pics/';
       $tmpName = $profile_pic['tmp_name'];
       $fileName = basename($profile_pic['name']);
@@ -67,25 +66,24 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $finalPath = $uploadDir . $newFileName;
 
         if (move_uploaded_file($tmpName, $finalPath)) {
-          $profile_pic = "assets/profile_pics/".$newFileName;
-          $updatedUser->setProfilePic($profile_pic);//default
+          $profile_pic = "assets/profile_pics/" . $newFileName;
+          $updatedUser->setProfilePic($profile_pic); //default
 
         } else {
           echo '<p>Failed to save file.</p>';
           exit();
-
         }
       } else {
         echo '<p>Invalid file type.</p>';
         exit();
       }
-  }
+    }
 
     // Perform update
     $result = $userController->updateUser($updatedUser, $user['user_id']);
     echo $result ? '<p>Profile updated successfully.</p>' : '<p>Failed to Update Profile.</p>';
     if ($result) {
-      header('Location: consomateur_profile.php');
+      header('Location: agriculteur_profile.php');
       exit;
     }
   }
@@ -105,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $result = $userController->updateUser($updatedUser, $user['user_id']);
         echo $result ? "<p>Password updated successfully.</p>" : "<p>Failed to update password.</p>";
         if ($result) {
-          header('Location: consomateur_profile.php');
+          header('Location: agriculteur_profile.php');
           exit;
         }
       } else {
@@ -123,13 +121,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           echo $result ? "<p>User update was successful</p>" : "<p>Update Email Fail</p>";
           if ($result) {
             $_SESSION['email'] = $newEmail;
-            header('Location: consomateur_profile.php');
+            header('Location: agriculteur_profile.php');
             exit;
           }
         }
       } else {
         echo "<p>New email can't be the same as the old one</p>";
-
       }
     }
   }
@@ -208,7 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <form method="post" name="SignOutForm" id="SignOutForm"></form>
     <div class="sidenav-footer position-absolute w-100 bottom-0">
       <div class="mx-3">
-        <a class="btn btn-outline-dark mt-4 w-100" href="consomateur_profile.php" type="button">Account</a>
+        <a class="btn btn-outline-dark mt-4 w-100" href="agriculteur_profile.php" type="button">Account</a>
         <button type="submit" class="btn bg-gradient-dark w-100" form="SignOutForm" name="logout">Sign out</button>
       </div>
     </div>
@@ -345,11 +342,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           <div class="col-auto my-auto">
             <div class="h-100">
               <h5 class="mb-1">
-                <?php echo htmlspecialchars($user['prenom_consomateur']); ?>
-
-                <?php echo htmlspecialchars($user['nom_consomateur']); ?>
+                <?php echo htmlspecialchars($user['farm_name']); ?>
               </h5>
-              <p class="mb-0 font-weight-normal text-sm">Consommateur</p>
+              <p class="mb-0 font-weight-normal text-sm">Agriculteur</p>
             </div>
           </div>
           <div class="col-lg-4 col-md-6 my-sm-auto ms-sm-auto me-sm-0 mx-auto mt-3">
@@ -374,12 +369,12 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                   <div class="col-xl-8">
                     <ul class="list-group">
                       <li class="list-group-item border-0 ps-0 pt-0 text-sm">
-                        <strong class="text-dark">First Name:</strong>
-                        <?php echo htmlspecialchars($user['prenom_consomateur']); ?>
+                        <strong class="text-dark">Farm Name:</strong>
+                        <?php echo htmlspecialchars($user['farm_name']); ?>
                       </li>
                       <li class="list-group-item border-0 ps-0 text-sm">
-                        <strong class="text-dark">Last Name:</strong>
-                        <?php echo htmlspecialchars($user['nom_consomateur']); ?>
+                        <strong class="text-dark">Farm Owner Name:</strong>
+                        <?php echo htmlspecialchars($user['farm_owner_name']); ?>
                       </li>
                       <li class="list-group-item border-0 ps-0 text-sm">
                         <strong class="text-dark">Email:</strong>
@@ -523,57 +518,57 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
   </script>
   <script>
-    function editProfile() {
+     function editProfile() {
       const profileInfo = `
-    <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
-          </div>
-          <div class="modal-body">
-            <form method="POST" name="updateProfileForm" id="updateProfileForm" enctype="multipart/form-data">
-            
+      <div class="modal fade" id="editProfileModal" tabindex="-1" role="dialog" aria-labelledby="editProfileModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="editProfileModalLabel">Edit Profile</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <form method="POST" enctype="multipart/form-data" name="editProfileForm" id="editProfileForm" autocomplete="off">
               <div class="form-group">
-                <label for="profile_pic">Profile Picture:</label>
-                <input type="file" id="profile_pic" name="profile_pic" accept="image/*">
-              </div>
-              <div class="form-group">
-                <label for="profileName">First Name</label>
-                <input type="text" class="form-control" id="firstName"name="firstName"  value="<?php echo htmlspecialchars($user['prenom_consomateur']); ?>">
-              </div>
-              <div class="form-group">
-                <label for="profileName">Last Name</label>
-                <input type="text" class="form-control" id="lastName" name="lastName"value="<?php echo htmlspecialchars($user['nom_consomateur']); ?>">
-              </div>
-              <div class="form-group">
-                <label for="profileMobile">Phone Number</label>
-                <input type="text" class="form-control" id="phone_number" name="phone_number" value="<?php echo htmlspecialchars($user["phone_number"]); ?>">
-              </div>
-            </form>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary" form="updateProfileForm" name="updateProfile" onclick="saveProfileChanges()">Save changes</button>
+                  <label for="profile_pic">Profile Picture</label>
+                  <input type="file" class="form-control-file" id="profile_pic" name="profile_pic" accept="image/*">
+                </div>
+                <div class="form-group">
+                  <label for="farmName">Farm Name</label>
+                  <input type="text" class="form-control" id="farmName" name="farmName" value="<?php echo htmlspecialchars($user['farm_name']); ?>">
+                </div>
+                <div class="form-group">
+                  <label for="farmOwner">Owner Name</label>
+                  <input type="text" class="form-control" id="farmOwner" name="farmOwner" value="<?php echo htmlspecialchars($user['farm_owner_name']); ?>">
+                </div>
+                <div class="form-group">
+                  <label for="farmDescription">Description</label>
+                  <textarea class="form-control" id="farmDescription" name="farmDescription"><?php echo htmlspecialchars($user['farm_description']); ?></textarea>
+                </div>
+                <div class="form-group">
+                  <label for="phone_number">Description</label>
+                  <text class="form-control" id="phone_number" name="phone_number"><?php echo htmlspecialchars($user['phone_number']); ?></text>
+                </div>
+                
+              </form>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="submit" class="btn btn-primary" form="editProfileForm" name="updateProfile" onclick="saveProfileChanges()">Save changes</button>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  `;
+      `;
       document.body.innerHTML += profileInfo;
-      var modal = new bootstrap.Modal(
-        document.getElementById("editProfileModal")
-      );
+      var modal = new bootstrap.Modal(document.getElementById('editProfileModal'));
       modal.show();
     }
 
     function saveProfileChanges() {
-      /*const name = document.getElementById("profileName").value;
-      const email = document.getElementById("profileEmail").value;
-      const mobile = document.getElementById("profileMobile").value;
-      //const location = document.getElementById("profileLocation").value;
-      console.log("Saving:", name, email, mobile, location);
-      // Here, integrate with backend to actually save the changes*/
+
       alert("Changes saved! (simulated)");
     }
 

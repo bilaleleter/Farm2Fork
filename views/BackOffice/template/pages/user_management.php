@@ -273,7 +273,7 @@ $agriculteurs = $userController->getAgriculteurs();
                       <?php foreach ($consommateurs as $user): ?>
                         <tr>
                           <td>
-                            <img src="<?= htmlspecialchars($user["profile_pic"]); ?>" class="avatar avatar-sm me-3"
+                            <img src="../../../FrontOffice/<?php echo htmlspecialchars($user['profile_pic']) ?>" class="avatar avatar-sm me-3"
                               alt="user">
                             <?= htmlspecialchars($user["nom_consomateur"]) . " " . htmlspecialchars($user["prenom_consomateur"]); ?>
                           </td>
@@ -325,7 +325,7 @@ $agriculteurs = $userController->getAgriculteurs();
                       <?php foreach ($agriculteurs as $user): ?>
                         <tr>
                           <td>
-                            <img src="<?= htmlspecialchars($user["profile_pic"]); ?>" class="avatar avatar-sm me-3"
+                            <img src="../../../FrontOffice/<?php echo htmlspecialchars($user['profile_pic']) ?>" class="avatar avatar-sm me-3"
                               alt="user">
                             <?= htmlspecialchars($user["farm_name"]); ?>
                           </td>

@@ -31,7 +31,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $updatedUser->setNomConsomateur($_POST['firstName']);
         $updatedUser->setPrenomConsomateur($_POST['lastName']);
         $updatedUser->setGenre($_POST['gender']);
-        //$updatedUser->setProfilePic($_POST['profile_pic']); 
+        $updatedUser->setProfilePic($user['profile_pic']); 
         //null
         $updatedUser->setFarmName(null);
         $updatedUser->setFarmOwnerName(null);
@@ -40,7 +40,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $updatedUser->setFarmName($_POST['farmName']);
         $updatedUser->setFarmOwnerName($_POST['farmOwner']);
         $updatedUser->setFarmDescription($_POST['farmDescription']);
-        //$updatedUser->setProfilePic($_POST['profile_pic']); 
+        $updatedUser->setProfilePic($user['profile_pic']); 
+
         //null
         $updatedUser->setNomConsomateur(null);
         $updatedUser->setPrenomConsomateur(null);

@@ -1,5 +1,6 @@
-<?php session_start();?>
+<?php session_start(); ?>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -41,7 +42,9 @@ i
         </div>
 
         <!-- Agriculteur Form Fields -->
-        <div id="agriculteur-fields" class="form-step">
+        <div id="agriculteur-fields" class="form-step" enctype="multipart/form-data">
+            <label for="profile_pic_agri">Profile Picture:</label>
+            <input type="file" id="profile_pic_agri" name="profile_pic_agri" accept="image/*">
             <label for="nom_ferme_agri">Nom de la Ferme</label>
             <input type="text" id="nom_ferme_agri" name="nom_ferme_agri" placeholder="Nom de la Ferme">
 
@@ -112,7 +115,9 @@ i
         </div>
 
         <!-- Consommateur Form Fields -->
-        <div id="consommateur-fields" class="form-step">
+        <div id="consommateur-fields" class="form-step" >
+            <label for="profile_pic_cons">Profile Picture:</label>
+            <input type="file" id="profile_pic_cons" name="profile_pic_cons" accept="image/*">
             <label for="nom_cons">Nom</label>
             <input type="text" id="nom_cons" name="nom_cons" placeholder="Votre Nom">
 
