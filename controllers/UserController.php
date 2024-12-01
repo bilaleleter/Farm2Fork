@@ -259,5 +259,24 @@ public function searchUsers($type, $term) {
 }
 
     
+
+
+
+// Function to ban a user
+public function banUser($user_id, $bannedUntil) {
+    $sql = "UPDATE Utilisateur SET ban_until = :banned_until WHERE user_id = :user_id";
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindValue(':user_id', $user_id);
+    $stmt->bindValue(':banned_until', $bannedUntil);
+    return $stmt->execute();
+}
+
+// Function to unban a user
+public function unbanUser($user_id) {
+    $sql = "UPDATE Utilisateur SET ban_until = NULL WHERE user_id = :user_id";
+    $stmt = $this->db->prepare($sql);
+    $stmt->bindValue(':user_id', $user_id);
+    return $stmt->execute();
+}
     
 }

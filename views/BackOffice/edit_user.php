@@ -9,7 +9,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $user_id = $_POST['user_id'];
     $user = $userController->showUser($user_id);
     print_r($_POST);
-    if (!$user) {
+    if(!$user){
         die('User not found!');
     }
 
