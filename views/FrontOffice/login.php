@@ -28,7 +28,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $user_role  = $user['role_id'];
             $redirectUrl = match ($user_role) {
                 1 => '../BackOffice/agriculteur_dashboard.php',
-                2 => '../BackOffice/consomateur_dashboard.php',
+                2 => '../BackOffice/template/pages/consomateur_profile.php',
                 0 => '../BackOffice/template/pages/user_management.php',
                 default => 'start_page.php',
             };

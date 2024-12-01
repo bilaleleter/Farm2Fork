@@ -49,6 +49,11 @@ $agriculteurs = $userController->getAgriculteurs();
   <link id="pagestyle" href="../assets/css/material-dashboard.css" rel="stylesheet" />
 </head>
 
+  <style>
+    label{
+      color: #e91e63 !important;
+    }
+  </style>
 <body class="g-sidenav-show bg-gray-100">
   <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2 bg-white my-2"
     id="sidenav-main">
@@ -92,7 +97,7 @@ $agriculteurs = $userController->getAgriculteurs();
     <form method="post" name="SignOutForm" id="SignOutForm"></form>
     <div class="sidenav-footer position-absolute w-100 bottom-0">
       <div class="mx-3">
-        <a class="btn btn-outline-dark mt-4 w-100" href="profile.html" type="button">Account</a>
+        <a class="btn btn-outline-dark mt-4 w-100" href="profile.php" type="button">Account</a>
         <button type="submit" class="btn bg-gradient-dark w-100" form="SignOutForm" name="logout">Sign out</button>
       </div>
     </div>
@@ -212,7 +217,7 @@ $agriculteurs = $userController->getAgriculteurs();
               </ul>
             </li>
             <li class="nav-item d-flex align-items-center">
-              <a href="../pages/profile.html" class="nav-link text-body font-weight-bold px-0">
+              <a href="../pages/profile.php" class="nav-link text-body font-weight-bold px-0">
                 <i class="material-symbols-rounded">account_circle</i>
               </a>
             </li>
@@ -268,7 +273,7 @@ $agriculteurs = $userController->getAgriculteurs();
                       <?php foreach ($consommateurs as $user): ?>
                         <tr>
                           <td>
-                            <img src="../assets/img/<?= $user["profile_pic"]; ?>" class="avatar avatar-sm me-3"
+                            <img src="<?= htmlspecialchars($user["profile_pic"]); ?>" class="avatar avatar-sm me-3"
                               alt="user">
                             <?= htmlspecialchars($user["nom_consomateur"]) . " " . htmlspecialchars($user["prenom_consomateur"]); ?>
                           </td>
@@ -320,7 +325,7 @@ $agriculteurs = $userController->getAgriculteurs();
                       <?php foreach ($agriculteurs as $user): ?>
                         <tr>
                           <td>
-                            <img src="../assets/img/<?= $user["profile_pic"]; ?>" class="avatar avatar-sm me-3"
+                            <img src="<?= htmlspecialchars($user["profile_pic"]); ?>" class="avatar avatar-sm me-3"
                               alt="user">
                             <?= htmlspecialchars($user["farm_name"]); ?>
                           </td>
@@ -802,7 +807,7 @@ $agriculteurs = $userController->getAgriculteurs();
         if (user.role_id === 1) { // Agriculteur
           userRow = `
                 <tr>
-                    <td><img src="../assets/img/${user.profile_pic}" class="avatar avatar-sm me-3" alt="user">${user.farm_name}</td>
+                    <td><img src="${user.profile_pic}" class="avatar avatar-sm me-3" alt="user">${user.farm_name}</td>
                     <td>${user.farm_owner_name}</td>
                     <td>${user.email}</td>
                     <td>
@@ -833,7 +838,7 @@ $agriculteurs = $userController->getAgriculteurs();
         } else if (user.role_id === 2) { // Consommateur
           userRow = `
                 <tr>
-                    <td><img src="../assets/img/${user.profile_pic}" class="avatar avatar-sm me-3" alt="user">${user.nom_consomateur} ${user.prenom_consomateur}</td>
+                    <td><img src="${user.profile_pic}" class="avatar avatar-sm me-3" alt="user">${user.nom_consomateur} ${user.prenom_consomateur}</td>
                     <td>${user.email}</td>
                     <td>${user.phone_number} (${user.country})</td>
                     <td>

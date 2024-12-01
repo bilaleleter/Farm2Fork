@@ -62,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
         $redirectUrl = match ($role) {
             '1' => '..\BackOffice\agriculteur_dashboard.php',
-            '2' => '../BackOffice\consomateur_dashboard.php',
+            '2' => '../BackOffice\template/pages/consomateur_profile.php',
             default => 'start_page.php',
         };
 

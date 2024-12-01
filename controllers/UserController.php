@@ -45,7 +45,7 @@ class UserController
         $hashedPassword = password_hash($user->getPassword(), PASSWORD_DEFAULT);
         //var_dump($user);
 
-        $sql = "INSERT INTO Utilisateur (role_id, email, password, phone_number, country, city, address, profile_pic, farm_name, farm_description, genre, nom_consomateur, prenom_consomateur, farm_owner_name) VALUES (:role_id, :email, :password, :phone_number, :country, :city, :address, :profile_pic, :farm_name, :farm_description, :genre, :nom_consomateur, :prenom_consomateur, :farm_owner_name)";
+        $sql = "INSERT INTO Utilisateur(role_id, email, password, phone_number, country, city, address, profile_pic, farm_name, farm_description, genre, nom_consomateur, prenom_consomateur, farm_owner_name) VALUES (:role_id, :email, :password, :phone_number, :country, :city, :address, :profile_pic, :farm_name, :farm_description, :genre, :nom_consomateur, :prenom_consomateur, :farm_owner_name)";
         try {
             $query = $this->db->prepare($sql);
             return $query->execute([
@@ -72,12 +72,12 @@ class UserController
     // Update an existing user
     public function updateUser(UserModel $user, $user_id)
     {
-        var_dump($user);
+        //var_dump($user);
 
         $sql = "UPDATE Utilisateur SET role_id = :role_id, email = :email, password = :password, phone_number = :phone_number, country = :country, city = :city, address = :address, profile_pic = :profile_pic, farm_name = :farm_name, farm_description = :farm_description, genre = :genre, nom_consomateur = :nom_consomateur, prenom_consomateur = :prenom_consomateur, farm_owner_name=:farm_owner_name WHERE user_id = :user_id";
         try {
             $query = $this->db->prepare($sql);
-            $query->execute([
+            return $query->execute([
                 'user_id' => $user_id,
                 'role_id' => $user->getRoleId(),
                 'email' => $user->getEmail(),
