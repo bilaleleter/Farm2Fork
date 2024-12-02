@@ -1,47 +1,50 @@
 <?php
-// Inclure les fichiers nécessaires
+include_once __DIR__ . "/../../../Controller/LivraisonController.php";
+include_once __DIR__ . "/../../../Model/Livraison.php";
+include_once __DIR__ . "/../../../Config.php";
 include_once __DIR__ . "/../../../Controller/CommandeController.php";
 include_once __DIR__ . "/../../../Model/Commande.php";
-include_once __DIR__ . "/../../../Controller/ProduitController.php";
-include_once __DIR__ . "/../../../Config.php";
 
-// Instancier le contrôleur
-$commandeController = new Controller\CommandeController();
-$produitController = new Controller\ProduitController();
+$commandeController = new \Controller\CommandeController();
+$livraisonController = new \Controller\LivraisonController();
 
-// Traitement du formulaire lors de la soumission
-if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Récupérer les données du formulaire
-    $nom = $_POST['nom'];
-    $email = $_POST['email'];
-    $telephone = $_POST['telephone'];
-   
-    $produit = $_POST['produit'];
-    $id_produit = (int) $produit;
-    $quantite = (int) $_POST['quantite'];
+// Récupérer les commandes non livrées
+$commandesNonLivrees = $commandeController->getCommandesNotdilvered();
 
-    // Associer un id_utilisateur (par exemple, 1 pour un utilisateur fictif ou depuis la session utilisateur)
-    
-
-    // Créer une nouvelle commande avec les données du formulaire
-    $commande = new Model\Commande(
-        0, // ID commande sera auto-généré par la base de données
-        date('Y-m-d H:i:s'), // Date de la commande
-        'en attente', // L'état initial de la commande
-        $quantite,
-        1,
-        $id_produit,
-        null
-    );
-
-    // Ajouter la commande à la base de données
-    $commandeController->addCommande($commande);
-
-    // Rediriger l'utilisateur après l'ajout de la commande
-    echo "Commande passée avec succès !";
-    // Vous pouvez également rediriger vers une autre page si nécessaire :
-    // header('Location: /confirmation');
+// Vérifiez que la méthode retourne bien un tableau
+if (!is_array($commandesNonLivrees)) {
+    $commandesNonLivrees = [];
 }
+
+// Debugging temporaire pour voir les commandes
+// echo "<pre>";
+// print_r($commandesNonLivrees);
+// echo "</pre>";
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    // Vérifiez que les champs POST existent
+    $ville = $_POST['ville'] ?? '';
+    $codePostal = $_POST['codePostal'] ?? '';
+    $Adresse = $_POST['Adresse'] ?? '';
+    $referencesCommandes = $_POST['ref_commande'] ?? []; // Corriger ici pour correspondre au champ du formulaire
+
+    // Ajouter la livraison
+    $livraison = new \Model\Livraison(0, $ville, $codePostal, $Adresse);
+    $livraisonController->addLivraison($livraison);
+
+    // Récupérer l'ID de la livraison ajoutée
+    $idLivraison = (int) $livraisonController->getLastInsertId();
+
+    // Associer les commandes sélectionnées à la livraison
+    foreach ($referencesCommandes as $ref_Commande) {
+        $commandeController->livrerCommandes($idLivraison, $ref_Commande); // Passer ref_commande à la méthode
+    }
+}
+
+
+
+
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -64,6 +67,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;700&family=Open+Sans:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
 </head>
 
 <body>
@@ -292,9 +296,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
   
   </div>
 
-
-
-<div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasCart">
+  <div class="offcanvas offcanvas-end" data-bs-scroll="true" tabindex="-1" id="offcanvasCart">
     <div class="offcanvas-header justify-content-center">
       <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
     </div>
@@ -336,7 +338,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
     </div>
   </div>
-  
+
+
   <div class="offcanvas offcanvas-start" tabindex="-1" id="offcanvasNavbar">
 
     <div class="offcanvas-header justify-content-between">
@@ -500,10 +503,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   </div>
 
-  
-
-
-<header>
+  <header>
     <div class="container-fluid">
       <div class="row py-3 border-bottom">
 
@@ -585,138 +585,360 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       </div>
     </div>
   </header>
-  <body>
-  <main class="container my-5">
-    <h1 class="text-center mb-4">Passer une Commande</h1>
 
-    <form id="commandeForm" action="" method="POST" class="row g-3">
-  <!-- Informations Client -->
   <section>
-    <h2>Informations Client</h2>
-    <div class="col-md-6">
-      <label for="nom" class="form-label">Nom :</label>
-      <input type="text" id="nom" name="nom" class="form-control" placeholder="Votre nom">
-      <small class="text-danger d-none" id="nomError">Le nom ne doit contenir que des lettres et des espaces.</small>
-    </div>
-    <div class="col-md-6">
-      <label for="email" class="form-label">Email :</label>
-      <input type="email" id="email" name="email" class="form-control" placeholder="Votre email">
-      <small class="text-danger d-none" id="emailError">Veuillez entrer une adresse email valide.</small>
-    </div>
-    <div class="col-md-6">
-      <label for="telephone" class="form-label">Téléphone :</label>
-      <input type="tel" id="telephone" name="telephone" class="form-control" placeholder="Votre numéro de téléphone">
-      <small class="text-danger d-none" id="telephoneError">Le numéro de téléphone doit contenir entre 8 et 12 chiffres.</small>
-    </div>
-  </section>
+  <div class="container-lg">
+    <div class="bg-secondary text-light py-5 my-5" style="background: url('images/banner-newsletter.jpg') no-repeat; background-size: cover;">
+      <div class="container">
+        <div class="row justify-content-center">
+          <div class="col-md-5 p-3">
+            <div class="section-header">
+              <h2 class="section-title display-5 text-light">"livraison"</h2>
+            </div>
+          </div>
+          <div class="col-md-5 p-3">
+            <form id="commandeForm" action="" method="POST">
+              <!-- Champ Ville -->
+              <div class="mb-3">
+                <label for="ville" class="form-label d-none">Ville</label>
+                <input type="text" class="form-control rounded bg-light" name="ville" id="ville" placeholder="Ville" required>
+                <small id="villeError" class="text-danger d-none">La ville ne peut contenir que des lettres, des espaces ou des tirets (3 caractères minimum).</small>
+              </div>
 
-  <!-- Détails du Produit -->
-  <section>
-    <h2>Choix du Produit</h2>
-    <div class="col-md-6">
-      <label for="produit" class="form-label">Produit :</label>
-      <select id="produit" name="produit" class="form-select">
-        <option value="" disabled selected>Sélectionnez un produit</option>
-        <?php
-          $produits = $produitController->getAllProduits();
-          foreach ($produits as $produit) {
-            echo "<option value='{$produit['idProduit']}'>{$produit['NomProduit']}</option>";
-          }
-        ?>
-      </select>
-      <small class="text-danger d-none" id="produitError">Veuillez sélectionner un produit.</small>
-    </div>
-    <div class="col-md-6">
-      <label for="quantite" class="form-label">Quantité :</label>
-      <input type="number" id="quantite" name="quantite" class="form-control" min="1" placeholder="Quantité">
-      <small class="text-danger d-none" id="quantiteError">Veuillez entrer une quantité valide.</small>
-    </div>
-  </section>
+              <!-- Champ Code Postal -->
+              <div class="mb-3">
+                <label for="codePostal" class="form-label d-none">Code Postal</label>
+                <input type="text" class="form-control rounded bg-light" name="codePostal" id="codePostal" placeholder="Code Postal" required>
+                <small id="codePostalError" class="text-danger d-none">Le code postal doit être constitué de 4 chiffres uniquement.</small>
+              </div>
 
-  <!-- Boutons -->
-  <div class="col-12">
-    <button type="submit" class="btn btn-success w-100">Passer la Commande</button>
+              <!-- Champ Adresse -->
+              <div class="mb-3">
+                <label for="Adresse" class="form-label d-none">Adresse</label>
+                <input type="text" class="form-control rounded bg-light" name="Adresse" id="Adresse" placeholder="Adresse" required>
+                <small id="adresseError" class="text-danger d-none">L'adresse doit comporter au moins 5 caractères et être valide (lettres, chiffres, espaces, tirets, etc.).</small>
+              </div>
+               <!-- Liste des commandes non livrées -->
+               <div class="mb-3">
+                <label for="referencesCommandes" class="form-label">Commandes à Livrer</label>
+                <select name="referencesCommandes[]" id="referencesCommandes" class="form-control" multiple required>
+                  <?php foreach ($commandesNonLivrees as $commande) : ?>
+                    <option value="<?= htmlspecialchars($commande['ref_commande']) ?>">
+                      <?= htmlspecialchars($commande['ref_commande']) ?> 
+                    </option>
+                  <?php endforeach; ?>
+                </select>
+                <small class="form-text text-muted">Sélectionnez les commandes à inclure dans cette livraison.</small>
+              </div>
+
+
+              <!-- Bouton de soumission -->
+              <div>
+                <button type="submit" id="submitButton" class="btn btn-primary" disabled>Passer la Commande</button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
   </div>
-  <div class="col-12 text-center">
-    <a href="/projetweb/projetweb/View/front%20office/commandes/panier.php" class="btn btn-link">Retour au Panier</a>
-  </div>
-</form>
-
-
+</section>
 
 <script>
-  // Récupérer le formulaire
+  // Obtenez les éléments du formulaire
   const form = document.getElementById('commandeForm');
+  const villeInput = document.getElementById('ville');
+  const codePostalInput = document.getElementById('codePostal');
+  const adresseInput = document.getElementById('Adresse');
+  const submitButton = document.getElementById('submitButton');
 
-  // Fonction de validation pour le champ "Nom"
-  document.getElementById('nom').addEventListener('input', (event) => {
-    const field = event.target;
-    const errorElement = document.getElementById('nomError');
+  // Messages d'erreur
+  const villeError = document.getElementById('villeError');
+  const codePostalError = document.getElementById('codePostalError');
+  const adresseError = document.getElementById('adresseError');
 
-    // Expression régulière pour autoriser uniquement les lettres et les espaces
-    const invalidChar = /[^A-Za-z\s]/g;
+  // Fonction pour vérifier la validité du formulaire
+  const checkFormValidity = () => {
+    const villeValid = isVilleValid();
+    const codePostalValid = isCodePostalValid();
+    const adresseValid = isAdresseValid();
 
-    // Si l'utilisateur entre des caractères invalides (chiffres ou symboles), les supprimer
-    if (invalidChar.test(field.value)) {
-      field.value = field.value.replace(invalidChar, ''); // Retirer les caractères invalides
-      errorElement.classList.remove('d-none'); // Afficher l'erreur
+    // Activer ou désactiver le bouton en fonction de la validité des champs
+    submitButton.disabled = !(villeValid && codePostalValid && adresseValid);
+  };
+
+  // Validation du champ Ville
+  const isVilleValid = () => {
+    const ville = villeInput.value.trim();
+    const regexVille = /^[A-Za-zÀ-ÿ\s-]{3,50}$/;  // La ville doit contenir des lettres, espaces ou tirets, entre 3 et 50 caractères (min 3 pour les villes tunisiennes)
+    if (ville === '') {
+      villeError.textContent = "La ville est obligatoire.";
+      villeError.classList.remove('d-none');
+      return false;
+    } else if (!regexVille.test(ville)) {
+      villeError.textContent = "La ville doit contenir uniquement des lettres, des espaces ou des tirets (3 caractères minimum).";
+      villeError.classList.remove('d-none');
+      return false;
     } else {
-      errorElement.classList.add('d-none'); // Cacher l'erreur si valide
+      villeError.classList.add('d-none');
+      return true;
     }
+  };
 
-    // Vérifier si le champ est vide et afficher le message d'erreur
-    if (field.value.trim() === '') {
-      errorElement.classList.remove('d-none'); // Afficher le message d'erreur si vide
+  // Validation du champ Code Postal
+  const isCodePostalValid = () => {
+    const codePostal = codePostalInput.value.trim();
+    const regexCodePostal = /^\d{4}$/;  // Code postal composé exactement de 4 chiffres
+    if (codePostal === '') {
+      codePostalError.textContent = "Le code postal est obligatoire.";
+      codePostalError.classList.remove('d-none');
+      return false;
+    } else if (!regexCodePostal.test(codePostal)) {
+      codePostalError.textContent = "Le code postal doit être constitué de 4 chiffres uniquement.";
+      codePostalError.classList.remove('d-none');
+      return false;
     } else {
-      // Cacher l'erreur si la saisie est valide
-      if (!invalidChar.test(field.value)) {
-        errorElement.classList.add('d-none');
-      }
+      codePostalError.classList.add('d-none');
+      return true;
     }
+  };
+
+  // Validation du champ Adresse
+  const isAdresseValid = () => {
+    const adresse = adresseInput.value.trim();
+    const regexAdresse = /^[A-Za-zÀ-ÿ0-9\s,.-]{5,}$/;  // Adresse valide si elle contient lettres, chiffres, espaces, virgules, points, et tirets (minimum 5 caractères)
+    if (adresse === '') {
+      adresseError.textContent = "L'adresse est obligatoire.";
+      adresseError.classList.remove('d-none');
+      return false;
+    } else if (!regexAdresse.test(adresse)) {
+      adresseError.textContent = "L'adresse doit comporter au moins 5 caractères et être valide (lettres, chiffres, espaces, tirets, etc.).";
+      adresseError.classList.remove('d-none');
+      return false;
+    } else {
+      adresseError.classList.add('d-none');
+      return true;
+    }
+  };
+
+  // Fonction pour interdire les lettres ou symboles dans le champ Code Postal
+  const restrictCodePostalInput = (e) => {
+    const regexInvalidChars = /[^0-9]/g;  // Empêche tout caractère non numérique
+    const isBackspaceOrDelete = e.key === 'Backspace' || e.key === 'Delete';  // Vérifie si la touche est Backspace ou Delete
+    if (regexInvalidChars.test(e.key) && !isBackspaceOrDelete) {
+      e.preventDefault();  // Bloquer la saisie de lettres ou symboles
+      codePostalError.textContent = "Le code postal ne peut contenir que des chiffres.";
+      codePostalError.classList.remove('d-none');
+    } else {
+      codePostalError.classList.add('d-none');
+    }
+  };
+
+  // Fonction pour interdire les chiffres ou symboles dans le champ Ville
+  const restrictVilleInput = (e) => {
+    const regexInvalidChars = /[^A-Za-zÀ-ÿ\s-]/g;  // Empêche les chiffres et symboles (autres que lettres, espaces ou tirets)
+    const isBackspaceOrDelete = e.key === 'Backspace' || e.key === 'Delete';  // Vérifie si la touche est Backspace ou Delete
+
+    if (regexInvalidChars.test(e.key) && !isBackspaceOrDelete) {
+      e.preventDefault();  // Bloquer la saisie de chiffres ou symboles
+      villeError.textContent = "La ville ne peut contenir que des lettres, des espaces ou des tirets.";
+      villeError.classList.remove('d-none');
+    } else {
+      villeError.classList.add('d-none');
+    }
+  };
+
+  // Validation en temps réel
+  villeInput.addEventListener('input', () => {
+    isVilleValid();
+    checkFormValidity();
   });
 
-  // Validation pour tous les champs lors de la saisie
-  form.addEventListener('input', (event) => {
-    const field = event.target;
-    const errorElement = document.getElementById(field.id + 'Error');
-    let isValid = true;
-
-    // Validation des autres champs (email, téléphone, etc.)
-    if (field.id === 'email') {
-      isValid = /^\S+@\S+\.\S+$/.test(field.value); // Vérification de l'email
-    } else if (field.id === 'telephone') {
-      isValid = /^\d{8,12}$/.test(field.value); // Vérification du téléphone
-    } else if (field.id === 'produit') {
-      isValid = field.value !== ''; // Vérification du produit
-    } else if (field.id === 'quantite') {
-      isValid = field.value > 0; // Vérification de la quantité
-    }
-
-    // Affichage ou masquage du message d'erreur selon la validité
-    if (!isValid) {
-      errorElement.classList.remove('d-none');
-    } else {
-      errorElement.classList.add('d-none');
-    }
+  codePostalInput.addEventListener('input', () => {
+    isCodePostalValid();
+    checkFormValidity();
   });
 
-  // Validation à la soumission du formulaire
+  codePostalInput.addEventListener('keydown', restrictCodePostalInput); // Bloque la saisie de lettres ou symboles dans le Code Postal
+  villeInput.addEventListener('keydown', restrictVilleInput); // Bloque la saisie de chiffres ou symboles dans la Ville
+  adresseInput.addEventListener('input', () => {
+    isAdresseValid();
+    checkFormValidity();
+  });
+
+  // Validation avant soumission
   form.addEventListener('submit', (event) => {
-    const fields = ['nom', 'email', 'telephone', 'produit', 'quantite'];
-    let isFormValid = true;
+    // Réinitialiser les messages d'erreur avant la soumission
+    villeError.classList.add('d-none');
+    codePostalError.classList.add('d-none');
+    adresseError.classList.add('d-none');
 
-    fields.forEach((id) => {
-      const field = document.getElementById(id);
-      const errorElement = document.getElementById(id + 'Error');
-      if (!field.value || !errorElement.classList.contains('d-none')) {
-        isFormValid = false;
-        errorElement.classList.remove('d-none'); // Afficher l'erreur lors de la soumission
-      }
-    });
-
-    // Si le formulaire n'est pas valide, empêcher la soumission
-    if (!isFormValid) {
-      event.preventDefault();
+    // Vérifier la validité avant soumission
+    if (submitButton.disabled) {
+      event.preventDefault();  // Empêcher la soumission si un champ est invalide
     }
   });
 </script>
+
+
+
+
+ 
+  <footer class="py-5">
+    <div class="container-lg">
+      <div class="row">
+
+        <div class="col-lg-3 col-md-6 col-sm-6">
+          <div class="footer-menu">
+            <img src="images/logo.svg" width="240" height="70" alt="logo">
+            <div class="social-links mt-3">
+              <ul class="d-flex list-unstyled gap-2">
+                <li>
+                  <a href="#" class="btn btn-outline-light">
+                    <svg width="16" height="16">
+                      <use xlink:href="#facebook"></use>
+                    </svg>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="btn btn-outline-light">
+                    <svg width="16" height="16">
+                      <use xlink:href="#twitter"></use>
+                    </svg>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="btn btn-outline-light">
+                    <svg width="16" height="16">
+                      <use xlink:href="#youtube"></use>
+                    </svg>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="btn btn-outline-light">
+                    <svg width="16" height="16">
+                      <use xlink:href="#instagram"></use>
+                    </svg>
+                  </a>
+                </li>
+                <li>
+                  <a href="#" class="btn btn-outline-light">
+                    <svg width="16" height="16">
+                      <use xlink:href="#amazon"></use>
+                    </svg>
+                  </a>
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
+
+        <div class="col-md-2 col-sm-6">
+          <div class="footer-menu">
+            <h5 class="widget-title">Organic</h5>
+            <ul class="menu-list list-unstyled">
+              <li class="menu-item">
+                <a href="#" class="nav-link">About us</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Conditions </a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Our Journals</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Careers</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Affiliate Programme</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Ultras Press</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-2 col-sm-6">
+          <div class="footer-menu">
+            <h5 class="widget-title">Quick Links</h5>
+            <ul class="menu-list list-unstyled">
+              <li class="menu-item">
+                <a href="#" class="nav-link">Offers</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Discount Coupons</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Stores</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Track Order</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Shop</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Info</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-md-2 col-sm-6">
+          <div class="footer-menu">
+            <h5 class="widget-title">Customer Service</h5>
+            <ul class="menu-list list-unstyled">
+              <li class="menu-item">
+                <a href="#" class="nav-link">FAQ</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Contact</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Privacy Policy</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Returns & Refunds</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Cookie Guidelines</a>
+              </li>
+              <li class="menu-item">
+                <a href="#" class="nav-link">Delivery Information</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <div class="col-lg-3 col-md-6 col-sm-6">
+          <div class="footer-menu">
+            <h5 class="widget-title">Subscribe Us</h5>
+            <p>Subscribe to our newsletter to get updates about our grand offers.</p>
+            <form class="d-flex mt-3 gap-0" action="index.html">
+              <input class="form-control rounded-start rounded-0 bg-light" type="email" placeholder="Email Address" aria-label="Email Address">
+              <button class="btn btn-dark rounded-end rounded-0" type="submit">Subscribe</button>
+            </form>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </footer>
+  <div id="footer-bottom">
+    <div class="container-lg">
+      <div class="row">
+        <div class="col-md-6 copyright">
+          <p>© 2024 Organic. All rights reserved.</p>
+        </div>
+        <div class="col-md-6 credit-link text-start text-md-end">
+          <p>HTML Template by <a href="https://templatesjungle.com/">TemplatesJungle</a> Distributed By <a href="https://themewagon.com">ThemeWagon</a> </p>
+        </div>
+      </div>
+    </div>
+  </div>
+  <script src="js/jquery-1.11.0.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
+  <script src="js/plugins.js"></script>
+  <script src="js/script.js"></script>
+</body>
+
+</html>

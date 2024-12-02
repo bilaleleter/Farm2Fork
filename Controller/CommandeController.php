@@ -72,26 +72,42 @@ class CommandeController
     }
 
     public function addCommande(Commande $commande): void
-    {
-        $req = "INSERT INTO commande (date_commande, etat, id_utilisateur, quantite, id_produit,idLivraison)
-        VALUES (:date_commande, :etat, :id_utilisateur, :quantite, :id_produit, null)";
-        $db = Config::getConnection();
+{
+    // Étape 1 : Insérer la commande sans la référence
+    $req = "INSERT INTO commande (date_commande, etat, id_utilisateur, quantite, id_produit, idLivraison, ref_commande)
+            VALUES (:date_commande, :etat, :id_utilisateur, :quantite, :id_produit, null, null)";
+    $db = Config::getConnection();
 
-        try {
-            $query = $db->prepare($req);
-            $query->execute([
-                'date_commande' => $commande->date_commande,
-                'etat' => $commande->etat,
-                'id_utilisateur' => $commande->id_utilisateur,
-                'quantite' => $commande->quantite,
-                'id_produit' => $commande->id_produit
-               
-                
-            ]);
-        } catch (Exception $e) {
-            die("Erreur : " . $e->getMessage());
-        }
+    try {
+        // Insertion de la commande sans la référence
+        $query = $db->prepare($req);
+        $query->execute([
+            'date_commande' => $commande->date_commande,
+            'etat' => $commande->etat,
+            'id_utilisateur' => $commande->id_utilisateur,
+            'quantite' => $commande->quantite,
+            'id_produit' => $commande->id_produit
+        ]);
+        
+        // Récupérer l'ID de la commande nouvellement insérée
+        $idCommande = $db->lastInsertId();
+
+        // Étape 2 : Générer la référence de la commande
+        $commande->id_commande = $idCommande;  // Mettre à jour l'ID de la commande dans l'objet
+        $refCommande = $commande->generateRefCommande();  // Générer la référence
+
+        // Étape 3 : Mettre à jour la commande avec la référence générée
+        $updateReq = "UPDATE commande SET ref_commande = :ref_commande WHERE id_commande = :id_commande";
+        $updateQuery = $db->prepare($updateReq);
+        $updateQuery->execute([
+            'ref_commande' => $refCommande,
+            'id_commande' => $idCommande
+        ]);
+    } catch (Exception $e) {
+        die("Erreur : " . $e->getMessage());
     }
+}
+
     public function livrerCommandes(int $id_livraison): void
     {
         $req = "UPDATE commande SET etat = 'livrée', idLivraison = :id_livraison WHERE etat = 'en attente'";

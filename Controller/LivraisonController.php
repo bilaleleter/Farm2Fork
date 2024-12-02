@@ -1,12 +1,19 @@
-<?php	
+<?php
+
 namespace Controller;
+
 use Config;
 use Exception;
 use Model\Livraison;
+
 include_once __DIR__ . "/../Model/Livraison.php";
 include_once __DIR__ . "/../Config.php";
 class LivraisonController
 {
+
+
+
+
     public function getLivraison(int $id_livraison): array
     {
         $req = "SELECT * FROM livraison WHERE id_livraison = :id_livraison";
@@ -41,44 +48,61 @@ class LivraisonController
     }
     public function addLivraison(Livraison $livraison): void
     {
-        $req = "INSERT INTO livraison ( Adresse_de_Livraison, ville,codePostal, date_d_envoi, statut_de_livraison, Date_de_livraison_Estimee,idUser)
-        VALUES ( :Adresse_de_Livraison, :ville, :codePostal, :date_d_envoi, :statut_de_livraison, :Date_de_livraison_Estimee,1)";
+        $req = "INSERT INTO livraison (Adresse_de_Livraison, ville, codePostal, idUser, ref_commande)
+                VALUES (:Adresse_de_Livraison, :ville, :codePostal, 1, :ref_commande)";
         $db = Config::getConnection();
         try {
+            // Récupération des commandes sélectionnées depuis le formulaire
+            if (isset($_POST['referencesCommandes']) && is_array($_POST['referencesCommandes'])) {
+                $referencesCommandes = $_POST['referencesCommandes'];  // Récupérer les références des commandes sélectionnées
+            } else {
+                $referencesCommandes = [];  // Si aucune commande n'est sélectionnée
+            }
+    
+            // Imploser les références des commandes dans une seule chaîne de caractères
+            $refCommandes = implode(', ', $referencesCommandes);
+    
+            // Exécution de la requête avec les données de la livraison et les références de commandes
             $query = $db->prepare($req);
             $query->execute([
-              
                 'ville' => $livraison->ville,
                 'codePostal' => $livraison->codePostal,
                 'Adresse_de_Livraison' => $livraison->Adresse,
-                'date_d_envoi' => $livraison->date_d_envoi,
-                'statut_de_livraison' => $livraison->statut_de_livraison,
-                'Date_de_livraison_Estimee' => $livraison->date_de_livraison,
+                'ref_commande' => $refCommandes, // Ajouter les références des commandes ici
             ]);
         } catch (Exception $e) {
             die("Erreur : " . $e->getMessage());
         }
     }
+    
     public function updateLivraison(Livraison $livraison): void
     {
-        $req = "UPDATE livraison SET id_commande = :id_commande,ville = :ville,codePostal = :codePostal, Adresse = :Adresse, date_d_envoi = :date_d_envoi, statut_de_livraison = :statut_de_livraison, date_de_livraison = :date_de_livraison WHERE id_livraison = :id_livraison";
+        // Requête SQL corrigée pour mettre à jour la livraison
+        $req = "UPDATE livraison 
+            SET ville = :ville, 
+                codePostal = :codePostal, 
+                Adresse_de_Livraison = :Adresse 
+            WHERE ID_livraison = :id_livraison";
+
+        // Connexion à la base de données
         $db = Config::getConnection();
+
         try {
+            // Préparer la requête et l'exécuter avec les paramètres
             $query = $db->prepare($req);
             $query->execute([
-                'id_commande' => $livraison->id_commande,
                 'ville' => $livraison->ville,
                 'codePostal' => $livraison->codePostal,
                 'Adresse' => $livraison->Adresse,
-                'date_d_envoi' => $livraison->date_d_envoi,
-                'statut_de_livraison' => $livraison->statut_de_livraison,
-                'date_de_livraison' => $livraison->date_de_livraison,
-                'id_livraison' => $livraison->id_livraison,
+                'id_livraison' => $livraison->id_livraison // L'ID de la livraison pour cibler la ligne
             ]);
         } catch (Exception $e) {
+            // En cas d'erreur, afficher un message d'erreur
             die("Erreur : " . $e->getMessage());
         }
     }
+
+
     public function deleteLivraison(int $id_livraison): void
     {
         $req = "DELETE FROM livraison WHERE id_livraison = :id_livraison";
@@ -91,20 +115,17 @@ class LivraisonController
         }
     }
     public function getLastInsertId()
-{
-    $db = Config::getConnection();
-    try {
-        // lastInsertId() retourne l'ID de la dernière insertion pour cette connexion
-        $id = $db->lastInsertId();
-        if (!$id) {
-            throw new Exception("Aucune insertion récente trouvée.");
+    {
+        $db = Config::getConnection();
+        try {
+            // lastInsertId() retourne l'ID de la dernière insertion pour cette connexion
+            $id = $db->lastInsertId();
+            if (!$id) {
+                throw new Exception("Aucune insertion récente trouvée.");
+            }
+            return (int)$id; // Forcer la conversion en entier
+        } catch (Exception $e) {
+            die("Erreur : " . $e->getMessage());
         }
-        return (int)$id; // Forcer la conversion en entier
-    } catch (Exception $e) {
-        die("Erreur : " . $e->getMessage());
     }
 }
-
-}
-?>
-    

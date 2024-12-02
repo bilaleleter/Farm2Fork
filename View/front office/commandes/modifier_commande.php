@@ -5,6 +5,15 @@ include_once __DIR__ . "/../../../Controller/ProduitController.php";
 include_once __DIR__ . "/../../../Config.php";
 $commandeController = new Controller\CommandeController();
 $produitController = new Controller\ProduitController();
+// Vérifiez si l'ID est passé dans l'URL
+if (isset($_GET['id_commande'])) {
+  $id = $_GET['id_commande'];
+} else {
+  header('Location: panier.php');
+  exit;
+}
+
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 
   $id_commande = (int) $_POST['id_commande'];
@@ -23,7 +32,8 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
       'en attente',
       $quantite,
       1,
-      5
+      5,
+      null
   );
   
   $commandeController->updateCommande($commande);

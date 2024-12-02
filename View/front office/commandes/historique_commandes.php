@@ -475,7 +475,6 @@
                       <td><?= $commande['quantite'] ?></td>
                       <td><?= $produitController->getProduitbyId($commande['id_produit'])['NomProduit'] ?></td>
                       <td>
-                          <a href="<?= $commandeController->deleteCommande($commande['ID_commande']) ?>" class="btn">annuler</a>                        
                           
                       </tr>
                       

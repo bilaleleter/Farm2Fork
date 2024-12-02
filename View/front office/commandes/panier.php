@@ -350,148 +350,185 @@
 
 
 
-    <section style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #ffffff;">
-      <div class="container col-md-8 col-lg-6 p-4 rounded shadow" style="background-color: #ffffff; border: 2px solid #408c148d;">
-          <h1 style="text-align: center; color: #1c5739;">Commandes</h1>
-          <style>
-              /* Style global */
-              body {
-                  font-family: Arial, sans-serif;
-                  background-color: #fdf2e7;
-                  color: #1c5739;
-                  margin: 0;
-                  padding: 20px;
-              }
-  
-              .container {
-                  max-width: 1200px;
-                  margin: 0 auto;
-                  padding: 20px;
-                  background-color: #fff;
-                  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-                  border-radius: 10px;
-              }
-  
-              table {
-                  width: 100%;
-                  border-collapse: collapse;
-                  margin-top: 20px;
-              }
-  
-              th {
-                  background-color: #1c5739;
-                  color: #fdf2e7;
-                  padding: 15px;
-                  text-align: left;
-                  font-size: 16px;
-              }
-  
-              td {
-                  padding: 15px;
-                  text-align: left;
-                  border-bottom: 1px solid #ead885;
-              }
-  
-              tr:hover {
-                  background-color: #ead885;
-                  color: #1c5739;
-              }
-  
-              /* Transition pour les champs */
-              input[type="text"],
-              input[type="number"],
-              input[type="date"],
-              select {
-                  width: 100%;
-                  padding: 10px;
-                  margin-bottom: 10px;
-                  border: 2px solid #4fa579;
-                  border-radius: 5px;
-                  background-color: #408c148d;
-                  transition: background-color 0.3s, border-color 0.3s;
-              }
-  
-              input[type="text"]:hover,
-              input[type="number"]:hover,
-              input[type="date"]:hover,
-              select:hover {
-                  background-color: #ead885;
-                  border-color: #1c5739;
-              }
-  
-              /* Bouton */
-              .btn {
-                  display: block;
-                  width: 100%;
-                  padding: 10px;
-                  background-color: #4fa579;
-                  color: #ffffff;
-                  text-align: center;
-                  text-decoration: none;
-                  border-radius: 5px;
-                  margin-top: 20px;
-                  font-weight: bold;
-                  transition: background-color 0.3s, color 0.3s;
-              }
-  
-              .btn:hover {
-                  background-color: #ead885;
-                  color: #1c5739;
-              }
-          </style>
-  
-          <table>
-              <thead>
-                  <tr>
-                      <th>ID Commande</th>
-                      <th>Date de Commande</th>
-                      <th>État</th>
-                      <th>Quantité</th>
-                      <th>Produit</th>
-                      <th>Actions</th>
-                      
-                  </tr>
-              </thead>
-              <tbody>
-                  <!-- Exemple de données statiques -->
-                  <?php
-                  include_once __DIR__ . "/../../../Controller/CommandeController.php";
-                  include_once __DIR__ . "/../../../Controller/ProduitController.php";
-                  include_once __DIR__ . "/../../../Controller/LivraisonController.php";
-                  include_once __DIR__ . "/../../../Model/Livraison.php";
-                  $livraisonController = new Controller\LivraisonController();
-                  $commandeController = new Controller\CommandeController();
-                  $produitController = new Controller\ProduitController();
+    <section style="display: flex; justify-content: center; align-items: flex-start; min-height: 100vh; background-color: #ffffff; padding: 20px;">
+    <div class="container col-md-8 col-lg-6 p-4 rounded shadow" style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px; background-color: #fff; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); border-radius: 10px; border: 2px solid #408c148d; box-sizing: border-box;">
+        <h1 style="text-align: center; color: #1c5739; margin-bottom: 20px;">Commandes</h1>
 
-                  	
-                  $commandes = $commandeController->getCommandesNotdilvered();
-                  
-                  foreach ($commandes as $commande) {
-                  ?>
-                      <tr>
-                      <td><?= $commande['ID_commande'] ?></td>
-                      <td><?= $commande['date_commande'] ?></td>
-                      <td><?= $commande['etat'] ?></td>
-                      <td><?= $commande['quantite'] ?></td>
-                      <td><?= $produitController->getProduitbyId($commande['id_produit'])['NomProduit'] ?></td>
-                      <td>
-                          <a href="<?= $commandeController->deleteCommande($commande['ID_commande']) ?>" class="btn">Supprimer</a>
-                         
+        <style>
+            /* Style global */
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #fdf2e7;
+                color: #1c5739;
+                margin: 0;
+                padding: 0;
+            }
 
-                          
-                      </tr>
-                      
-                  <?php
-                  }
-                  ?>
-                  
-              </tbody>
-          </table>
-          <a href="/projetweb/View/front%20office/commandes/passer_commande.php" class="btn">Nouvelle Commande</a>
-          <a href="/projetweb/View/front%20office/commandes/index.php" class="btn">Livrer les produits</a>
+            section {
+                display: flex;
+                justify-content: center;
+                align-items: flex-start;
+                min-height: 100vh;
+                background-color: #ffffff;
+                padding: 20px;
+            }
 
-      </div>
-  </section>
+            .container {
+                width: 100%;
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #fff;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                border-radius: 10px;
+                border: 2px solid #408c148d;
+                box-sizing: border-box;
+            }
+
+            h1 {
+                text-align: center;
+                color: #1c5739;
+                margin-bottom: 20px;
+            }
+
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+
+            th, td {
+                padding: 12px;
+                text-align: left;
+                border-bottom: 1px solid #ead885;
+                word-wrap: break-word;
+            }
+
+            th {
+                background-color: #1c5739;
+                color: #fdf2e7;
+                font-size: 16px;
+            }
+
+            tr:hover {
+                background-color: #ead885;
+                color: #1c5739;
+            }
+
+            /* Style pour les champs de saisie */
+            input[type="text"], 
+            input[type="number"], 
+            input[type="date"], 
+            select {
+                width: 100%;
+                padding: 10px;
+                margin-bottom: 10px;
+                border: 2px solid #4fa579;
+                border-radius: 5px;
+                background-color: #408c148d;
+                transition: background-color 0.3s, border-color 0.3s;
+                box-sizing: border-box;
+            }
+
+            input[type="text"]:hover,
+            input[type="number"]:hover,
+            input[type="date"]:hover,
+            select:hover {
+                background-color: #ead885;
+                border-color: #1c5739;
+            }
+
+            /* Style des boutons */
+            .btn {
+                display: block;
+                width: 100%; /* Ajouté pour que le bouton ait la même largeur que les champs de saisie */
+                padding: 12px 15px;
+                background-color: #4fa579;
+                color: #ffffff;
+                text-align: center;
+                text-decoration: none;
+                border-radius: 5px;
+                margin-top: 20px;
+                font-weight: bold;
+                transition: background-color 0.3s, color 0.3s;
+                box-sizing: border-box; /* Assure que les boutons respectent les dimensions du conteneur */
+            }
+
+            .btn:hover {
+                background-color: #ead885;
+                color: #1c5739;
+            }
+
+            td .btn {
+                margin-top: 5px;
+                display: inline-block;
+                width: auto;
+            }
+        </style>
+
+<table>
+    <thead>
+        <tr>
+            <th>ID Commande</th>
+            <th>Date de Commande</th>
+            <th>État</th>
+            <th>Quantité</th>
+            <th>Produit</th>
+            <th>Référence</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php
+        include_once __DIR__ . "/../../../Controller/CommandeController.php";
+        include_once __DIR__ . "/../../../Controller/ProduitController.php";
+        include_once __DIR__ . "/../../../Controller/LivraisonController.php";
+
+        $livraisonController = new Controller\LivraisonController();
+        $commandeController = new Controller\CommandeController();
+        $produitController = new Controller\ProduitController();
+
+        $commandes = $commandeController->getCommandesNotdilvered();
+
+        $delai_max = 24 * 60 * 60; // Délai en secondes (24 heures)
+
+        foreach ($commandes as $commande) {
+            // Convertir la date de la commande en timestamp
+            $date_commande = strtotime($commande['date_commande']);
+            $current_time = time(); // Temps actuel en timestamp
+            $delai_restant = $current_time - $date_commande; // Temps écoulé depuis la commande
+        ?>
+            <tr>
+                <td><?= $commande['ID_commande'] ?></td>
+                <td><?= $commande['date_commande'] ?></td>
+                <td><?= $commande['etat'] ?></td>
+                <td><?= $commande['quantite'] ?></td>
+                <td><?= $produitController->getProduitbyId($commande['id_produit'])['NomProduit'] ?></td>
+                <td><?= $commande['ref_commande'] ?></td> <!-- Affichage de la référence -->
+                <td>
+                    <?php if ($delai_restant <= $delai_max): ?>
+                        <!-- Les actions de modification et suppression sont autorisées si le délai est inférieur ou égal à 24h -->
+                        <a href="modifier_commande.php?id_commande=<?= $commande['ID_commande'] ?>" class="btn">Modifier</a>
+                        <a href="supprimer_commande.php?id_commande=<?= $commande['ID_commande'] ?>" class="btn" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette commande ?')">Supprimer</a>
+                    <?php else: ?>
+                        <!-- Les actions sont désactivées si le délai est supérieur à 24h -->
+                        <button class="btn" disabled>Modifier</button>
+                        <button class="btn" disabled>Supprimer</button>
+                    <?php endif; ?>
+                </td>
+            </tr>
+        <?php
+        }
+        ?>
+    </tbody>
+</table>
+
+        <a href="index.php" class="btn">Nouvelle Commande</a>
+        <a href="/projetweb/projetweb/View/front%20office/commandes/index1.php" class="btn">Livrer les produits</a>
+
+    </div>
+</section>
+
   
   
 
