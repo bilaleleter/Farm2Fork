@@ -218,6 +218,10 @@ if (isset($_GET['action']) && isset($_GET['id_produit'])) {
     border: 1px solid #ccc;  /* Bordure grise autour du champ de texte */
 }
 
+.compare-form button:hover {
+    background-color: #218838; /* Changement de couleur au survol */
+    transform: scale(1.05); /* Légère augmentation de taille au survol */
+}
 
 </style>
 
@@ -633,12 +637,30 @@ if (isset($_GET['action']) && isset($_GET['id_produit'])) {
         <option value="prix_asc" <?= ($tri === 'prix_asc') ? 'selected' : '' ?>>Prix (croissant)</option>
         <option value="prix_desc" <?= ($tri === 'prix_desc') ? 'selected' : '' ?>>Prix (décroissant)</option>
     </select>
+    
 </form>
 
+<form method="GET" action="../Backoffice/comparerProduits.php" class="compare-form">
+    <button type="submit" class="btn btn-sm btn-primary mt-2" 
+            style="
+                background-color: #28a745; 
+                color: white; 
+                padding: 8px 16px; 
+                border: none; 
+                border-radius: 50px; 
+                font-size: 14px; 
+                font-weight: bold; 
+                transition: background-color 0.3s ease, transform 0.3s ease;
+                box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);">
+        Comparer les produits sélectionnés
+    </button>
 
+
+
+
+     
     <div class="row">
       <div class="col-md-12">
-        
         <div class="product-grid row row-cols-1 row-cols-sm-2 row-cols-md-3 row-cols-lg-3 row-cols-xl-4 row-cols-xxl-5">
         <?php if (!empty($liste)) { ?>
     <?php foreach ($liste as $produit): ?>
@@ -661,7 +683,8 @@ if (isset($_GET['action']) && isset($_GET['id_produit'])) {
                         <span class="text-muted small">Quantité : <strong><?= htmlspecialchars($produit['quantite_produit']) ?></strong></span>
                         <span class="text-muted small">Stock : <strong><?= htmlspecialchars($produit['stock_produit']) ?></strong></span>
                     </div>
-                   
+                    <input type="checkbox" name="produits[]" value="<?= $produit['id_produit'] ?>" />
+                    <label for="compare">Comparer</label>
                     <a href="index.php?action=<?= in_array($produit['id_produit'], $_SESSION['favoris']) ? 'remove_favoris' : 'add_favoris' ?>&id_produit=<?= $produit['id_produit'] ?>" 
                    class="btn btn-outline-secondary btn-sm d-flex align-items-center justify-content-center gap-1">
                     <svg class="icon" width="18" height="18">
@@ -874,5 +897,23 @@ if (isset($_GET['action']) && isset($_GET['id_produit'])) {
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>
     <script src="js/plugins.js"></script>
     <script src="js/script.js"></script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const checkboxes = document.querySelectorAll('input[name="produits[]"]');
+        checkboxes.forEach(checkbox => {
+            checkbox.addEventListener('change', function () {
+                const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+                if (checkedCount > 2) {
+                    alert("Vous ne pouvez comparer que 2 produits à la fois.");
+                    this.checked = false; // Décocher la dernière checkbox
+                }
+            });
+        });
+    });
+</script>
+
+<script src="https://cdn.botpress.cloud/webchat/v2.2/inject.js"></script>
+<script src="https://files.bpcontent.cloud/2024/12/04/12/20241204125303-O4NIIS3P.js"></script>
+    
   </body>
 </html>
