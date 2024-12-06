@@ -17,7 +17,8 @@ $liste = $produitcontroller->listeProduit($id_categorie);
 <head>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-  <link rel="apple-touch-icon" sizes="76x76" href="./assets/img/apple-icon.png">
+<link rel="stylesheet" href="styles.css">  
+<link rel="apple-touch-icon" sizes="76x76" href="./assets/img/apple-icon.png">
   <link rel="icon" type="image/png" href="./assets/img/favicon.png">
   <title>
     Liste de produit
@@ -39,6 +40,121 @@ $liste = $produitcontroller->listeProduit($id_categorie);
   <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
   <!-- CSS Files -->
   <link id="pagestyle" href="./assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
+  <style>
+
+/* General table styling */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+    background-color: transparent !important; 
+    border: none;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+}
+
+/* Header styling */
+th {
+    background-color: #333;
+    color: #fff;
+    text-transform: uppercase;
+    font-size: 0.9em;
+}
+
+/* Row hover effect */
+tr:hover {
+    background-color: #f1f1f1;
+}
+
+/* Cell description styling */
+td.description {
+    max-width: 250px;
+    word-wrap: break-word;
+    white-space: normal;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+/* Button styling */
+button, .btn {
+    padding: 8px 16px;
+    font-size: 0.9em;
+    border-radius: 4px;
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+button:hover, .btn:hover {
+    background-color: #0056b3; /* Primary hover color */
+    transform: translateY(-2px);
+}
+
+/* Style for the form */
+form {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+form select, form button {
+    padding: 8px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+    box-sizing: border-box;
+}
+
+/* Form select and button hover */
+form select:hover, form button:hover {
+    border-color: #0056b3;
+}
+
+/* Styling for images */
+td img {
+    width: 100px;
+    height: auto;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    th, td {
+        padding: 8px;
+        font-size: 0.8em;
+    }
+
+    td img {
+        width: 80px;
+    }
+
+    form {
+        flex-direction: column;
+    }
+
+    form select, form button {
+        width: 100%;
+        margin-bottom: 10px;
+    }
+}
+
+.card{
+  background-color: transparent !important;
+  box-shadow: none;
+  border: none;
+}
+.card-header {
+  background-color: transparent;
+}
+  </style>
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
