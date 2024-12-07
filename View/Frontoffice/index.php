@@ -223,10 +223,78 @@ if (isset($_GET['action']) && isset($_GET['id_produit'])) {
     transform: scale(1.05); /* Légère augmentation de taille au survol */
 }
 
+/* Styles pour le modal "À propos de nous" */
+.about-modal .modal-content {
+  background-color: #fdf2e7; /* Beige clair */
+  padding: 20px;
+  border-radius: 15px;
+  max-width: 600px;
+  width: 90%;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+  color: #1c5739; /* Vert sapin pour le texte */
+  animation: slideIn 0.4s ease-out;
+}
+
+/* Titre du modal */
+.about-modal-title {
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 15px;
+  color: #ead885; /* Jaune sable */
+  text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+}
+
+/* Texte du modal */
+.about-modal-body {
+  font-size: 1.1rem;
+  line-height: 1.8;
+  margin-bottom: 20px;
+  color: #1c5739; /* Texte en vert sapin */
+}
+
+/* Bouton de fermeture */
+.close-btn {
+  position: absolute;
+  top: 10px;
+  right: 15px;
+  font-size: 24px;
+  font-weight: bold;
+  color: #fdf2e7; /* Blanc cassé pour le bouton */
+  cursor: pointer;
+  background: #1c5739; /* Vert sapin */
+  border: none;
+  border-radius: 50%;
+  width: 30px;
+  height: 30px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+  transition: transform 0.3s ease, background-color 0.3s ease;
+}
+
+.close-btn:hover {
+  transform: scale(1.2); /* Effet de zoom au survol */
+  background: #ead885; /* Jaune sable */
+  color: #1c5739; /* Vert sapin */
+}
+
+/* Animation d'ouverture */
+@keyframes slideIn {
+  0% {
+    transform: translateY(-50%);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
 </style>
 
   </head>
-  <body>
+  <body style="background-color: #fdf2e7;">
 
     <svg xmlns="http://www.w3.org/2000/svg" style="display: none;">
       <defs>
@@ -384,19 +452,19 @@ if (isset($_GET['action']) && isset($_GET['id_produit'])) {
     
         <ul class="navbar-nav justify-content-end menu-list list-unstyled d-flex gap-md-3 mb-0">
           <li class="nav-item border-dashed active">
-            <a href="index.html" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
+            <a href="?categorie=1" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
               <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#fruits"></use></svg>
               <span>Fruits et Légumes</span>
             </a>
           </li>
           <li class="nav-item border-dashed">
-            <a href="index.html" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
+            <a href="?categorie=2" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
               <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#dairy"></use></svg>
               <span>Produits Laitiers</span>
             </a>
           </li>
           <li class="nav-item border-dashed">
-            <a href="index.html" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
+            <a href="?categorie=3" class="nav-link d-flex align-items-center gap-3 text-dark p-2">
               <svg width="24" height="24" viewBox="0 0 24 24"><use xlink:href="#meat"></use></svg>
               <span>Viandes</span>
             </a>
@@ -461,9 +529,6 @@ if (isset($_GET['action']) && isset($_GET['id_produit'])) {
           <div class="col-lg-6 pt-5 mt-5">
             <h2 class="display-1 ls-1"><span class="fw-bold text-primary">Farm2Fork</span> Mangez <span class="fw-bold">local</span>, pensez  <span class="fw-bold"> global.</span></h2>
             <p class="fs-4">Découvrez une large sélection de produits frais et locaux, soigneusement sélectionnés pour vous.</p>
-            <div class="d-flex gap-3">
-              <a href="#" class="btn btn-primary text-uppercase fs-6 rounded-pill px-4 py-3 mt-3">Start Shopping</a>
-            </div>
            
 
 
@@ -471,19 +536,19 @@ if (isset($_GET['action']) && isset($_GET['id_produit'])) {
               <div class="col">
                 <div class="row text-dark">
                   <div class="col-auto"><p class="fs-1 fw-bold lh-sm mb-0">14k+</p></div>
-                  <div class="col"><p class="text-uppercase lh-sm mb-0">Product Varieties</p></div>
+                  <div class="col"><p class="text-uppercase lh-sm mb-0">Variétés de Produits</p></div>
                 </div>
               </div>
               <div class="col">
                 <div class="row text-dark">
                   <div class="col-auto"><p class="fs-1 fw-bold lh-sm mb-0">50k+</p></div>
-                  <div class="col"><p class="text-uppercase lh-sm mb-0">Happy Customers</p></div>
+                  <div class="col"><p class="text-uppercase lh-sm mb-0">Clients Satisfaits</p></div>
                 </div>
               </div>
               <div class="col">
                 <div class="row text-dark">
-                  <div class="col-auto"><p class="fs-1 fw-bold lh-sm mb-0">10+</p></div>
-                  <div class="col"><p class="text-uppercase lh-sm mb-0">Store Locations</p></div>
+                  <div class="col-auto"><p class="fs-1 fw-bold lh-sm mb-0">15+</p></div>
+                  <div class="col"><p class="text-uppercase lh-sm mb-0">Fermes Partenaires</p></div>
                 </div>
               </div>
             </div>
@@ -868,9 +933,9 @@ if (isset($_GET['action']) && isset($_GET['id_produit'])) {
             <div class="footer-menu">
               <h5 class="widget-title">Farm2Fork</h5>
               <ul class="menu-list list-unstyled">
-                <li class="menu-item">
-                  <a href="#" class="nav-link">À propos de nous</a>
-                </li>
+              <li class="menu-item">
+              <a href="javascript:void(0);" class="nav-link" onclick="openModal()">À propos de nous</a>
+              </li>
                 <li class="menu-item">
                   <a href="#" class="nav-link">Conditions </a>
                 </li>
@@ -892,6 +957,46 @@ if (isset($_GET['action']) && isset($_GET['id_produit'])) {
         </div>
       </div>
     </div>
+    <div class="modal about-modal" id="aboutModal">
+  <div class="modal-content">
+    <span class="close-btn" onclick="closeModal()">&times;</span>
+    <h2 class="modal-title">À propos de Farm2Fork</h2>
+    <p class="modal-body">
+      Bienvenue sur Farm2Fork !
+      <br>
+      
+      Nous sommes dédiés à rapprocher l'agriculture et votre assiette en vous proposant des produits frais, sains, et biologiques, directement issus des exploitations agricoles.
+     <br><br>
+     Notre mission est de promouvoir une alimentation durable et de qualité en établissant un lien de confiance entre les producteurs locaux et nos clients. Grâce à Farm2Fork, vous accédez à une sélection de fruits, légumes, produits laitiers, et bien plus encore, soigneusement cultivés dans le respect de l'environnement et sans intermédiaires inutiles.
+      <br><br>
+      Avec Farm2Fork, faites le choix d'une alimentation authentique, soutenez les agriculteurs locaux, et contribuez à un avenir plus vert. Du champ à la fourchette, la fraîcheur et la qualité sont nos priorités !
+    </p>
+  </div>
+</div>
+
+  <script>
+   // Fonction pour ouvrir le modal
+function openModal() {
+  const modal = document.getElementById("aboutModal");
+  modal.style.display = "flex"; // Affiche la fenêtre modale
+}
+
+// Fonction pour fermer le modal
+function closeModal() {
+  const modal = document.getElementById("aboutModal");
+  modal.style.display = "none"; // Cache la fenêtre modale
+}
+
+// Fermer le modal si on clique à l'extérieur du contenu
+window.onclick = function (event) {
+  const modal = document.getElementById("aboutModal");
+  if (event.target === modal) {
+    modal.style.display = "none";
+  }
+};
+
+
+  </script>
     <script src="js/jquery-1.11.0.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/swiper@9/swiper-bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ENjdO4Dr2bkBIFxQpeoTz1HIcje39Wm4jDKdf19U8gI4ddQ3GYNS7NTKfAdVQSZe" crossorigin="anonymous"></script>

@@ -3,12 +3,16 @@ include './../../Controller/ProduitController.php';
 
 $produitcontroller = new ProduitController();
 
+$searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+
+
+
 // Récupérer toutes les catégories
 $categories = $produitcontroller->getAllCategories();
 
 // Récupérer la liste des produits, filtrée ou non par catégorie
-$id_categorie = isset($_GET['categorie']) ? $_GET['categorie'] : null;
-$liste = $produitcontroller->listeProduit($id_categorie);
+$id_categorie =isset($_GET['categorie']) ? intval($_GET['categorie']) : null;
+$liste = $id_categorie ? $produitcontroller->listeProduit($id_categorie, $searchTerm) : $produitcontroller->listeProduit(null, $searchTerm);
 ?>
 
 <!DOCTYPE html>
@@ -222,8 +226,15 @@ td img {
             </option>
         <?php } ?>
     </select>
+    <div class="input-group mx-2">
+        <span class="input-group-text" id="basic-addon1">
+            <i class="fa fa-search" aria-hidden="true"></i>
+        </span>
+        <input type="text" name="search" id="search" class="form-control" placeholder="Rechercher un produit..." value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>" />
+    </div>
     <button type="submit">Filtrer</button>
 </form>
+
 
             <div class="card-body">
             <table class="table table-bordered align-middle text-center">
