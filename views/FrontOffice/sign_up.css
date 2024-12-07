@@ -322,3 +322,64 @@ spline-viewer {
   z-index: 1;
   /*pointer-events: none; makhaletnich nhoveri aal buttons*/
 }
+/* Container holding the face recognition elements */
+.face-recognition-container {
+  margin-top: 20px; /* Spacing from previous elements */
+  text-align: center; /* Center-align all elements */
+}
+
+/* Style for the face recognition button */
+.face-recognition-btn {
+  background-color: #EAD885; /* Green background */
+  color: #1c5739; /* White text */
+  border: none; /* No border */
+  padding: 10px 20px; /* Comfortable padding */
+  border-radius: 15px; /* Rounded corners */
+  font-size: 16px; /* Readable text size */
+  cursor: pointer; /* Cursor indicates clickable */
+  display: inline-block; /* Aligns well with other inline or inline-block elements */
+  transition: 0.9s ease; /* Smooth color and press effects */
+  outline: none; /* Removes the outline */
+  position: relative; /* For positioning the nested icon */
+}
+
+.face-recognition-btn:hover {
+  background-color: #1c5739; /* Darker green on hover */
+  color: white;
+  border-radius: 40px;
+  border: 1px solid #EAD885;
+  box-shadow: #043623;
+}
+
+.face-recognition-btn:active {
+  transform: scale(0.96); /* Slight shrink effect */
+}
+
+/* Icon inside the button */
+#face-icon {
+  width: 24px; /* Set the icon size */
+  height: 24px; /* Set the icon size */
+  vertical-align: middle; /* Aligns icon vertically with the text */
+  margin-right: 8px; /* Space between icon and text */
+}
+
+/* Video element styling */
+#video {
+  border-radius: 8px; /* Rounded corners for the video feed */
+  margin-top: 10px; /* Space between button and video */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for depth */
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+  align-self: center;
+  align-items: center;
+}
+
+/* Canvas element for capturing images, hidden by default */
+#canvas{
+  align-self: center;
+  align-items: center;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+}

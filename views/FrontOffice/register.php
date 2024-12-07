@@ -26,6 +26,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $city = $_POST[$role == '1' ? 'city_agri' : 'city_cons'];
     $address = $_POST[$role == '1' ? 'address_agri' : 'address_cons'];
     $profile_pic = $_FILES[$role == '1' ? 'profile_pic_agri':'profile_pic_cons'];
+    if($role == '1' && isset($_POST['face_id_agri']) && !empty($_POST['face_id_agri'])){
+        $faceId = $_POST['face_id_agri'];
+
+    }
+
+    if(isset($_POST['face_id']) && !empty($_POST['face_id'])){
+        $faceId = $_POST['face_id'];
+    }
+    else if($role == '2' && isset($_POST['face_id_cons']) && !empty($_POST['face_id_cons'])){
+        $faceId = $_POST['face_id_cons'];
+    }
+    else{
+        $faceId = null;//mahouch obligatoire
+    }
     if ($role == '1') {
         $farm_name = $_POST['nom_ferme_agri'];
         $farm_owner_name = $_POST['nom_prop_agri'];
@@ -41,7 +55,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $farm_description = NULL;
         $farm_owner_name = NULL;
     }
-
     $ban_until = NULL;
     $farm_pics = NULL;
     $farm_vids = NULL;
@@ -51,7 +64,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $fileName = basename($profile_pic['name']);
         $pathParts = pathinfo($fileName);
         $ext = strtolower($pathParts['extension']);
-
         // Validate file extension
         $allowedExts = ['jpg', 'jpeg', 'png', 'gif'];
         if (in_array($ext, $allowedExts)) {
@@ -93,18 +105,45 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $farm_vids,
         $farm_name,
         $farm_description,
-        farm_owner_name: $farm_owner_name
+        farm_owner_name: $farm_owner_name,
+        faceId: $faceId
+        
     );
     $result = $controller->addUser($userModel);
     if ($result == true) {
+        //zid face id lel face set
+        if ($faceId != null) {
+
+            $addFaceUrl = 'https://api-us.faceplusplus.com/facepp/v3/faceset/addface';
+            $addFaceData = [
+                'api_key' => "EGYeUcNwMWXyt1YYLi4c3Gmg9jTQwgNr",
+                'api_secret' => "aPAi53hLbQfUOa0ZmDibf9k51g6ZGPhZ",
+                'faceset_token' => "6599868f1faabcd5263dcc12b1d59659",
+                'face_tokens' => $faceId
+            ];
+
+            $options = [
+                'http' => [
+                    'header'  => "Content-type: application/x-www-form-urlencoded\r\n",
+                    'method'  => 'POST',
+                    'content' => http_build_query($addFaceData)
+                ]
+            ];
+            $context = stream_context_create($options);
+            $addFaceResult = file_get_contents($addFaceUrl, false, $context);
+
+            if ($addFaceResult === FALSE) {
+                echo json_encode(['success' => false, 'message' => 'Failed to add face to FaceSet.']);
+            }
+        }
         $_SESSION['user_id'] = $controller->getLastInsertId();
         $_SESSION['role'] = $role;
-        $_SESSION['email'] = $user['email'];
+        $_SESSION['email'] = $email;
         $_SESSION['logged_in'] = true;
 
         $redirectUrl = match ($role) {
-            '1' => '../BackOffice\template/pages/agriculteur_profile.php',
-            '2' => '../BackOffice\template/pages/consomateur_profile.php',
+            '1' => '../BackOffice/template/pages/agriculteur_profile.php',
+            '2' => '../BackOffice/template/pages/consomateur_profile.php',
             default => 'start_page.php',
         };
 

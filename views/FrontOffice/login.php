@@ -27,7 +27,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             $_SESSION['logged_in'] = true;
             $user_role  = $user['role_id'];
             $redirectUrl = match ($user_role) {
-                1 => '../BackOffice\template/pages/agriculteur_profile.php',
+                1 => '../BackOffice/template/pages/agriculteur_profile.php',
                 2 => '../BackOffice/template/pages/consomateur_profile.php',
                 0 => '../BackOffice/template/pages/user_management.php',
                 default => 'start_page.php',

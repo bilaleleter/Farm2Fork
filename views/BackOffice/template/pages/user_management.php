@@ -53,7 +53,6 @@ $agriculteurs = $userController->getAgriculteurs();
   label {
     color: #e91e63 !important;
   }
-
 </style>
 
 <body class="g-sidenav-show bg-gray-100">
@@ -273,7 +272,11 @@ $agriculteurs = $userController->getAgriculteurs();
                     </thead>
                     <tbody>
                       <?php foreach ($consommateurs as $user): ?>
-                        <tr>
+                        <tr <?php if ($user['ban_until'] != null && new DateTime($user['ban_until']) > new DateTime())
+                          echo 'style="background-color: #f8d7da; /* Light red */
+    color: #721c24; /* Dark red */
+    font-style: italic; "'; ?>>
+
                           <td>
                             <img src="../../../FrontOffice/<?php echo htmlspecialchars($user['profile_pic']) ?>"
                               class="avatar avatar-sm me-3" alt="user">
@@ -292,16 +295,17 @@ $agriculteurs = $userController->getAgriculteurs();
                             </form>
 
                             <?php if ($user['ban_until'] && new DateTime($user['ban_until']) > new DateTime()): ?>
-                              <form method="post" action="../../unban_user.php" class="btn btn-success btn-sm"
-                                style="display: inline;">
+                              <form method="post" action="../../unban_user.php" style="background-color:blueviolet;"
+                                class="btn btn-success btn-sm">
                                 <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
-                                <button type="submit" name="unban" class="btn btn-success btn-sm">Unban</button>
+                                <button type="submit" name="unban" style="margin:0px; background-color: blueviolet; "
+                                  class="btn btn-success btn-sm">Unban</button>
                               </form>
                             <?php else: ?>
                               <form class="btn btn-warning btn-sm">
 
-                                <button type="button" onclick="showBanModal(<?= $user['user_id'] ?>)" class="btn btn-warning btn-sm"
-                                  style="margin:0px;">Ban</button>
+                                <button type="button" onclick="showBanModal(<?= $user['user_id'] ?>)"
+                                  class="btn btn-warning btn-sm" style="margin:0px;">Ban</button>
                               </form>
                             <?php endif; ?>
 
@@ -333,7 +337,11 @@ $agriculteurs = $userController->getAgriculteurs();
                     </thead>
                     <tbody>
                       <?php foreach ($agriculteurs as $user): ?>
-                        <tr>
+                        <tr <?php if ($user['ban_until'] != null && new DateTime($user['ban_until']) > new DateTime())
+                          echo 'style="background-color: #f8d7da; /* Light red */
+    color: #721c24; /* Dark red */
+    font-style: italic; "'; ?>>
+
                           <td>
                             <img src="../../../FrontOffice/<?php echo htmlspecialchars($user['profile_pic']) ?>"
                               class="avatar avatar-sm me-3" alt="user">
@@ -350,16 +358,17 @@ $agriculteurs = $userController->getAgriculteurs();
                             </form>
 
                             <?php if ($user['ban_until'] && new DateTime($user['ban_until']) > new DateTime()): ?>
-                              <form method="post" action="../../unban_user.php" class="btn btn-success btn-sm"
-                                style="display: inline;">
+                              <form method="post" action="../../unban_user.php" style="background-color:blueviolet;"
+                                class="btn btn-success btn-sm">
                                 <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
-                                <button type="submit" name="unban" class="btn btn-success btn-sm">Unban</button>
+                                <button type="submit" name="unban" style="margin:0px; background-color: blueviolet; "
+                                  class="btn btn-success btn-sm">Unban</button>
                               </form>
                             <?php else: ?>
                               <form class="btn btn-warning btn-sm">
 
-                                <button type="button" onclick="showBanModal(<?= $user['user_id'] ?>)" class="btn btn-warning btn-sm"
-                                  style="margin:0px;">Ban</button>
+                                <button type="button" onclick="showBanModal(<?= $user['user_id'] ?>)"
+                                  class="btn btn-warning btn-sm" style="margin:0px;">Ban</button>
                               </form>
                             <?php endif; ?>
 
@@ -843,7 +852,10 @@ $agriculteurs = $userController->getAgriculteurs();
         console.log("user fetched: ", user);
         if (user.role_id === 1) { // Agriculteur
           userRow = `
-                <tr>
+                <tr <?php if ($user['ban_until'] != null && new DateTime($user['ban_until']) > new DateTime())
+                  echo 'style="background-color: #f8d7da; /* Light red */
+    color: #721c24; /* Dark red */
+    font-style: italic; "'; ?>>
                     <td><img src="${user.profile_pic}" class="avatar avatar-sm me-3" alt="user">${user.farm_name}</td>
                     <td>${user.farm_owner_name}</td>
                     <td>${user.email}</td>
@@ -856,19 +868,19 @@ $agriculteurs = $userController->getAgriculteurs();
                             </form>
 
                             <?php if ($user['ban_until'] && new DateTime($user['ban_until']) > new DateTime()): ?>
-                              <form method="post" action="../../unban_user.php" class="btn btn-success btn-sm"
-                                style="display: inline;">
+                              <form method="post" action="../../unban_user.php" style="background-color:blueviolet;"
+                                class="btn btn-success btn-sm">
                                 <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
-                                <button type="submit" name="unban" class="btn btn-success btn-sm">Unban</button>
+                                <button type="submit" name="unban" style="margin:0px; background-color: blueviolet; "
+                                  class="btn btn-success btn-sm">Unban</button>
                               </form>
                             <?php else: ?>
                               <form class="btn btn-warning btn-sm">
 
-                                <button type="button" onclick="showBanModal(<?= $user['user_id'] ?>)" class="btn btn-warning btn-sm"
-                                  style="margin:0px;">Ban</button>
+                                <button type="button" onclick="showBanModal(<?= $user['user_id'] ?>)"
+                                  class="btn btn-warning btn-sm" style="margin:0px;">Ban</button>
                               </form>
                             <?php endif; ?>
-
                             <form method="POST" action="../../delete_user.php" class="btn btn-danger btn-sm"
                               onsubmit="return confirm('Are you sure you want to delete this user?');">
                               <input type="hidden" name="user_id" value="${user.user_id}">
@@ -882,7 +894,10 @@ $agriculteurs = $userController->getAgriculteurs();
           agriculteurTable.insertAdjacentHTML('beforeend', userRow);
         } else if (user.role_id === 2) { // Consommateur
           userRow = `
-                <tr>
+                <tr <?php if ($user['ban_until'] != null && new DateTime($user['ban_until']) > new DateTime())
+                  echo 'style="background-color: #f8d7da; /* Light red */
+    color: #721c24; /* Dark red */
+    font-style: italic; "'; ?>>
                     <td><img src="${user.profile_pic}" class="avatar avatar-sm me-3" alt="user">${user.nom_consomateur} ${user.prenom_consomateur}</td>
                     <td>${user.email}</td>
                     <td>${user.phone_number} (${user.country})</td>
@@ -895,16 +910,17 @@ $agriculteurs = $userController->getAgriculteurs();
                             </form>
 
                             <?php if ($user['ban_until'] && new DateTime($user['ban_until']) > new DateTime()): ?>
-                              <form method="post" action="../../unban_user.php" class="btn btn-success btn-sm"
-                                style="display: inline;">
+                              <form method="post" action="../../unban_user.php" style="background-color:blueviolet;"
+                                class="btn btn-success btn-sm">
                                 <input type="hidden" name="user_id" value="<?= $user['user_id'] ?>">
-                                <button type="submit" name="unban" class="btn btn-success btn-sm">Unban</button>
+                                <button type="submit" name="unban" style="margin:0px; background-color: blueviolet; "
+                                  class="btn btn-success btn-sm">Unban</button>
                               </form>
                             <?php else: ?>
                               <form class="btn btn-warning btn-sm">
 
-                                <button type="button" onclick="showBanModal(<?= $user['user_id'] ?>)" class="btn btn-warning btn-sm"
-                                  style="margin:0px;">Ban</button>
+                                <button type="button" onclick="showBanModal(<?= $user['user_id'] ?>)"
+                                  class="btn btn-warning btn-sm" style="margin:0px;">Ban</button>
                               </form>
                             <?php endif; ?>
 
@@ -970,85 +986,103 @@ $agriculteurs = $userController->getAgriculteurs();
 
 
   </script>
-<style>
-  .alert {
-    position: fixed;
-    top: 20px; /* Distance from top */
-    right: 20px; /* Distance from right */
-    border: 1px solid transparent;
-    border-radius: 4px;
-    padding: 10px;
-    z-index: 1050; /* Make sure it's above other content */
-    box-shadow: 0 4px 6px rgba(0,0,0,.1); /* Slight shadow for 3D effect */
-    animation: slideInFromRight 0.5s ease-in-out;
-    width: auto; /* Auto width based on content */
-    max-width: 300px; /* Maximum width */
-    display: inline-block;
-    color: #fff; /* White text color */
-}
-
-/* Animation for alert sliding in */
-@keyframes slideInFromRight {
-    0% {
-        right: -50%; /* Start from outside the right */
+  <style>
+    .alert {
+      position: fixed;
+      top: 20px;
+      /* Distance from top */
+      right: 20px;
+      /* Distance from right */
+      border: 1px solid transparent;
+      border-radius: 4px;
+      padding: 10px;
+      z-index: 1050;
+      /* Make sure it's above other content */
+      box-shadow: 0 4px 6px rgba(0, 0, 0, .1);
+      /* Slight shadow for 3D effect */
+      animation: slideInFromRight 0.5s ease-in-out;
+      width: auto;
+      /* Auto width based on content */
+      max-width: 300px;
+      /* Maximum width */
+      display: inline-block;
+      color: #fff;
+      /* White text color */
     }
-    100% {
-        right: 20px; /* Settle in its place */
+
+    /* Animation for alert sliding in */
+    @keyframes slideInFromRight {
+      0% {
+        right: -50%;
+        /* Start from outside the right */
+      }
+
+      100% {
+        right: 20px;
+        /* Settle in its place */
+      }
     }
-}
 
-.alert-success {
-    background-color: #28a745; /* Green for success */
-}
+    .alert-success {
+      background-color: #28a745;
+      /* Green for success */
+    }
 
-.alert-danger {
-    background-color: #dc3545; /* Red for danger/error */
-}
+    .alert-danger {
+      background-color: #dc3545;
+      /* Red for danger/error */
+    }
 
-.alert-info {
-    background-color: #17a2b8; /* Blue for information */
-}
+    .alert-info {
+      background-color: #17a2b8;
+      /* Blue for information */
+    }
 
-.alert-warning {
-    background-color: #ffc107; /* Yellow for warning */
-}
+    .alert-warning {
+      background-color: #ffc107;
+      /* Yellow for warning */
+    }
 
-/* Close button styling */
-.alert .close {
-    cursor: pointer;
-    background-color: transparent;
-    border: 0;
-    color: #fff; /* White color for close button */
-    opacity: 0.8;
-    font-size: 20px; /* Larger close button */
-}
+    /* Close button styling */
+    .alert .close {
+      cursor: pointer;
+      background-color: transparent;
+      border: 0;
+      color: #fff;
+      /* White color for close button */
+      opacity: 0.8;
+      font-size: 20px;
+      /* Larger close button */
+    }
 
-.alert .close:hover {
-    opacity: 1; /* Fully opaque on hover */
-}
-</style>
+    .alert .close:hover {
+      opacity: 1;
+      /* Fully opaque on hover */
+    }
+  </style>
   <script>
     function showBanModal(userId) {
-    console.log("Function called for user ID:", userId);  // Check if this logs correctly when you click the ban button
-    const formHtml = `
+      console.log("Function called for user ID:", userId);  // Check if this logs correctly when you click the ban button
+      const formHtml = `
         <form id="banForm" action="../../ban_user.php" method="post">
             <input type="hidden" name="user_id" value="${userId}">
             <div class="mb-3">
                 <label for="ban_until" class="form-label">Ban Until:</label>
-                <input type="date" id="ban_until"  class="form-control" name="ban_until" id="ban_until" min="<?php $date = new DateTime(); echo $date->format('Y-m-d'); ?>" required>
+                <input type="date" id="ban_until"  class="form-control" name="ban_until" id="ban_until" min="<?php $date = new DateTime();
+                echo $date->format('Y-m-d'); ?>" required>
             </div>
         </form>
     `;
-    document.querySelector('#banUserModal .modal-body').innerHTML = formHtml;
-    var banModal = new bootstrap.Modal(document.getElementById('banUserModal'));
-    banModal.show();
-}
+      document.querySelector('#banUserModal .modal-body').innerHTML = formHtml;
+      var banModal = new bootstrap.Modal(document.getElementById('banUserModal'));
+      banModal.show();
+    }
 
 
   </script>
   <script>
-document.addEventListener("DOMContentLoaded", function() {
-    function displayAlert(message, type) {
+    document.addEventListener("DOMContentLoaded", function () {
+      function displayAlert(message, type) {
         const alertBox = document.createElement('div');
         alertBox.classList.add('alert', `alert-${type}`);
         alertBox.innerHTML = `
@@ -1059,29 +1093,29 @@ document.addEventListener("DOMContentLoaded", function() {
         `;
 
         document.body.appendChild(alertBox); // Append to the body or to a specific div if required
-    }
+      }
 
-    // Function to fetch query parameters from the URL
-    function getQueryParams() {
+      // Function to fetch query parameters from the URL
+      function getQueryParams() {
         var params = {};
         var parser = document.createElement('a');
         parser.href = window.location.href;
         var query = parser.search.substring(1);
         var vars = query.split('&');
         for (var i = 0; i < vars.length; i++) {
-            var pair = vars[i].split('=');
-            params[pair[0]] = decodeURIComponent(pair[1]);
+          var pair = vars[i].split('=');
+          params[pair[0]] = decodeURIComponent(pair[1]);
         }
         return params;
-    }
+      }
 
-    // Get message from URL parameters and display it
-    var params = getQueryParams();
-    if (params.message) {
+      // Get message from URL parameters and display it
+      var params = getQueryParams();
+      if (params.message) {
         displayAlert(params.message, params.status || 'info'); // Default type is 'info'
-    }
-});
-</script>
+      }
+    });
+  </script>
 
 
 </body>

@@ -20,12 +20,14 @@ class UserModel {
     private ?string $farm_description;
 
     private ?string $farm_owner_name;
+
+    private ?string $faceId;
     // Constructor
     public function __construct(?int $user_id = null, ?int $role_id = null, ?string $nom_consomateur = null, ?string $prenom_consomateur = null,
                                 ?string $phone_number = null, ?string $email = null, ?string $password = null, ?string $country = null, 
                                 ?string $city = null, ?string $address = null, ?string $profile_pic = null, ?DateTime $ban_until = null, 
                                 ?string $genre = null, ?string $farm_pics = null, ?string $farm_vids = null, ?string $farm_name = null, 
-                                ?string $farm_description = null, ?string $farm_owner_name = null) {
+                                ?string $farm_description = null, ?string $farm_owner_name = null, ?string $faceId=null) {
         $this->user_id = $user_id;
         $this->role_id = $role_id;
         $this->nom_consomateur = $nom_consomateur;
@@ -44,6 +46,7 @@ class UserModel {
         $this->farm_name = $farm_name;
         $this->farm_description = $farm_description;
         $this->farm_owner_name = $farm_owner_name;
+        $this->faceId = $faceId;
     }
 
     // Getters and setters for each property
@@ -189,6 +192,13 @@ class UserModel {
 
     public function setFarmOwnerName(?string $farm_owner_name): void {
         $this->farm_owner_name = $farm_owner_name;
+    }
+    public function getFaceId(): ?string {
+        return $this->faceId;
+    }
+
+    public function setFaceId(?string $faceId): void {
+        $this->faceId= $faceId;
     }
 }
 ?>

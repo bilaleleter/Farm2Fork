@@ -29,6 +29,7 @@ CREATE TABLE Utilisateur (
     farm_name VARCHAR(255) NULL,      
     farm_description TEXT NULL,  
     farm_owner_name VARCHAR(255) NULL;     
+    faceId VARCHAR(255) NULL;
     CONSTRAINT fk_role FOREIGN KEY (role_id) REFERENCES Role(role_id) 
 );
 

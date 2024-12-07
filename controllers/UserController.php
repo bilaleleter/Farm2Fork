@@ -45,7 +45,7 @@ class UserController
         $hashedPassword = password_hash($user->getPassword(), PASSWORD_DEFAULT);
         //var_dump($user);
 
-        $sql = "INSERT INTO Utilisateur(role_id, email, password, phone_number, country, city, address, profile_pic, farm_name, farm_description, genre, nom_consomateur, prenom_consomateur, farm_owner_name) VALUES (:role_id, :email, :password, :phone_number, :country, :city, :address, :profile_pic, :farm_name, :farm_description, :genre, :nom_consomateur, :prenom_consomateur, :farm_owner_name)";
+        $sql = "INSERT INTO Utilisateur(role_id, email, password, phone_number, country, city, address, profile_pic, farm_name, farm_description, genre, nom_consomateur, prenom_consomateur, farm_owner_name, faceId) VALUES (:role_id, :email, :password, :phone_number, :country, :city, :address, :profile_pic, :farm_name, :farm_description, :genre, :nom_consomateur, :prenom_consomateur, :farm_owner_name, :faceId)";
         try {
             $query = $this->db->prepare($sql);
             return $query->execute([
@@ -63,6 +63,7 @@ class UserController
                 'nom_consomateur' => $user->getNomConsomateur(),
                 'prenom_consomateur' => $user->getPrenomConsomateur(),
                 'farm_owner_name' => $user->getFarmOwnerName(),
+                'faceId' => $user->getFaceId()
             ]);
         } catch (PDOException $e) {
             return false;
@@ -74,7 +75,7 @@ class UserController
     {
         //var_dump($user);
 
-        $sql = "UPDATE Utilisateur SET role_id = :role_id, email = :email, password = :password, phone_number = :phone_number, country = :country, city = :city, address = :address, profile_pic = :profile_pic, farm_name = :farm_name, farm_description = :farm_description, genre = :genre, nom_consomateur = :nom_consomateur, prenom_consomateur = :prenom_consomateur, farm_owner_name=:farm_owner_name WHERE user_id = :user_id";
+        $sql = "UPDATE Utilisateur SET role_id = :role_id, email = :email, password = :password, phone_number = :phone_number, country = :country, city = :city, address = :address, profile_pic = :profile_pic, farm_name = :farm_name, farm_description = :farm_description, genre = :genre, nom_consomateur = :nom_consomateur, prenom_consomateur = :prenom_consomateur, farm_owner_name=:farm_owner_name, faceId = :faceId WHERE user_id = :user_id";
         try {
             $query = $this->db->prepare($sql);
             return $query->execute([
@@ -92,7 +93,8 @@ class UserController
                 'genre' => $user->getGenre(),
                 'nom_consomateur' => $user->getNomConsomateur(),
                 'prenom_consomateur' => $user->getPrenomConsomateur(),
-                'farm_owner_name'=> $user->getFarmOwnerName()
+                'farm_owner_name'=> $user->getFarmOwnerName(),
+                'faceId' => $user->getFaceId()
             ]);
         } catch (PDOException $e) {
             echo 'Error: ' . $e->getMessage();
@@ -279,4 +281,24 @@ public function unbanUser($user_id) {
     return $stmt->execute();
 }
     
+
+
+public function getUserByFaceId($faceId) {
+    $sql = "SELECT * FROM Utilisateur WHERE faceId = :face_id";
+    try {
+        $stmt = $this->db->prepare($sql);
+        $stmt->bindParam(':face_id', $faceId, PDO::PARAM_STR);
+        $stmt->execute();
+        return $stmt->fetch(PDO::FETCH_ASSOC);
+    } catch (PDOException $e) {
+        error_log("Error in getUserByFaceId: " . $e->getMessage());
+        return null;
+    }
 }
+
+
+
+
+}
+
+

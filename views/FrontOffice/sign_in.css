@@ -23,6 +23,8 @@ form {
   border: 1px solid #1c5739;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(28, 87, 57, 0.2);
+  animation: movingBorder 6s infinite ease; /* Apply the animation */
+
 }
 
 h1 {
@@ -74,11 +76,13 @@ textarea::placeholder {
   border-radius: 5px;
   font-size: 16px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+
 }
 
 .nav-button:hover {
-  background-color: #164b2f;
+  background-color: #164b2f; /* Slightly darker green on hover */
+  transform: scale(1.05); /* Slight scale up effect on hover */
 }
 
 .signup-link {
@@ -192,4 +196,89 @@ spline-viewer {
   text-align: center;
   z-index: 1;
   /*pointer-events: none; makhaletnich nhoveri aal buttons*/
+}
+
+
+#video, #canvas {
+  position: absolute; /* Absolute positioning to fit the container */
+  top: 20%;
+  left: 10%;
+  border-radius: 25px; /* Rounds the corners to match the container */
+  z-index: 1000;
+  border: 2px solid #1c5739 ;
+  transition: 0.6s ease;
+  animation: movingBorder 2s infinite ease; /* Apply the animation */
+}
+
+@keyframes movingBorder {
+  0%, 100% {
+    border-color: #1c5739; /* Starting color */
+    box-shadow: 0 0 15px #1c5739;
+  }
+  5%, 95% {
+    border-color: #1a6345;
+    box-shadow: 0 0 16px #1a6345;
+  }
+  10%, 90% {
+    border-color: #176e51;
+    box-shadow: 0 0 17px #176e51;
+  }
+  15%, 85% {
+    border-color: #157957;
+    box-shadow: 0 0 18px #157957;
+  }
+  20%, 80% {
+    border-color: #138463;
+    box-shadow: 0 0 19px #138463;
+  }
+  25%, 75% {
+    border-color: #108f6f;
+    box-shadow: 0 0 20px #108f6f;
+  }
+  30%, 70% {
+    border-color: #0e9a7b;
+    box-shadow: 0 0 21px #0e9a7b;
+  }
+  35%, 65% {
+    border-color: #0ba587;
+    box-shadow: 0 0 22px #0ba587;
+  }
+  40%, 60% {
+    border-color: #07b093;
+    box-shadow: 0 0 23px #07b093;
+  }
+  50% {
+    border-color: #04bb9f;
+    box-shadow: 0 0 25px #04bb9f;
+  }
+}
+
+
+#face-login-btn {
+  width: 65%;
+  margin-top: 15px;
+  padding: 12px;
+  background-color: #ead885; 
+  color: #0d3321;
+  border: none;
+  border-radius: 5px;
+  font-size: 16px;
+  cursor: pointer;
+  outline: none;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+#face-login-btn:hover, #face-login-btn:focus {
+  background-color: #c1b26e; /* Slightly darker green on hover */
+  transform: scale(1.05); /* Slight scale up effect on hover */
+}
+
+#face-login-btn:active {
+  background-color: #0d3321; /* Even darker green when active */
+  color: white;
+  transform: scale(0.95); /* Slight scale down when clicked */
+}
+
+#face-login-btn:focus {
+  box-shadow: 0 0 0 3px rgba(28, 87, 57, 0.5); /* Adding a focus box shadow */
 }
