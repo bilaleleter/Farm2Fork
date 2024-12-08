@@ -41,11 +41,11 @@ document.addEventListener('DOMContentLoaded', function() {
                 setError(field, 'Password must meet complexity requirements');
                 isValid = false;
                 if (!firstError) firstError = field;
-            } else if ((field.id.includes('address') && !validateAddress(field.value))) {
+            } /*else if ((field.id.includes('address') && !validateAddress(field.value))) {
                 setError(field, 'Address can only contain numbers and letters');
                 isValid = false;
                 if (!firstError) firstError = field;
-            } 
+            }*/ 
             else if(field.type === "text" && !validateText(field.value) && !field.id.includes('address')){
                 setError(field, 'Can only contain characters and spaces');
                 isValid = false;

@@ -210,6 +210,7 @@ spline-viewer {
   animation: movingBorder 2s infinite ease; /* Apply the animation */
 }
 
+
 @keyframes movingBorder {
   0%, 100% {
     border-color: #1c5739; /* Starting color */

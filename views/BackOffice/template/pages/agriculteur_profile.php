@@ -106,9 +106,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
           header('Location: agriculteur_profile.php');
           exit;
         }
-      } else {
-        echo "<p>Current password is incorrect.</p>";
-      }
+        }else{
+          echo "<p>Current password is incorrect.</p>";
+        }
     } else {
       echo '<p>Passwords do not match</p>';
     }
@@ -187,13 +187,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <hr class="horizontal dark mt-0 mb-2" />
     <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
       <ul class="navbar-nav">
-        <!--<li class="nav-item">
-          <a class="nav-link text-dark" href="../pages/dashboard.html">
+        <li class="nav-item">
+          <a class="nav-link text-dark" href="../pages/dashboard.php">
             <i class="material-symbols-rounded opacity-5">dashboard</i>
             <span class="nav-link-text ms-1">Dashboard</span>
           </a>
         </li>
-        <li class="nav-item">
+        <!--<li class="nav-item">
           <a class="nav-link text-dark" href="../pages/logs.html">
             <i class="material-symbols-rounded opacity-5">receipt_long</i>
             <span class="nav-link-text ms-1">Logs</span>

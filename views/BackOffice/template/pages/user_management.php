@@ -70,24 +70,24 @@ $agriculteurs = $userController->getAgriculteurs();
     <hr class="horizontal dark mt-0 mb-2" />
     <div class="collapse navbar-collapse w-auto" id="sidenav-collapse-main">
       <ul class="navbar-nav">
-        <li class="nav-item">
-          <a class="nav-link text-dark" href="../pages/dashboard.html">
+        <!--<li class="nav-item">
+          <a class="nav-link text-dark" href="../pages/dashboard.php">
             <i class="material-symbols-rounded opacity-5">dashboard</i>
             <span class="nav-link-text ms-1">Dashboard</span>
           </a>
-        </li>
+        </li>-->
         <li class="nav-item">
           <a class="nav-link active bg-gradient-dark text-white" href="../pages/user_management.php">
             <i class="material-symbols-rounded opacity-5">table_view</i>
             <span class="nav-link-text ms-1">User Management</span>
           </a>
         </li>
-        <li class="nav-item">
+        <!--<li class="nav-item">
           <a class="nav-link text-dark" href="../pages/logs.html">
             <i class="material-symbols-rounded opacity-5">receipt_long</i>
             <span class="nav-link-text ms-1">Logs</span>
           </a>
-        </li>
+        </li>-->
         <!--
           <li class="nav-item mt-3">
             <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Account</h6>
@@ -98,7 +98,6 @@ $agriculteurs = $userController->getAgriculteurs();
     <form method="post" name="SignOutForm" id="SignOutForm"></form>
     <div class="sidenav-footer position-absolute w-100 bottom-0">
       <div class="mx-3">
-        <a class="btn btn-outline-dark mt-4 w-100" href="profile.php" type="button">Account</a>
         <button type="submit" class="btn bg-gradient-dark w-100" form="SignOutForm" name="logout">Sign out</button>
       </div>
     </div>

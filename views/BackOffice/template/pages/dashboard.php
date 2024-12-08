@@ -1,5 +1,114 @@
+<?php
+require_once '../../../../controllers/UserController.php';  // Adjust path as needed
 
-<!DOCTYPE html>
+session_start();
+
+// Assuming user is already logged in and user_id is stored in session
+if (!isset($_SESSION['email'])) {
+  $_SESSION = array();
+  session_destroy();
+  header("Location: ../../../FrontOffice/sign_in.php");
+  exit;
+}
+
+// Check if logout has been requested
+if (isset($_POST['logout'])) {
+  // Destroy the session
+  $_SESSION = array();
+  session_destroy();
+
+  // Redirect to the login page
+  header("Location: ../../../FrontOffice/start_page.php");
+  exit;
+}
+$controller = new UserController();
+$user_email = $_SESSION['email'];
+/*
+// Get Seller's Statistics
+$sellerStats = $controller->getSellerStats($user_email);  // Example: ['today_earning' => 2048, 'today_sales' => 312, ..]
+
+// Get Product Statistics
+$productStats = $controller->getProductStats($user_email);  // Example: ['total_products' => 50, 'today_product_views' => 1200]
+
+// Get Order Statistics
+$orderStats = $controller->getOrderStats($user_email);  // Example: ['total_orders' => 200, 'completed_orders' => 150]
+
+// Assuming you have arrays of data for charts, for example:
+$chartData = $controller->getSalesChartData($user_email);  // Example: [['date' => '2024-12-01', 'sales' => 1000], ...]
+*/
+$sellerStats = [];
+$productStats = [];
+$orderStats = [];
+$chartData = [];
+// Example: get other stats like total earnings, pending orders, etc.
+//earnings
+$todayEarnings = $sellerStats['today_earnings'] ?? 0;  // Ensure there's a fallback value
+$yesterdayEarnings = $sellerStats['yesterday_earnings'] ?? 0;
+//sales
+$todaySales = $sellerStats['today_sales'] ?? 0;
+$yesterdaySales = $sellerStats['yesterday_sales'] ?? 0;
+//products
+$totalProducts = $productStats['today_products'] ?? 0;
+$todayProductViews = $productStats['today_product_views'] ?? 0;
+$yesterdayProductViews = $productStats['yesterday_product_views'] ?? 0;
+//orders
+$todayOrders = $orderStats['today_orders'] ?? 0;
+$yesterdayOrders = $orderStats['yesterday_orders'] ?? 0;
+$completedOrders = $orderStats['completed_orders'] ?? 0;
+$yesterdaycompletedOrders = $orderStats['yesterday_completed_orders'] ?? 0;
+
+//charts data 
+
+$currentDate = new DateTime();
+$currentYear = $currentDate->format('Y');
+$currentMonth = $currentDate->format('m');
+$currentWeek = $currentDate->format('W');
+
+// Fetch earnings for the past week
+//$earningsYear = $controller->getEarningsForWeek($currentYear, $currentWeek); // This should return an array of earnings for each day in the week
+$earningsYear = null;
+// Fetch daily sales for the year
+//$dailySalesYear = $controller->getDailySalesForYear($currentYear); // This should return sales data for each day of the year
+$dailySalesYear = null;
+// Fetch completed orders for the year
+//$completedOrdersYear = $controller->getCompletedOrdersForYear($currentYear); // This should return the number of completed orders for each month of the year
+$completedOrdersYear = null;
+// Fallback data for testing purposes
+$defaultEarningsYear = [50, 45, 22, 28, 50, 60, 76];
+$defaultDailySalesYear = [120, 230, 130, 440, 250, 360, 270, 180, 90, 300, 310, 220];
+$defaultCompletedOrdersYear = [50, 40, 300, 220, 500, 250, 400, 230, 500];
+
+// Ensure data is in the correct format, or use fallback values
+$earningsData = isset($earningsYear) ? $earningsYear : $defaultEarningsYear;
+$dailySalesData = isset($dailySalesYear) ? $dailySalesYear : $defaultDailySalesYear;
+$completedOrdersData = isset($completedOrdersYear) ? $completedOrdersYear : $defaultCompletedOrdersYear;
+
+
+
+
+//changes calculations (+x % over last week/day)
+if ($yesterdayEarnings > 0) {
+  $earningsChange = (($todayEarnings - $yesterdayEarnings) / $yesterdayEarnings) * 100;
+} else {
+  $earningsChange = 0; // Avoid division by zero
+}
+if ($yesterdaySales > 0) {
+  $salesChange = (($todaySales - $yesterdaySales) / $yesterdaySales) * 100;
+} else {
+  $salesChange = -20.59; // Avoid division by zero
+}
+if ($yesterdayOrders > 0) {
+  $ordersChange = (($todayOrders - $yesterdayOrders) / $yesterdayOrders) * 100;
+} else {
+  $ordersChange = 0; // Avoid division by zero
+}
+if ($yesterdayProductViews > 0) {
+  $productViewsChange = (($todayProductViews - $yesterdayProductViews) / $yesterdayProductViews) * 100;
+} else {
+  $productViewsChange = -5.4979; // Avoid division by zero
+}
+?>
+
 <html lang="en">
 
 <head>
@@ -18,21 +127,25 @@
   <!-- Font Awesome Icons -->
   <script src="https://kit.fontawesome.com/42d5adcbca.js" crossorigin="anonymous"></script>
   <!-- Material Icons -->
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
+  <link rel="stylesheet"
+    href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@24,400,0,0" />
   <!-- CSS Files -->
   <link id="pagestyle" href="../assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
   <style>
-    label{
+    label {
       color: #e91e63;
     }
   </style>
 </head>
 
 <body class="g-sidenav-show  bg-gray-100">
-  <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2" id="sidenav-main">
+  <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2  bg-white my-2"
+    id="sidenav-main">
     <div class="sidenav-header">
-      <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none" aria-hidden="true" id="iconSidenav"></i>
-      <a class="navbar-brand px-4 py-3 m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard " target="_blank">
+      <i class="fas fa-times p-3 cursor-pointer text-dark opacity-5 position-absolute end-0 top-0 d-none d-xl-none"
+        aria-hidden="true" id="iconSidenav"></i>
+      <a class="navbar-brand px-4 py-3 m-0" href=" https://demos.creative-tim.com/material-dashboard/pages/dashboard "
+        target="_blank">
         <img src="../../../FrontOffice/assets/img/farm2fork v1.png" class="navbar-brand-img" alt="main_logo">
         <span class="ms-1 text-sm text-dark">Farm2Fork</span>
       </a>
@@ -41,41 +154,37 @@
     <div class="collapse navbar-collapse  w-auto " id="sidenav-collapse-main">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link active bg-gradient-dark text-white" href="../pages/dashboard.html">
+          <a class="nav-link active bg-gradient-dark text-white" href="dashboard.php">
             <i class="material-symbols-rounded opacity-5">dashboard</i>
             <span class="nav-link-text ms-1">Dashboard</span>
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-link text-dark" href="../pages/user_management.php">
-            <i class="material-symbols-rounded opacity-5">table_view</i>
-            <span class="nav-link-text ms-1">User Management</span>
-          </a>
-        </li>
-        <li class="nav-item">
+        <!--<li class="nav-item">
           <a class="nav-link text-dark" href="../pages/logs.html">
             <i class="material-symbols-rounded opacity-5">receipt_long</i>
             <span class="nav-link-text ms-1">Logs</span>
           </a>
-        </li>
+        </li>-->
         <!--
           <li class="nav-item mt-3">
             <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Account</h6>
           </li>
           -->
-      
+
       </ul>
     </div>
-    <div class="sidenav-footer position-absolute w-100 bottom-0 ">
+    <form method="post" name="SignOutForm" id="SignOutForm"></form>
+    <div class="sidenav-footer position-absolute w-100 bottom-0">
       <div class="mx-3">
-        <a class="btn btn-outline-dark mt-4 w-100" href="profile.php" type="button">Account</a>
-        <a class="btn bg-gradient-dark w-100" href="sign_out.php" type="button">Sign out</a>
+        <a class="btn btn-outline-dark mt-4 w-100" href="agriculteur_profile.php" type="button">Account</a>
+        <button type="submit" class="btn bg-gradient-dark w-100" form="SignOutForm" name="logout">Sign out</button>
       </div>
     </div>
   </aside>
   <main class="main-content position-relative max-height-vh-100 h-100 border-radius-lg ">
     <!-- Navbar -->
-    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-3 shadow-none border-radius-xl" id="navbarBlur" data-scroll="true">
+    <nav class="navbar navbar-main navbar-expand-lg px-0 mx-3 shadow-none border-radius-xl" id="navbarBlur"
+      data-scroll="true">
       <div class="container-fluid py-1 px-3">
         <nav aria-label="breadcrumb">
           <ol class="breadcrumb bg-transparent mb-0 pb-0 pt-1 px-0 me-sm-6 me-5">
@@ -106,7 +215,8 @@
               </a>
             </li>
             <li class="nav-item dropdown pe-3 d-flex align-items-center">
-              <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+              <a href="javascript:;" class="nav-link text-body p-0" id="dropdownMenuButton" data-bs-toggle="dropdown"
+                aria-expanded="false">
                 <i class="material-symbols-rounded">notifications</i>
               </a>
               <ul class="dropdown-menu  dropdown-menu-end  px-2 py-3 me-sm-n4" aria-labelledby="dropdownMenuButton">
@@ -132,7 +242,8 @@
                   <a class="dropdown-item border-radius-md" href="javascript:;">
                     <div class="d-flex py-1">
                       <div class="my-auto">
-                        <img src="../assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm bg-gradient-dark  me-3 ">
+                        <img src="../assets/img/small-logos/logo-spotify.svg"
+                          class="avatar avatar-sm bg-gradient-dark  me-3 ">
                       </div>
                       <div class="d-flex flex-column justify-content-center">
                         <h6 class="text-sm font-weight-normal mb-1">
@@ -150,14 +261,19 @@
                   <a class="dropdown-item border-radius-md" href="javascript:;">
                     <div class="d-flex py-1">
                       <div class="avatar avatar-sm bg-gradient-secondary  me-3  my-auto">
-                        <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1" xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
+                        <svg width="12px" height="12px" viewBox="0 0 43 36" version="1.1"
+                          xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink">
                           <title>credit-card</title>
                           <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
                             <g transform="translate(-2169.000000, -745.000000)" fill="#FFFFFF" fill-rule="nonzero">
                               <g transform="translate(1716.000000, 291.000000)">
                                 <g transform="translate(453.000000, 454.000000)">
-                                  <path class="color-background" d="M43,10.7482083 L43,3.58333333 C43,1.60354167 41.3964583,0 39.4166667,0 L3.58333333,0 C1.60354167,0 0,1.60354167 0,3.58333333 L0,10.7482083 L43,10.7482083 Z" opacity="0.593633743"></path>
-                                  <path class="color-background" d="M0,16.125 L0,32.25 C0,34.2297917 1.60354167,35.8333333 3.58333333,35.8333333 L39.4166667,35.8333333 C41.3964583,35.8333333 43,34.2297917 43,32.25 L43,16.125 L0,16.125 Z M19.7083333,26.875 L7.16666667,26.875 L7.16666667,23.2916667 L19.7083333,23.2916667 L19.7083333,26.875 Z M35.8333333,26.875 L28.6666667,26.875 L28.6666667,23.2916667 L35.8333333,23.2916667 L35.8333333,26.875 Z"></path>
+                                  <path class="color-background"
+                                    d="M43,10.7482083 L43,3.58333333 C43,1.60354167 41.3964583,0 39.4166667,0 L3.58333333,0 C1.60354167,0 0,1.60354167 0,3.58333333 L0,10.7482083 L43,10.7482083 Z"
+                                    opacity="0.593633743"></path>
+                                  <path class="color-background"
+                                    d="M0,16.125 L0,32.25 C0,34.2297917 1.60354167,35.8333333 3.58333333,35.8333333 L39.4166667,35.8333333 C41.3964583,35.8333333 43,34.2297917 43,32.25 L43,16.125 L0,16.125 Z M19.7083333,26.875 L7.16666667,26.875 L7.16666667,23.2916667 L19.7083333,23.2916667 L19.7083333,26.875 Z M35.8333333,26.875 L28.6666667,26.875 L28.6666667,23.2916667 L35.8333333,23.2916667 L35.8333333,26.875 Z">
+                                  </path>
                                 </g>
                               </g>
                             </g>
@@ -193,7 +309,7 @@
         <div class="ms-3">
           <h3 class="mb-0 h4 font-weight-bolder">Dashboard</h3>
           <p class="mb-4">
-            Check the sales, value and bounce rate by country.
+            Check your sales, orders and earnings.
           </p>
         </div>
         <div class="col-xl-3 col-sm-6 mb-xl-0 mb-4">
@@ -201,8 +317,8 @@
             <div class="card-header p-2 ps-3">
               <div class="d-flex justify-content-between">
                 <div>
-                  <p class="text-sm mb-0 text-capitalize">Today's Money</p>
-                  <h4 class="mb-0">$53k</h4>
+                  <p class="text-sm mb-0 text-capitalize">Earnings (Today)</p>
+                  <h4 class="mb-0"><?php echo number_format($todayEarnings, 2); ?> TND</h4>
                 </div>
                 <div class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
                   <i class="material-symbols-rounded opacity-10">weekend</i>
@@ -211,7 +327,13 @@
             </div>
             <hr class="dark horizontal my-0">
             <div class="card-footer p-2 ps-3">
-              <p class="mb-0 text-sm"><span class="text-success font-weight-bolder">+55% </span>than last week</p>
+              <p class="mb-0 text-sm">
+                <span class="text-success font-weight-bolder">
+                  <?php if ($earningsChange >= 0): ?>
+                    +<?php echo number_format($earningsChange, 2); ?>% </span>than yesterday.
+                  <?php else: ?>
+                    <?php echo number_format($earningsChange, 2); ?>% </span>than yesterday.
+                  <?php endif; ?>
             </div>
           </div>
         </div>
@@ -220,8 +342,8 @@
             <div class="card-header p-2 ps-3">
               <div class="d-flex justify-content-between">
                 <div>
-                  <p class="text-sm mb-0 text-capitalize">Today's Users</p>
-                  <h4 class="mb-0">2300</h4>
+                  <p class="text-sm mb-0 text-capitalize">Orders (Today)</p>
+                  <h4 class="mb-0"><?php echo $todayOrders; ?></h4>
                 </div>
                 <div class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
                   <i class="material-symbols-rounded opacity-10">person</i>
@@ -230,7 +352,14 @@
             </div>
             <hr class="dark horizontal my-0">
             <div class="card-footer p-2 ps-3">
-              <p class="mb-0 text-sm"><span class="text-success font-weight-bolder">+3% </span>than last month</p>
+              <p class="mb-0 text-sm">
+                <?php if ($ordersChange >= 0): ?>
+                  <span class="text-success font-weight-bolder">
+                    +<?php echo number_format($ordersChange, 2); ?>% </span>than yesterday.
+                    <?php else: ?>
+                      <span class="text-danger font-weight-bolder">
+                    <?php echo number_format($ordersChange, 2); ?>%</span> than yesterday.
+                  <?php endif; ?>
             </div>
           </div>
         </div>
@@ -239,8 +368,8 @@
             <div class="card-header p-2 ps-3">
               <div class="d-flex justify-content-between">
                 <div>
-                  <p class="text-sm mb-0 text-capitalize">Ads Views</p>
-                  <h4 class="mb-0">3,462</h4>
+                  <p class="text-sm mb-0 text-capitalize">Product Views (Today)</p>
+                  <h4 class="mb-0"><?php echo $todayProductViews; ?></h4>
                 </div>
                 <div class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
                   <i class="material-symbols-rounded opacity-10">leaderboard</i>
@@ -249,7 +378,14 @@
             </div>
             <hr class="dark horizontal my-0">
             <div class="card-footer p-2 ps-3">
-              <p class="mb-0 text-sm"><span class="text-danger font-weight-bolder">-2% </span>than yesterday</p>
+              <p class="mb-0 text-sm">
+                <?php if ($productViewsChange >= 0): ?>
+                  <span class="text-success font-weight-bolder">
+                    +<?php echo number_format($productViewsChange, 2); ?>% </span>than yesterday.
+                    <?php else: ?>
+                    <span class="text-danger font-weight-bolder">
+                    <?php echo number_format($productViewsChange, 2); ?>%</span> than yesterday.
+                  <?php endif; ?>
             </div>
           </div>
         </div>
@@ -258,8 +394,8 @@
             <div class="card-header p-2 ps-3">
               <div class="d-flex justify-content-between">
                 <div>
-                  <p class="text-sm mb-0 text-capitalize">Sales</p>
-                  <h4 class="mb-0">$103,430</h4>
+                  <p class="text-sm mb-0 text-capitalize">Sales (Today)</p>
+                  <h4 class="mb-0"><?php echo number_format($todaySales, 2); ?></h4>
                 </div>
                 <div class="icon icon-md icon-shape bg-gradient-dark shadow-dark shadow text-center border-radius-lg">
                   <i class="material-symbols-rounded opacity-10">weekend</i>
@@ -268,7 +404,15 @@
             </div>
             <hr class="dark horizontal my-0">
             <div class="card-footer p-2 ps-3">
-              <p class="mb-0 text-sm"><span class="text-success font-weight-bolder">+5% </span>than yesterday</p>
+              <p class="mb-0 text-sm">
+                <?php if ($salesChange >= 0): ?>
+                  <span class="text-success font-weight-bolder">
+                    +<?php echo number_format($salesChange, 2); ?>% </span>than yesterday.
+                  <?php else: ?>
+                  <span class="text-danger font-weight-bolder">
+
+                    <?php echo number_format($salesChange, 2); ?>%</span> than yesterday.
+                  <?php endif; ?>
             </div>
           </div>
         </div>
@@ -277,8 +421,8 @@
         <div class="col-lg-4 col-md-6 mt-4 mb-4">
           <div class="card">
             <div class="card-body">
-              <h6 class="mb-0 ">Website Views</h6>
-              <p class="text-sm ">Last Campaign Performance</p>
+              <h6 class="mb-0 ">Earnings (Last Week)</h6>
+              <p class="text-sm ">Last Week Performance</p>
               <div class="pe-2">
                 <div class="chart">
                   <canvas id="chart-bars" class="chart-canvas" height="170"></canvas>
@@ -287,7 +431,7 @@
               <hr class="dark horizontal">
               <div class="d-flex ">
                 <i class="material-symbols-rounded text-sm my-auto me-1">schedule</i>
-                <p class="mb-0 text-sm"> campaign sent 2 days ago </p>
+                <p class="mb-0 text-sm"> Updated Today </p>
               </div>
             </div>
           </div>
@@ -295,8 +439,9 @@
         <div class="col-lg-4 col-md-6 mt-4 mb-4">
           <div class="card ">
             <div class="card-body">
-              <h6 class="mb-0 "> Daily Sales </h6>
-              <p class="text-sm "> (<span class="font-weight-bolder">+15%</span>) increase in today sales. </p>
+              <h6 class="mb-0 ">Sales (This Year) </h6>
+              <p class="text-sm ">Current Year Performance</p>
+              <!--<p class="text-sm "> (<span class="font-weight-bolder">+15%</span>) increase in sales. </p>-->
               <div class="pe-2">
                 <div class="chart">
                   <canvas id="chart-line" class="chart-canvas" height="170"></canvas>
@@ -305,7 +450,7 @@
               <hr class="dark horizontal">
               <div class="d-flex ">
                 <i class="material-symbols-rounded text-sm my-auto me-1">schedule</i>
-                <p class="mb-0 text-sm"> updated 4 min ago </p>
+                <p class="mb-0 text-sm"> Updated Today </p>
               </div>
             </div>
           </div>
@@ -313,8 +458,9 @@
         <div class="col-lg-4 mt-4 mb-3">
           <div class="card">
             <div class="card-body">
-              <h6 class="mb-0 ">Completed Tasks</h6>
-              <p class="text-sm ">Last Campaign Performance</p>
+              <h6 class="mb-0 ">Completed Orders (This Year)</h6>
+              <p class="text-sm ">Current Year Performance</p>
+              <!--<p class="text-sm "> (<span class="font-weight-bolder">+15%</span>) increase in order completion. </p>-->
               <div class="pe-2">
                 <div class="chart">
                   <canvas id="chart-line-tasks" class="chart-canvas" height="170"></canvas>
@@ -323,7 +469,7 @@
               <hr class="dark horizontal">
               <div class="d-flex ">
                 <i class="material-symbols-rounded text-sm my-auto me-1">schedule</i>
-                <p class="mb-0 text-sm">just updated</p>
+                <p class="mb-0 text-sm">Updated Today</p>
               </div>
             </div>
           </div>
@@ -335,7 +481,7 @@
             <div class="card-header pb-0">
               <div class="row">
                 <div class="col-lg-6 col-7">
-                  <h6>Projects</h6>
+                  <h6>Products Posted</h6>
                   <p class="text-sm mb-0">
                     <i class="fa fa-check text-info" aria-hidden="true"></i>
                     <span class="font-weight-bold ms-1">30 done</span> this month
@@ -347,9 +493,8 @@
                       <i class="fa fa-ellipsis-v text-secondary"></i>
                     </a>
                     <ul class="dropdown-menu px-2 py-3 ms-sm-n4 ms-n5" aria-labelledby="dropdownTable">
-                      <li><a class="dropdown-item border-radius-md" href="javascript:;">Action</a></li>
+                      <li><a class="dropdown-item border-radius-md" href="javascript:;">Add Product</a></li>
                       <li><a class="dropdown-item border-radius-md" href="javascript:;">Another action</a></li>
-                      <li><a class="dropdown-item border-radius-md" href="javascript:;">Something else here</a></li>
                     </ul>
                   </div>
                 </div>
@@ -360,10 +505,12 @@
                 <table class="table align-items-center mb-0">
                   <thead>
                     <tr>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Companies</th>
-                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Members</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Budget</th>
-                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Completion</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Product Name</th>
+                      <th class="text-uppercase text-secondary text-xxs font-weight-bolder opacity-7 ps-2">Product Category</th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Earning (%)
+                      </th>
+                      <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">
+                        Stock</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -371,31 +518,22 @@
                       <td>
                         <div class="d-flex px-2 py-1">
                           <div>
-                            <img src="../assets/img/small-logos/logo-xd.svg" class="avatar avatar-sm me-3" alt="xd">
+                            <img src="../assets/back_imgs/tomates.jpg" class="avatar avatar-sm me-3" alt="xd">
                           </div>
                           <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Material XD Version</h6>
+                            <h6 class="mb-0 text-sm">Tomates</h6>
                           </div>
                         </div>
                       </td>
                       <td>
-                        <div class="avatar-group mt-2">
-                          <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Ryan Tompson">
-                            <img src="../assets/img/team-1.jpg" alt="team1">
-                          </a>
-                          <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Romina Hadid">
-                            <img src="../assets/img/team-2.jpg" alt="team2">
-                          </a>
-                          <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Alexander Smith">
-                            <img src="../assets/img/team-3.jpg" alt="team3">
-                          </a>
-                          <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Jessica Doe">
-                            <img src="../assets/img/team-4.jpg" alt="team4">
-                          </a>
+                      <div class="d-flex px-2 py-1">  
+                          <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-1 text-xs">Legumes</h6>
+                          </div>
                         </div>
                       </td>
                       <td class="align-middle text-center text-sm">
-                        <span class="text-xs font-weight-bold"> $14,000 </span>
+                        <span class="text-xs font-weight-bold"> 3.2% </span>
                       </td>
                       <td class="align-middle">
                         <div class="progress-wrapper w-75 mx-auto">
@@ -405,71 +543,32 @@
                             </div>
                           </div>
                           <div class="progress">
-                            <div class="progress-bar bg-gradient-info w-60" role="progressbar" aria-valuenow="60" aria-valuemin="0" aria-valuemax="100"></div>
+                            <div class="progress-bar bg-gradient-info w-60" role="progressbar" aria-valuenow="60"
+                              aria-valuemin="0" aria-valuemax="100"></div>
                           </div>
                         </div>
                       </td>
                     </tr>
                     <tr>
-                      <td>
+                    <td>
                         <div class="d-flex px-2 py-1">
                           <div>
-                            <img src="../assets/img/small-logos/logo-atlassian.svg" class="avatar avatar-sm me-3" alt="atlassian">
+                            <img src="../assets/back_imgs/fraise.jpeg" class="avatar avatar-sm me-3" alt="xd">
                           </div>
                           <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Add Progress Track</h6>
+                            <h6 class="mb-0 text-sm">Fraise</h6>
                           </div>
                         </div>
                       </td>
                       <td>
-                        <div class="avatar-group mt-2">
-                          <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Romina Hadid">
-                            <img src="../assets/img/team-2.jpg" alt="team5">
-                          </a>
-                          <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Jessica Doe">
-                            <img src="../assets/img/team-4.jpg" alt="team6">
-                          </a>
+                      <div class="d-flex px-2 py-1">  
+                          <div class="d-flex flex-column justify-content-center">
+                            <h6 class="mb-1 text-xs">Fruits</h6>
+                          </div>
                         </div>
                       </td>
                       <td class="align-middle text-center text-sm">
-                        <span class="text-xs font-weight-bold"> $3,000 </span>
-                      </td>
-                      <td class="align-middle">
-                        <div class="progress-wrapper w-75 mx-auto">
-                          <div class="progress-info">
-                            <div class="progress-percentage">
-                              <span class="text-xs font-weight-bold">10%</span>
-                            </div>
-                          </div>
-                          <div class="progress">
-                            <div class="progress-bar bg-gradient-info w-10" role="progressbar" aria-valuenow="10" aria-valuemin="0" aria-valuemax="100"></div>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            <img src="../assets/img/small-logos/logo-slack.svg" class="avatar avatar-sm me-3" alt="team7">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Fix Platform Errors</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="avatar-group mt-2">
-                          <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Romina Hadid">
-                            <img src="../assets/img/team-3.jpg" alt="team8">
-                          </a>
-                          <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Jessica Doe">
-                            <img src="../assets/img/team-1.jpg" alt="team9">
-                          </a>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="text-xs font-weight-bold"> Not set </span>
+                        <span class="text-xs font-weight-bold"> 10.1% </span>
                       </td>
                       <td class="align-middle">
                         <div class="progress-wrapper w-75 mx-auto">
@@ -479,121 +578,8 @@
                             </div>
                           </div>
                           <div class="progress">
-                            <div class="progress-bar bg-gradient-success w-100" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            <img src="../assets/img/small-logos/logo-spotify.svg" class="avatar avatar-sm me-3" alt="spotify">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Launch our Mobile App</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="avatar-group mt-2">
-                          <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Ryan Tompson">
-                            <img src="../assets/img/team-4.jpg" alt="user1">
-                          </a>
-                          <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Romina Hadid">
-                            <img src="../assets/img/team-3.jpg" alt="user2">
-                          </a>
-                          <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Alexander Smith">
-                            <img src="../assets/img/team-4.jpg" alt="user3">
-                          </a>
-                          <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Jessica Doe">
-                            <img src="../assets/img/team-1.jpg" alt="user4">
-                          </a>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="text-xs font-weight-bold"> $20,500 </span>
-                      </td>
-                      <td class="align-middle">
-                        <div class="progress-wrapper w-75 mx-auto">
-                          <div class="progress-info">
-                            <div class="progress-percentage">
-                              <span class="text-xs font-weight-bold">100%</span>
-                            </div>
-                          </div>
-                          <div class="progress">
-                            <div class="progress-bar bg-gradient-success w-100" role="progressbar" aria-valuenow="100" aria-valuemin="0" aria-valuemax="100"></div>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            <img src="../assets/img/small-logos/logo-jira.svg" class="avatar avatar-sm me-3" alt="jira">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Add the New Pricing Page</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="avatar-group mt-2">
-                          <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Ryan Tompson">
-                            <img src="../assets/img/team-4.jpg" alt="user5">
-                          </a>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="text-xs font-weight-bold"> $500 </span>
-                      </td>
-                      <td class="align-middle">
-                        <div class="progress-wrapper w-75 mx-auto">
-                          <div class="progress-info">
-                            <div class="progress-percentage">
-                              <span class="text-xs font-weight-bold">25%</span>
-                            </div>
-                          </div>
-                          <div class="progress">
-                            <div class="progress-bar bg-gradient-info w-25" role="progressbar" aria-valuenow="25" aria-valuemin="0" aria-valuemax="25"></div>
-                          </div>
-                        </div>
-                      </td>
-                    </tr>
-                    <tr>
-                      <td>
-                        <div class="d-flex px-2 py-1">
-                          <div>
-                            <img src="../assets/img/small-logos/logo-invision.svg" class="avatar avatar-sm me-3" alt="invision">
-                          </div>
-                          <div class="d-flex flex-column justify-content-center">
-                            <h6 class="mb-0 text-sm">Redesign New Online Shop</h6>
-                          </div>
-                        </div>
-                      </td>
-                      <td>
-                        <div class="avatar-group mt-2">
-                          <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Ryan Tompson">
-                            <img src="../assets/img/team-1.jpg" alt="user6">
-                          </a>
-                          <a href="javascript:;" class="avatar avatar-xs rounded-circle" data-bs-toggle="tooltip" data-bs-placement="bottom" title="Jessica Doe">
-                            <img src="../assets/img/team-4.jpg" alt="user7">
-                          </a>
-                        </div>
-                      </td>
-                      <td class="align-middle text-center text-sm">
-                        <span class="text-xs font-weight-bold"> $2,000 </span>
-                      </td>
-                      <td class="align-middle">
-                        <div class="progress-wrapper w-75 mx-auto">
-                          <div class="progress-info">
-                            <div class="progress-percentage">
-                              <span class="text-xs font-weight-bold">40%</span>
-                            </div>
-                          </div>
-                          <div class="progress">
-                            <div class="progress-bar bg-gradient-info w-40" role="progressbar" aria-valuenow="40" aria-valuemin="0" aria-valuemax="40"></div>
+                            <div class="progress-bar bg-gradient-success w-100" role="progressbar" aria-valuenow="100"
+                              aria-valuemin="0" aria-valuemax="100"></div>
                           </div>
                         </div>
                       </td>
@@ -615,51 +601,6 @@
             </div>
             <div class="card-body p-3">
               <div class="timeline timeline-one-side">
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-symbols-rounded text-success text-gradient">notifications</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">$2400, Design changes</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">22 DEC 7:20 PM</p>
-                  </div>
-                </div>
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-symbols-rounded text-danger text-gradient">code</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">New order #1832412</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">21 DEC 11 PM</p>
-                  </div>
-                </div>
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-symbols-rounded text-info text-gradient">shopping_cart</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">Server payments for April</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">21 DEC 9:34 PM</p>
-                  </div>
-                </div>
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-symbols-rounded text-warning text-gradient">credit_card</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">New card added for order #4395133</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">20 DEC 2:20 AM</p>
-                  </div>
-                </div>
-                <div class="timeline-block mb-3">
-                  <span class="timeline-step">
-                    <i class="material-symbols-rounded text-primary text-gradient">key</i>
-                  </span>
-                  <div class="timeline-content">
-                    <h6 class="text-dark text-sm font-weight-bold mb-0">Unlock packages for development</h6>
-                    <p class="text-secondary font-weight-bold text-xs mt-1 mb-0">18 DEC 4:54 AM</p>
-                  </div>
-                </div>
                 <div class="timeline-block">
                   <span class="timeline-step">
                     <i class="material-symbols-rounded text-dark text-gradient">payments</i>
@@ -674,38 +615,6 @@
           </div>
         </div>
       </div>
-      <footer class="footer py-4  ">
-        <div class="container-fluid">
-          <div class="row align-items-center justify-content-lg-between">
-            <div class="col-lg-6 mb-lg-0 mb-4">
-              <div class="copyright text-center text-sm text-muted text-lg-start">
-                © <script>
-                  document.write(new Date().getFullYear())
-                </script>,
-                made with <i class="fa fa-heart"></i> by
-                <a href="https://www.creative-tim.com" class="font-weight-bold" target="_blank">Creative Tim</a>
-                for a better web.
-              </div>
-            </div>
-            <div class="col-lg-6">
-              <ul class="nav nav-footer justify-content-center justify-content-lg-end">
-                <li class="nav-item">
-                  <a href="https://www.creative-tim.com" class="nav-link text-muted" target="_blank">Creative Tim</a>
-                </li>
-                <li class="nav-item">
-                  <a href="https://www.creative-tim.com/presentation" class="nav-link text-muted" target="_blank">About Us</a>
-                </li>
-                <li class="nav-item">
-                  <a href="https://www.creative-tim.com/blog" class="nav-link text-muted" target="_blank">Blog</a>
-                </li>
-                <li class="nav-item">
-                  <a href="https://www.creative-tim.com/license" class="nav-link pe-0 text-muted" target="_blank">License</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-      </footer>
     </div>
   </main>
   <div class="fixed-plugin">
@@ -718,9 +627,7 @@
           <h5 class="mt-3 mb-0">UI Configuration</h5>
         </div>
         <div class="float-end mt-4">
-          <button
-            class="btn btn-link text-dark p-0 fixed-plugin-close-button"
-          >
+          <button class="btn btn-link text-dark p-0 fixed-plugin-close-button">
             <i class="material-symbols-rounded">clear</i>
           </button>
         </div>
@@ -734,36 +641,12 @@
         </div>
         <a href="javascript:void(0)" class="switch-trigger background-color">
           <div class="badge-colors my-2 text-start">
-            <span
-              class="badge filter bg-gradient-primary"
-              data-color="primary"
-              onclick="sidebarColor(this)"
-            ></span>
-            <span
-              class="badge filter bg-gradient-dark active"
-              data-color="dark"
-              onclick="sidebarColor(this)"
-            ></span>
-            <span
-              class="badge filter bg-gradient-info"
-              data-color="info"
-              onclick="sidebarColor(this)"
-            ></span>
-            <span
-              class="badge filter bg-gradient-success"
-              data-color="success"
-              onclick="sidebarColor(this)"
-            ></span>
-            <span
-              class="badge filter bg-gradient-warning"
-              data-color="warning"
-              onclick="sidebarColor(this)"
-            ></span>
-            <span
-              class="badge filter bg-gradient-danger"
-              data-color="danger"
-              onclick="sidebarColor(this)"
-            ></span>
+            <span class="badge filter bg-gradient-primary" data-color="primary" onclick="sidebarColor(this)"></span>
+            <span class="badge filter bg-gradient-dark active" data-color="dark" onclick="sidebarColor(this)"></span>
+            <span class="badge filter bg-gradient-info" data-color="info" onclick="sidebarColor(this)"></span>
+            <span class="badge filter bg-gradient-success" data-color="success" onclick="sidebarColor(this)"></span>
+            <span class="badge filter bg-gradient-warning" data-color="warning" onclick="sidebarColor(this)"></span>
+            <span class="badge filter bg-gradient-danger" data-color="danger" onclick="sidebarColor(this)"></span>
           </div>
         </a>
         <!-- Sidenav Type -->
@@ -772,25 +655,13 @@
           <p class="text-sm">Choose between different sidenav types.</p>
         </div>
         <div class="d-flex">
-          <button
-            class="btn bg-gradient-dark px-3 mb-2"
-            data-class="bg-gradient-dark"
-            onclick="sidebarType(this)"
-          >
+          <button class="btn bg-gradient-dark px-3 mb-2" data-class="bg-gradient-dark" onclick="sidebarType(this)">
             Dark
           </button>
-          <button
-            class="btn bg-gradient-dark px-3 mb-2 ms-2"
-            data-class="bg-transparent"
-            onclick="sidebarType(this)"
-          >
+          <button class="btn bg-gradient-dark px-3 mb-2 ms-2" data-class="bg-transparent" onclick="sidebarType(this)">
             Transparent
           </button>
-          <button
-            class="btn bg-gradient-dark px-3 mb-2 active ms-2"
-            data-class="bg-white"
-            onclick="sidebarType(this)"
-          >
+          <button class="btn bg-gradient-dark px-3 mb-2 active ms-2" data-class="bg-white" onclick="sidebarType(this)">
             White
           </button>
         </div>
@@ -801,24 +672,14 @@
         <div class="mt-3 d-flex">
           <h6 class="mb-0">Navbar Fixed</h6>
           <div class="form-check form-switch ps-0 ms-auto my-auto">
-            <input
-              class="form-check-input mt-1 ms-auto"
-              type="checkbox"
-              id="navbarFixed"
-              onclick="navbarFixed(this)"
-            />
+            <input class="form-check-input mt-1 ms-auto" type="checkbox" id="navbarFixed" onclick="navbarFixed(this)" />
           </div>
         </div>
         <hr class="horizontal dark my-3" />
         <div class="mt-2 d-flex">
           <h6 class="mb-0">Light / Dark</h6>
           <div class="form-check form-switch ps-0 ms-auto my-auto">
-            <input
-              class="form-check-input mt-1 ms-auto"
-              type="checkbox"
-              id="dark-version"
-              onclick="darkMode(this)"
-            />
+            <input class="form-check-input mt-1 ms-auto" type="checkbox" id="dark-version" onclick="darkMode(this)" />
           </div>
         </div>
       </div>
@@ -831,22 +692,23 @@
   <script src="../assets/js/plugins/smooth-scrollbar.min.js"></script>
   <script src="../assets/js/plugins/chartjs.min.js"></script>
   <script>
+    // Earnings over the week chart
     var ctx = document.getElementById("chart-bars").getContext("2d");
 
     new Chart(ctx, {
       type: "bar",
       data: {
-        labels: ["M", "T", "W", "T", "F", "S", "S"],
+        labels: ["M", "T", "W", "T", "F", "S", "S"], // Days of the week
         datasets: [{
-          label: "Views",
+          label: "Earnings (TND)",
           tension: 0.4,
           borderWidth: 0,
           borderRadius: 4,
           borderSkipped: false,
           backgroundColor: "#43A047",
-          data: [50, 45, 22, 28, 50, 60, 76],
+          data: <?php echo json_encode($earningsData); ?>, // Pass PHP earnings data here
           barThickness: 'flex'
-        }, ],
+        }],
       },
       options: {
         responsive: true,
@@ -904,13 +766,13 @@
       },
     });
 
-
+    // Daily sales over the year chart
     var ctx2 = document.getElementById("chart-line").getContext("2d");
 
     new Chart(ctx2, {
       type: "line",
       data: {
-        labels: ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"],
+        labels: ["J", "F", "M", "A", "M", "J", "J", "A", "S", "O", "N", "D"], // Months of the year
         datasets: [{
           label: "Sales",
           tension: 0,
@@ -921,9 +783,8 @@
           borderColor: "#43A047",
           backgroundColor: "transparent",
           fill: true,
-          data: [120, 230, 130, 440, 250, 360, 270, 180, 90, 300, 310, 220],
+          data: <?php echo json_encode($dailySalesData); ?>, // Pass PHP sales data here
           maxBarThickness: 6
-
         }],
       },
       options: {
@@ -935,7 +796,7 @@
           },
           tooltip: {
             callbacks: {
-              title: function(context) {
+              title: function (context) {
                 const fullMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
                 return fullMonths[context[0].dataIndex];
               }
@@ -988,14 +849,15 @@
       },
     });
 
+    // Completed orders over the year chart
     var ctx3 = document.getElementById("chart-line-tasks").getContext("2d");
 
     new Chart(ctx3, {
       type: "line",
       data: {
-        labels: ["Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],
+        labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"], // Months of the year
         datasets: [{
-          label: "Tasks",
+          label: "Completed Orders",
           tension: 0,
           borderWidth: 2,
           pointRadius: 3,
@@ -1004,9 +866,8 @@
           borderColor: "#43A047",
           backgroundColor: "transparent",
           fill: true,
-          data: [50, 40, 300, 220, 500, 250, 400, 230, 500],
+          data: <?php echo json_encode($completedOrdersData); ?>, // Pass PHP completed orders data here
           maxBarThickness: 6
-
         }],
       },
       options: {
@@ -1063,6 +924,7 @@
       },
     });
   </script>
+
   <script>
     var win = navigator.platform.indexOf('Win') > -1;
     if (win && document.querySelector('#sidenav-scrollbar')) {
