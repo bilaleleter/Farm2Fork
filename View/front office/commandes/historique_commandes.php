@@ -345,151 +345,175 @@
 
 
 
-
-
-
-
-
     <section style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #ffffff;">
-      <div class="container col-md-8 col-lg-6 p-4 rounded shadow" style="background-color: #ffffff; border: 2px solid #408c148d;">
-          <h1 style="text-align: center; color: #1c5739;">Historique des Commandes</h1>
-          <style>
-              /* Style global */
-              body {
-                  font-family: Arial, sans-serif;
-                  background-color: #fdf2e7;
-                  color: #1c5739;
-                  margin: 0;
-                  padding: 20px;
-              }
-  
-              .container {
-                  max-width: 1200px;
-                  margin: 0 auto;
-                  padding: 20px;
-                  background-color: #fff;
-                  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-                  border-radius: 10px;
-              }
-  
-              table {
-                  width: 100%;
-                  border-collapse: collapse;
-                  margin-top: 20px;
-              }
-  
-              th {
-                  background-color: #1c5739;
-                  color: #fdf2e7;
-                  padding: 15px;
-                  text-align: left;
-                  font-size: 16px;
-              }
-  
-              td {
-                  padding: 15px;
-                  text-align: left;
-                  border-bottom: 1px solid #ead885;
-              }
-  
-              tr:hover {
-                  background-color: #ead885;
-                  color: #1c5739;
-              }
-  
-              /* Transition pour les champs */
-              input[type="text"],
-              input[type="number"],
-              input[type="date"],
-              select {
-                  width: 100%;
-                  padding: 10px;
-                  margin-bottom: 10px;
-                  border: 2px solid #4fa579;
-                  border-radius: 5px;
-                  background-color: #408c148d;
-                  transition: background-color 0.3s, border-color 0.3s;
-              }
-  
-              input[type="text"]:hover,
-              input[type="number"]:hover,
-              input[type="date"]:hover,
-              select:hover {
-                  background-color: #ead885;
-                  border-color: #1c5739;
-              }
-  
-              /* Bouton */
-              .btn {
-                  display: block;
-                  width: 100%;
-                  padding: 10px;
-                  background-color: #4fa579;
-                  color: #ffffff;
-                  text-align: center;
-                  text-decoration: none;
-                  border-radius: 5px;
-                  margin-top: 20px;
-                  font-weight: bold;
-                  transition: background-color 0.3s, color 0.3s;
-              }
-  
-              .btn:hover {
-                  background-color: #ead885;
-                  color: #1c5739;
-              }
-          </style>
-  
-          <table>
-              <thead>
-                  <tr>
-                      <th>ID Commande</th>
-                      <th>Date de Commande</th>
-                      <th>État</th>
-                      <th>Quantité</th>
-                      <th>Produit</th>
-                      <th>Actions</th>
-                      
-                  </tr>
-              </thead>
-              <tbody>
-                  <!-- Exemple de données statiques -->
-                  <?php
-                  include_once __DIR__ . "/../../../Controller/CommandeController.php";
-                  include_once __DIR__ . "/../../../Controller/ProduitController.php";
-                  include_once __DIR__ . "/../../../Controller/LivraisonController.php";
-                  include_once __DIR__ . "/../../../Model/Livraison.php";
-                  $livraisonController = new Controller\LivraisonController();
-                  $commandeController = new Controller\CommandeController();
-                  $produitController = new Controller\ProduitController();
+    <div class="container col-md-8 col-lg-6 p-4 rounded shadow" style="background-color: #ffffff; border: 2px solid #408c148d;">
+        <h1 style="text-align: center; color: #1c5739;">Historique des Commandes</h1>
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #fdf2e7;
+                color: #1c5739;
+                margin: 0;
+                padding: 20px;
+            }
 
-                  	
-                  $commandes = $commandeController->getAllCommands();
-                  
-                  foreach ($commandes as $commande) {
-                  ?>
-                      <tr>
-                      <td><?= $commande['ID_commande'] ?></td>
-                      <td><?= $commande['date_commande'] ?></td>
-                      <td><?= $commande['etat'] ?></td>
-                      <td><?= $commande['quantite'] ?></td>
-                      <td><?= $produitController->getProduitbyId($commande['id_produit'])['NomProduit'] ?></td>
-                      <td>
-                          
-                      </tr>
-                      
-                  <?php
-                  }
-                  ?>
-                  
-              </tbody>
-          </table>
-          <a href="/commande/nouvelle" class="btn">Nouvelle Commande</a>
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #fff;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                border-radius: 10px;
+            }
 
-      </div>
-  </section>
-  
-  
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+
+            th {
+                background-color: #1c5739;
+                color: #fdf2e7;
+                padding: 15px;
+                text-align: left;
+                font-size: 16px;
+            }
+
+            td {
+                padding: 15px;
+                text-align: left;
+                border-bottom: 1px solid #ead885;
+            }
+
+            tr:hover {
+                background-color: #ead885;
+                color: #1c5739;
+            }
+
+            .pagination {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-top: 20px;
+            }
+
+            .pagination a {
+                padding: 8px 16px;
+                margin: 0 5px;
+                background-color: #4fa579;
+                color: #fff;
+                text-decoration: none;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+
+            .pagination a:hover {
+                background-color: #1c5739;
+            }
+
+            .pagination a[style] {
+                background-color: #1c5739;
+            }
+        </style>
+
+        <?php
+        // Nombre de commandes par page
+        $limit = 3;
+
+        // Charger les données
+        include_once __DIR__ . "/../../../Controller/CommandeController.php";
+        include_once __DIR__ . "/../../../Controller/ProduitController.php";
+        $commandeController = new Controller\CommandeController();
+        $produitController = new Controller\ProduitController();
+
+        // Récupérer toutes les commandes et produits
+        $commandes = $commandeController->getAllCommands();
+        $produits = $produitController->getAllProduits();
+
+        // Récupérer l'ID du produit sélectionné
+        $selectedProductId = isset($_GET['produit']) ? (int)$_GET['produit'] : 0;
+
+        // Filtrer les commandes en fonction du produit sélectionné
+        $filteredCommandes = array_filter($commandes, function ($commande) use ($selectedProductId) {
+            return $selectedProductId == 0 || $commande['id_produit'] == $selectedProductId;
+        });
+
+        // Pagination
+        $totalCommandes = count($filteredCommandes);
+        $totalPages = ceil($totalCommandes / $limit);
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $page = max(1, $page);
+        $offset = ($page - 1) * $limit;
+        $pagedCommandes = array_slice($filteredCommandes, $offset, $limit);
+        ?>
+
+        <!-- Formulaire de filtre -->
+        <form method="GET" action="" style="margin-bottom: 20px;">
+            <select name="produit" style="padding: 10px; border: 1px solid #1c5739; border-radius: 5px;">
+                <option value="0" <?= ($selectedProductId == 0) ? 'selected' : '' ?>>Tous les produits</option>
+                <?php foreach ($produits as $produit): ?>
+                    <option value="<?= htmlspecialchars($produit['idProduit']) ?>" <?= ($produit['idProduit'] == $selectedProductId) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($produit['NomProduit']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            <button type="submit" style="padding: 10px 20px; background-color: #1c5739; color: #fff; border: none; border-radius: 5px; cursor: pointer;">
+                Filtrer
+            </button>
+        </form>
+
+        <!-- Tableau des commandes -->
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Commande</th>
+                    <th>Date de Commande</th>
+                    <th>État</th>
+                    <th>Quantité</th>
+                    <th>Produit</th>
+                    <th>Référence</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if (!empty($pagedCommandes)): ?>
+                    <?php foreach ($pagedCommandes as $commande): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($commande['ID_commande']) ?></td>
+                            <td><?= htmlspecialchars($commande['date_commande']) ?></td>
+                            <td><?= htmlspecialchars($commande['etat']) ?></td>
+                            <td><?= htmlspecialchars($commande['quantite']) ?></td>
+                            <td><?= htmlspecialchars($produitController->getProduitbyId($commande['id_produit'])['NomProduit'] ?? '') ?></td>
+                            <td><?= htmlspecialchars($commande['ref_commande']) ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <tr>
+                        <td colspan="6" style="text-align: center;">Aucune commande trouvée</td>
+                    </tr>
+                <?php endif; ?>
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <?php if ($page > 1): ?>
+                <a href="?page=1&produit=<?= urlencode($selectedProductId) ?>">Première</a>
+                <a href="?page=<?= $page - 1 ?>&produit=<?= urlencode($selectedProductId) ?>">Précédente</a>
+            <?php endif; ?>
+
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <a href="?page=<?= $i ?>&produit=<?= urlencode($selectedProductId) ?>" <?= ($i == $page) ? 'style="background-color:#1c5739;"' : '' ?>><?= $i ?></a>
+            <?php endfor; ?>
+
+            <?php if ($page < $totalPages): ?>
+                <a href="?page=<?= $page + 1 ?>&produit=<?= urlencode($selectedProductId) ?>">Suivante</a>
+                <a href="?page=<?= $totalPages ?>&produit=<?= urlencode($selectedProductId) ?>">Dernière</a>
+            <?php endif; ?>
+        </div>
+    </div>
+</section>
+
 
 
 <footer class="py-5">

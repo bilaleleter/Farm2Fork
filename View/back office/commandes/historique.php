@@ -90,6 +90,12 @@
                         <span class="nav-link-text ms-1">Historique</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                   <a class="nav-link text-dark" href="gestion_feedback.php">
+                        <i class="material-symbols-rounded">comments</i>
+                        <span class="nav-link-text ms-1">Feedbacks</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </aside>

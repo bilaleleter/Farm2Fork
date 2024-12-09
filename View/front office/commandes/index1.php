@@ -40,12 +40,107 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $commandeController->livrerCommandes($idLivraison, $ref_Commande); // Passer ref_commande à la méthode
     }
 }
-
-
-
-
-
 ?>
+<?php
+include_once __DIR__ . "/../../../Config.php";
+include_once __DIR__ . "/../../../Model/Feedback.php";
+
+// Connexion à la base de données
+try {
+    $pdo = new PDO('mysql:host=localhost;dbname=gestion_commande;charset=utf8', 'root', '');
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+} catch (PDOException $e) {
+    die('Erreur de connexion : ' . $e->getMessage());
+}
+
+// Initialisation des messages
+$message = '';
+$message_class = '';
+$feedbacks = [];
+
+// Gestion de l'ajout d'un commentaire
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['rating'])) {
+    $rating = isset($_POST['rating']) ? (int)$_POST['rating'] : null;
+    $comment = isset($_POST['comment']) ? trim($_POST['comment']) : null;
+
+    if ($rating && $comment && $rating >= 1 && $rating <= 5) {
+        try {
+            $sql = "INSERT INTO feedback (rating, comment) VALUES (:rating, :comment)";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(':rating', $rating, PDO::PARAM_INT);
+            $stmt->bindParam(':comment', $comment, PDO::PARAM_STR);
+            $stmt->execute();
+            
+ // Message de confirmation après insertion
+            $message = 'Votre commentaire a bien été envoyé.';
+            $message_class = 'alert-success';
+        } catch (Exception $e) {
+            $message = 'Erreur lors de l\'ajout du commentaire : ' . $e->getMessage();
+            $message_class = 'alert-danger';
+        }
+    } else {
+        $message = 'Veuillez remplir tous les champs correctement.';
+        $message_class = 'alert-warning';
+    }
+}
+
+// Gestion des réponses des clients
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['feedback_id'])) {
+    $feedback_id = (int)$_POST['feedback_id'];
+    $client_response = isset($_POST['client_response']) ? trim($_POST['client_response']) : null;
+
+    if ($feedback_id && $client_response) {
+        try {
+            $sql = "UPDATE feedback SET client_response = :client_response WHERE id = :feedback_id";
+            $stmt = $pdo->prepare($sql);
+            $stmt->bindParam(':client_response', $client_response, PDO::PARAM_STR);
+            $stmt->bindParam(':feedback_id', $feedback_id, PDO::PARAM_INT);
+            $stmt->execute();
+
+            $message = 'Votre réponse a été enregistrée.';
+            $message_class = 'alert-success';
+        } catch (Exception $e) {
+            $message = 'Erreur lors de l\'enregistrement de la réponse : ' . $e->getMessage();
+            $message_class = 'alert-danger';
+        }
+    } else {
+        $message = 'Veuillez fournir une réponse valide.';
+        $message_class = 'alert-warning';
+    }
+}
+// Gestion des réponses de l'administrateur
+if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['admin_feedback_id'])) {
+  $feedback_id = (int)$_POST['admin_feedback_id'];
+  $admin_response = isset($_POST['admin_response']) ? trim($_POST['admin_response']) : null;
+
+  if ($feedback_id && $admin_response) {
+      try {
+          $sql = "UPDATE feedback SET admin_response = :admin_response WHERE id = :feedback_id";
+          $stmt = $pdo->prepare($sql);
+          $stmt->bindParam(':admin_response', $admin_response, PDO::PARAM_STR);
+          $stmt->bindParam(':feedback_id', $feedback_id, PDO::PARAM_INT);
+          $stmt->execute();
+
+          $message = 'La réponse de l\'administrateur a été enregistrée.';
+          $message_class = 'alert-success';
+      } catch (Exception $e) {
+          $message = 'Erreur lors de l\'enregistrement de la réponse de l\'administrateur : ' . $e->getMessage();
+          $message_class = 'alert-danger';
+      }
+  } else {
+      $message = 'Veuillez fournir une réponse valide pour l\'administrateur.';
+      $message_class = 'alert-warning';
+  }
+}
+
+
+// Récupération des commentaires existants
+$fetch_sql = "SELECT * FROM feedback ORDER BY id DESC";
+$fetch_stmt = $pdo->prepare($fetch_sql);
+$fetch_stmt->execute();
+$feedbacks = $fetch_stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -781,6 +876,137 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </script>
 
 
+
+<section>
+    <div class="container-lg">
+        <div class="py-5">
+            <h3>Donnez votre avis sur notre service :</h3>
+
+            <!-- Affichage des messages -->
+            <?php if ($message): ?>
+                <div class="alert <?php echo $message_class; ?>" role="alert">
+                    <?php echo $message; ?>
+                </div>
+            <?php endif; ?>
+
+            <!-- Formulaire de feedback -->
+            <form action="" method="POST" id="feedbackForm">
+                <div class="mb-3">
+                    <label for="rating">Votre évaluation :</label>
+                    <div id="starRating" class="rating">
+                        <input type="radio" id="star5" name="rating" value="5" required />
+                        <label for="star5" title="5 étoiles">★</label>
+
+                        <input type="radio" id="star4" name="rating" value="4" required />
+                        <label for="star4" title="4 étoiles">★</label>
+
+                        <input type="radio" id="star3" name="rating" value="3" required />
+                        <label for="star3" title="3 étoiles">★</label>
+
+                        <input type="radio" id="star2" name="rating" value="2" required />
+                        <label for="star2" title="2 étoiles">★</label>
+
+                        <input type="radio" id="star1" name="rating" value="1" required />
+                        <label for="star1" title="1 étoile">★</label>
+                    </div>
+                </div>
+
+                <div class="mb-3">
+                    <label for="comment">Votre commentaire :</label>
+                    <textarea 
+                        name="comment" 
+                        id="comment" 
+                        class="form-control" 
+                        rows="4" 
+                        placeholder="Dites-nous ce que vous en pensez..." 
+                        required>
+                    </textarea>
+                </div>
+
+                <div>
+                    <button type="submit" class="btn btn-primary">Envoyer votre avis</button>
+                </div>
+            </form>
+
+           <!-- Liste des commentaires -->
+<h4 class="mt-5">Vos commentaires :</h4>
+<?php if (!empty($feedbacks)): ?>
+    <?php foreach ($feedbacks as $feedback): ?>
+        <div class="feedback-item">
+            <strong>Évaluation :</strong> <?php echo str_repeat('★', $feedback['rating']); ?><br>
+            <strong>Commentaire :</strong> <?php echo htmlspecialchars($feedback['comment']); ?><br>
+            <?php if (!empty($feedback['client_response'])): ?>
+                <strong>Votre réponse :</strong> <?php echo htmlspecialchars($feedback['client_response']); ?><br>
+            <?php else: ?>
+                <form method="POST" class="mt-2">
+                    <input type="hidden" name="feedback_id" value="<?php echo $feedback['id']; ?>">
+                    <textarea name="client_response" class="form-control" placeholder="Votre réponse..."></textarea>
+                    <button type="submit" class="btn btn-primary btn-sm mt-2">Répondre</button>
+                </form>
+                
+                <!-- Section d'ajout d'une réponse admin -->
+                <?php if (!empty($feedback['client_response']) && empty($feedback['admin_response'])): ?>
+                    <form method="POST" class="mt-2">
+                        <input type="hidden" name="admin_feedback_id" value="<?php echo $feedback['id']; ?>">
+                        <textarea name="admin_response" class="form-control" placeholder="Réponse de l'administrateur..."></textarea>
+                        <button type="submit" class="btn btn-secondary btn-sm mt-2">Répondre en tant qu'admin</button>
+                    </form>
+                <?php endif; ?>
+            <?php endif; ?>
+
+            <!-- Affichage de la réponse de l'administrateur -->
+            <?php if (!empty($feedback['admin_response'])): ?>
+                <strong>Réponse de l'administrateur :</strong> <?php echo htmlspecialchars($feedback['admin_response']); ?><br>
+            <?php endif; ?>
+        </div>
+        <hr>
+    <?php endforeach; ?>
+<?php else: ?>
+    <p>Aucun commentaire pour le moment.</p>
+<?php endif; ?>
+</div>
+</div>
+</section>
+
+
+<style>
+/* Évaluation par étoiles */
+.rating {
+  font-size: 2rem;
+  display: flex;
+  justify-content: flex-start;
+  gap: 5px;
+}
+
+.rating input {
+  display: none; /* Masque les boutons radio */
+}
+
+.rating label {
+  cursor: pointer;
+  color: lightgray;
+  transition: color 0.2s ease-in-out;
+}
+
+.rating input:checked ~ label,
+.rating label:hover,
+.rating label:hover ~ label {
+  color: gold;
+}
+
+/* Champ de commentaire */
+textarea {
+  resize: none; /* Empêche le redimensionnement */
+  border-radius: 5px;
+  border: 1px solid #ccc;
+}
+
+textarea:focus {
+  border-color: #007bff;
+  outline: none;
+  box-shadow: 0 0 5px rgba(0, 123, 255, 0.5);
+}
+</style>
 
 
  

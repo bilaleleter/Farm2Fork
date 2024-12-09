@@ -354,43 +354,13 @@
     <div class="container col-md-8 col-lg-6 p-4 rounded shadow" style="width: 100%; max-width: 1200px; margin: 0 auto; padding: 20px; background-color: #fff; box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); border-radius: 10px; border: 2px solid #408c148d; box-sizing: border-box;">
         <h1 style="text-align: center; color: #1c5739; margin-bottom: 20px;">Commandes</h1>
 
+        <!-- Formulaire de recherche -->
+        <form method="GET" style="text-align: center; margin-bottom: 20px;">
+            <input type="text" name="search" value="<?= isset($_GET['search']) ? htmlspecialchars($_GET['search']) : '' ?>" placeholder="Rechercher une commande" style="width: 50%; padding: 10px; border: 2px solid #4fa579; border-radius: 5px;">
+            <button type="submit" class="btn" style="margin-top: 0;">Rechercher</button>
+        </form>
+
         <style>
-            /* Style global */
-            body {
-                font-family: Arial, sans-serif;
-                background-color: #fdf2e7;
-                color: #1c5739;
-                margin: 0;
-                padding: 0;
-            }
-
-            section {
-                display: flex;
-                justify-content: center;
-                align-items: flex-start;
-                min-height: 100vh;
-                background-color: #ffffff;
-                padding: 20px;
-            }
-
-            .container {
-                width: 100%;
-                max-width: 1200px;
-                margin: 0 auto;
-                padding: 20px;
-                background-color: #fff;
-                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-                border-radius: 10px;
-                border: 2px solid #408c148d;
-                box-sizing: border-box;
-            }
-
-            h1 {
-                text-align: center;
-                color: #1c5739;
-                margin-bottom: 20px;
-            }
-
             table {
                 width: 100%;
                 border-collapse: collapse;
@@ -415,57 +385,76 @@
                 color: #1c5739;
             }
 
-            /* Style pour les champs de saisie */
-            input[type="text"], 
-            input[type="number"], 
-            input[type="date"], 
-            select {
-                width: 100%;
-                padding: 10px;
-                margin-bottom: 10px;
-                border: 2px solid #4fa579;
-                border-radius: 5px;
-                background-color: #408c148d;
-                transition: background-color 0.3s, border-color 0.3s;
-                box-sizing: border-box;
-            }
-
-            input[type="text"]:hover,
-            input[type="number"]:hover,
-            input[type="date"]:hover,
-            select:hover {
-                background-color: #ead885;
-                border-color: #1c5739;
-            }
-
-            /* Style des boutons */
             .btn {
-                display: block;
-                width: 100%; /* Ajouté pour que le bouton ait la même largeur que les champs de saisie */
-                padding: 12px 15px;
+                display: inline-block;
+                padding: 10px 15px;
                 background-color: #4fa579;
                 color: #ffffff;
                 text-align: center;
                 text-decoration: none;
                 border-radius: 5px;
-                margin-top: 20px;
+                margin-top: 10px;
                 font-weight: bold;
                 transition: background-color 0.3s, color 0.3s;
-                box-sizing: border-box; /* Assure que les boutons respectent les dimensions du conteneur */
             }
 
             .btn:hover {
                 background-color: #ead885;
                 color: #1c5739;
             }
-
-            td .btn {
-                margin-top: 5px;
-                display: inline-block;
-                width: auto;
-            }
         </style>
 
+        <?php
+        // Connexion à la base de données (à adapter selon votre configuration)
+        $dsn = 'mysql:host=localhost;dbname=gestion_commande;charset=utf8';
+        $username = 'root';
+        $password = '';
+        try {
+            $pdo = new PDO($dsn, $username, $password);
+            $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        } catch (PDOException $e) {
+            die('Erreur de connexion : ' . $e->getMessage());
+        }
+
+        // Récupérer le mot-clé de recherche
+        $search = isset($_GET['search']) ? trim($_GET['search']) : '';
+
+        // Paramètres de pagination
+        $itemsPerPage = 3;
+        $currentPage = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $currentPage = max(1, $currentPage); // S'assurer que la page est au minimum 1
+        $offset = ($currentPage - 1) * $itemsPerPage;
+
+        // Requête avec pagination et recherche
+        $query = "SELECT * FROM commande WHERE etat != 'livrée'";
+        if (!empty($search)) {
+            $query .= " AND (ID_commande LIKE :search OR ref_commande LIKE :search)";
+        }
+        $query .= " ORDER BY date_commande DESC LIMIT :limit OFFSET :offset";
+
+        $stmt = $pdo->prepare($query);
+        if (!empty($search)) {
+            $stmt->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
+        }
+        $stmt->bindValue(':limit', $itemsPerPage, PDO::PARAM_INT);
+        $stmt->bindValue(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        $commandes = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+        // Requête pour le nombre total de commandes (avec recherche)
+        $countQuery = "SELECT COUNT(*) AS total FROM commande WHERE etat != 'livrée'";
+        if (!empty($search)) {
+            $countQuery .= " AND (ID_commande LIKE :search OR ref_commande LIKE :search)";
+        }
+
+        $countStmt = $pdo->prepare($countQuery);
+        if (!empty($search)) {
+            $countStmt->bindValue(':search', '%' . $search . '%', PDO::PARAM_STR);
+        }
+        $countStmt->execute();
+        $totalCommandes = $countStmt->fetch(PDO::FETCH_ASSOC)['total'];
+        $totalPages = ceil($totalCommandes / $itemsPerPage);
+        ?>
 <table>
     <thead>
         <tr>
@@ -479,57 +468,71 @@
         </tr>
     </thead>
     <tbody>
-        <?php
-        include_once __DIR__ . "/../../../Controller/CommandeController.php";
-        include_once __DIR__ . "/../../../Controller/ProduitController.php";
-        include_once __DIR__ . "/../../../Controller/LivraisonController.php";
-
-        $livraisonController = new Controller\LivraisonController();
-        $commandeController = new Controller\CommandeController();
-        $produitController = new Controller\ProduitController();
-
-        $commandes = $commandeController->getCommandesNotdilvered();
-
-        $delai_max = 24 * 60 * 60; // Délai en secondes (24 heures)
-
-        foreach ($commandes as $commande) {
-            // Convertir la date de la commande en timestamp
-            $date_commande = strtotime($commande['date_commande']);
-            $current_time = time(); // Temps actuel en timestamp
-            $delai_restant = $current_time - $date_commande; // Temps écoulé depuis la commande
-        ?>
+        <?php if (empty($commandes)): ?>
             <tr>
-                <td><?= $commande['ID_commande'] ?></td>
-                <td><?= $commande['date_commande'] ?></td>
-                <td><?= $commande['etat'] ?></td>
-                <td><?= $commande['quantite'] ?></td>
-                <td><?= $produitController->getProduitbyId($commande['id_produit'])['NomProduit'] ?></td>
-                <td><?= $commande['ref_commande'] ?></td> <!-- Affichage de la référence -->
-                <td>
-                    <?php if ($delai_restant <= $delai_max): ?>
-                        <!-- Les actions de modification et suppression sont autorisées si le délai est inférieur ou égal à 24h -->
-                        <a href="modifier_commande.php?id_commande=<?= $commande['ID_commande'] ?>" class="btn">Modifier</a>
-                        <a href="supprimer_commande.php?id_commande=<?= $commande['ID_commande'] ?>" class="btn" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette commande ?')">Supprimer</a>
-                    <?php else: ?>
-                        <!-- Les actions sont désactivées si le délai est supérieur à 24h -->
-                        <button class="btn" disabled>Modifier</button>
-                        <button class="btn" disabled>Supprimer</button>
-                    <?php endif; ?>
-                </td>
+                <td colspan="7" style="text-align: center;">Aucune commande trouvée.</td>
             </tr>
-        <?php
-        }
-        ?>
+        <?php else: ?>
+            <?php foreach ($commandes as $commande): ?>
+                <?php 
+                // Calcul du délai
+                $dateCommande = new DateTime($commande['date_commande']);
+                $now = new DateTime();
+                $interval = $now->diff($dateCommande);
+                $hoursElapsed = ($interval->days * 24) + $interval->h;
+                $isDisabled = $hoursElapsed > 24; // Plus de 24 heures écoulées
+                ?>
+                <tr>
+                    <td><?= $commande['ID_commande'] ?></td>
+                    <td><?= $commande['date_commande'] ?></td>
+                    <td><?= $commande['etat'] ?></td>
+                    <td><?= $commande['quantite'] ?></td>
+                    <td><?= $commande['id_produit'] ?></td>
+                    <td><?= $commande['ref_commande'] ?></td>
+                    <td>
+                        <a 
+                            href="modifier_commande.php?id_commande=<?= $commande['ID_commande'] ?>" 
+                            class="btn"
+                            <?= $isDisabled ? 'style="pointer-events: none; opacity: 0.5;"' : '' ?>
+                        >
+                            Modifier
+                        </a>
+                        <a 
+                            href="supprimer_commande.php?id_commande=<?= $commande['ID_commande'] ?>" 
+                            class="btn"
+                            onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette commande ?')"
+                            <?= $isDisabled ? 'style="pointer-events: none; opacity: 0.5;"' : '' ?>
+                        >
+                            Supprimer
+                        </a>
+                    </td>
+                </tr>
+            <?php endforeach; ?>
+        <?php endif; ?>
     </tbody>
 </table>
 
         <a href="index.php" class="btn">Nouvelle Commande</a>
         <a href="/projetweb/projetweb/View/front%20office/commandes/index1.php" class="btn">Livrer les produits</a>
 
+        <!-- Navigation de pagination -->
+        <div style="text-align: center; margin-top: 20px;">
+            <?php if ($currentPage > 1): ?>
+                <a href="?page=<?= $currentPage - 1 ?>&search=<?= urlencode($search) ?>" class="btn">Précédent</a>
+            <?php endif; ?>
+
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <a href="?page=<?= $i ?>&search=<?= urlencode($search) ?>" class="btn" style="<?= $i === $currentPage ? 'background-color: #ead885; color: #1c5739;' : '' ?>"><?= $i ?></a>
+            <?php endfor; ?>
+
+            <?php if ($currentPage < $totalPages): ?>
+                <a href="?page=<?= $currentPage + 1 ?>&search=<?= urlencode($search) ?>" class="btn">Suivant</a>
+            <?php endif; ?>
+        </div>
     </div>
 </section>
 
-  
+
   
 
 

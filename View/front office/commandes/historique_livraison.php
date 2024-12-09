@@ -349,151 +349,163 @@
 
 
 
-
     <section style="display: flex; justify-content: center; align-items: center; height: 100vh; background-color: #ffffff;">
-      <div class="container col-md-8 col-lg-6 p-4 rounded shadow" style="background-color: #ffffff; border: 2px solid #408c148d;">
-          <h1 style="text-align: center; color: #1c5739;">Historique des Livraison</h1>
-          <style>
-              /* Style global */
-              body {
-                  font-family: Arial, sans-serif;
-                  background-color: #fdf2e7;
-                  color: #1c5739;
-                  margin: 0;
-                  padding: 20px;
-              }
-  
-              .container {
-                  max-width: 1200px;
-                  margin: 0 auto;
-                  padding: 20px;
-                  background-color: #fff;
-                  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
-                  border-radius: 10px;
-              }
-  
-              table {
-                  width: 100%;
-                  border-collapse: collapse;
-                  margin-top: 20px;
-              }
-  
-              th {
-                  background-color: #1c5739;
-                  color: #fdf2e7;
-                  padding: 15px;
-                  text-align: left;
-                  font-size: 16px;
-              }
-  
-              td {
-                  padding: 15px;
-                  text-align: left;
-                  border-bottom: 1px solid #ead885;
-              }
-  
-              tr:hover {
-                  background-color: #ead885;
-                  color: #1c5739;
-              }
-  
-              /* Transition pour les champs */
-              input[type="text"],
-              input[type="number"],
-              input[type="date"],
-              select {
-                  width: 100%;
-                  padding: 10px;
-                  margin-bottom: 10px;
-                  border: 2px solid #4fa579;
-                  border-radius: 5px;
-                  background-color: #408c148d;
-                  transition: background-color 0.3s, border-color 0.3s;
-              }
-  
-              input[type="text"]:hover,
-              input[type="number"]:hover,
-              input[type="date"]:hover,
-              select:hover {
-                  background-color: #ead885;
-                  border-color: #1c5739;
-              }
-  
-              /* Bouton */
-              .btn {
-                  display: block;
-                  width: 100%;
-                  padding: 10px;
-                  background-color: #4fa579;
-                  color: #ffffff;
-                  text-align: center;
-                  text-decoration: none;
-                  border-radius: 5px;
-                  margin-top: 20px;
-                  font-weight: bold;
-                  transition: background-color 0.3s, color 0.3s;
-              }
-  
-              .btn:hover {
-                  background-color: #ead885;
-                  color: #1c5739;
-              }
-          </style>
-  
-          <table>
-              <thead>
-                  <tr>
-                      <th>ID Livraison</th>
-                      <th>Ville</th>
-                      <th>Code Postal</th>
-                      <th>Adresse</th>
-                      <th>Status</th>
-                      <th>Date d'envoi</th>
-                      <th>Date de livraison éstimée</th>
-                      
-                  </tr>
-              </thead>
-              <tbody>
-                  <!-- Exemple de données statiques -->
-                  <?php
-                  include_once __DIR__ . "/../../../Controller/LivraisonController.php";
-                  include_once __DIR__ . "/../../../Model/Livraison.php";
-                  $livraisonController = new Controller\LivraisonController();
-                  
-                  
-                  
+    <div class="container col-md-8 col-lg-6 p-4 rounded shadow" style="background-color: #ffffff; border: 2px solid #408c148d;">
+        <h1 style="text-align: center; color: #1c5739;">Historique des Livraisons</h1>
 
-                  	
-                  
-                  $livraisons = $livraisonController->getAllLivraisons();
+        <style>
+            body {
+                font-family: Arial, sans-serif;
+                background-color: #fdf2e7;
+                color: #1c5739;
+                margin: 0;
+                padding: 20px;
+            }
 
-                  
-                  foreach ($livraisons as $livraison) {
-                  ?>
-                      <tr>
-                      <td><?= $livraison['ID_livraison'] ?></td>
-                      <td><?= $livraison['ville'] ?></td>
-                      <td><?= $livraison['codePostal'] ?></td>
-                      <td><?= $livraison['Adresse_de_Livraison'] ?></td>
-                      <td><?= $livraison['Statut_de_Livraison'] ?></td>
-                      <td><?= $livraison['Date_d_envoi'] ?></td>
-                      <td><?= $livraison['Date_de_Livraison_Estimee'] ?></td>
-                      <td>
-                                    
-                          
-                      </tr>
-                      
-                  <?php
-                  }
-                  ?>
-                  
-              </tbody>
-          </table>
-          <a href="/commande/nouvelle" class="btn">Nouvelle Commande</a>
+            .container {
+                max-width: 1200px;
+                margin: 0 auto;
+                padding: 20px;
+                background-color: #fff;
+                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+                border-radius: 10px;
+            }
 
-      </div>
-  </section>
-  
+            table {
+                width: 100%;
+                border-collapse: collapse;
+                margin-top: 20px;
+            }
+
+            th {
+                background-color: #1c5739;
+                color: #fdf2e7;
+                padding: 15px;
+                text-align: left;
+                font-size: 16px;
+            }
+
+            td {
+                padding: 15px;
+                text-align: left;
+                border-bottom: 1px solid #ead885;
+            }
+
+            tr:hover {
+                background-color: #ead885;
+                color: #1c5739;
+            }
+
+            .pagination {
+                display: flex;
+                justify-content: center;
+                align-items: center;
+                margin-top: 20px;
+            }
+
+            .pagination a {
+                padding: 8px 16px;
+                margin: 0 5px;
+                background-color: #4fa579;
+                color: #fff;
+                text-decoration: none;
+                border-radius: 5px;
+                font-weight: bold;
+            }
+
+            .pagination a:hover {
+                background-color: #1c5739;
+            }
+
+            .pagination a[style] {
+                background-color: #1c5739;
+            }
+        </style>
+
+        <?php
+        // Charger les livraisons
+        include_once '../../../Controller/LivraisonController.php';
+        use Controller\LivraisonController;
+
+        $livraisonController = new LivraisonController();
+        $allLivraisons = $livraisonController->getAllLivraisons();
+
+        // Récupérer la ville sélectionnée pour filtrer
+        $selectedCity = isset($_GET['ville']) ? $_GET['ville'] : '';
+
+        // Filtrer les livraisons par ville
+        $filteredLivraisons = array_filter($allLivraisons, function($livraison) use ($selectedCity) {
+            return $selectedCity === '' || $livraison['ville'] === $selectedCity;
+        });
+
+        // Pagination
+        $livraisonsPerPage = 3;
+        $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
+        $page = max(1, $page);
+        $totalLivraisons = count($filteredLivraisons);
+        $totalPages = ceil($totalLivraisons / $livraisonsPerPage);
+        $offset = ($page - 1) * $livraisonsPerPage;
+        $livraisons = array_slice($filteredLivraisons, $offset, $livraisonsPerPage);
+        ?>
+
+        <!-- Formulaire de filtre par ville -->
+        <form method="GET" action="" style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <label for="ville" style="font-weight: bold;">Filtrer par ville :</label>
+            <select name="ville" id="ville" style="padding: 10px; border: 1px solid #1c5739; border-radius: 5px;">
+                <option value="">Toutes les villes</option>
+                <?php foreach (array_unique(array_column($allLivraisons, 'ville')) as $ville): ?>
+                    <option value="<?= htmlspecialchars($ville) ?>" <?= ($ville === $selectedCity) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($ville) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            <button type="submit" style="padding: 10px 20px; background-color: #1c5739; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Filtrer</button>
+        </form>
+
+        <!-- Tableau des livraisons -->
+        <table>
+            <thead>
+                <tr>
+                    <th>ID Livraison</th>
+                    <th>Ville</th>
+                    <th>Code Postal</th>
+                    <th>Adresse</th>
+                    <th>Référence</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($livraisons as $livraison): ?>
+                    <tr>
+                        <td><?= htmlspecialchars($livraison['ID_livraison']) ?></td>
+                        <td><?= htmlspecialchars($livraison['ville']) ?></td>
+                        <td><?= htmlspecialchars($livraison['codePostal']) ?></td>
+                        <td><?= htmlspecialchars($livraison['Adresse_de_Livraison']) ?></td>
+                        <td><?= htmlspecialchars($livraison['ref_commande']) ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <?php if ($page > 1): ?>
+                <a href="?page=1&ville=<?= urlencode($selectedCity) ?>">Première</a>
+                <a href="?page=<?= $page - 1 ?>&ville=<?= urlencode($selectedCity) ?>">Précédente</a>
+            <?php endif; ?>
+
+            <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                <a href="?page=<?= $i ?>&ville=<?= urlencode($selectedCity) ?>" <?= ($i == $page) ? 'style="background-color:#1c5739;"' : '' ?>><?= $i ?></a>
+            <?php endfor; ?>
+
+            <?php if ($page < $totalPages): ?>
+                <a href="?page=<?= $page + 1 ?>&ville=<?= urlencode($selectedCity) ?>">Suivante</a>
+                <a href="?page=<?= $totalPages ?>&ville=<?= urlencode($selectedCity) ?>">Dernière</a>
+            <?php endif; ?>
+        </div>
+    </div>
+</section>
+
+
   
 
 

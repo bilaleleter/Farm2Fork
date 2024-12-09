@@ -13,7 +13,6 @@
     <link id="pagestyle" href="../assets/css/material-dashboard.css?v=3.2.0" rel="stylesheet" />
 
     <style>
-        /* Style global (identique à celui de la page principale) */
         body {
             font-family: Arial, sans-serif;
             margin: 0;
@@ -25,7 +24,6 @@
         main {
             padding: 30px;
             margin-left: 260px;
-            /* Espace réservé pour la sidebar */
         }
 
         .overview {
@@ -56,7 +54,6 @@
 </head>
 
 <body class="g-sidenav-show bg-gray-100">
-    <!-- Sidebar -->
     <aside class="sidenav navbar navbar-vertical navbar-expand-xs border-radius-lg fixed-start ms-2 bg-white my-2" id="sidenav-main">
         <div class="sidenav-header">
             <a class="navbar-brand px-4 py-3 m-0" href="index.php">
@@ -90,57 +87,112 @@
                         <span class="nav-link-text ms-1">Historique</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                   <a class="nav-link text-dark" href="gestion_feedback.php">
+                        <i class="material-symbols-rounded">comments</i>
+                        <span class="nav-link-text ms-1">Feedbacks</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </aside>
     <main>
         <section class="overview">
-            <h2>Liste des Livraisons</h2>
-            <table class="table table-bordered" id="livraisonTable" width="100%">
+            <h2 style="text-align: center; color: #1c5739;">Liste des Livraisons</h2>
+
+            <?php
+            // Charger les livraisons
+            include_once '../../../Controller/LivraisonController.php';
+            use Controller\LivraisonController;
+
+            $livraisonController = new LivraisonController();
+            $allLivraisons = $livraisonController->getAllLivraisons();
+
+            // Récupérer la ville sélectionnée pour filtrer
+            $selectedCity = isset($_GET['ville']) ? $_GET['ville'] : '';
+
+            // Filtrer les livraisons par ville
+            $filteredLivraisons = array_filter($allLivraisons, function ($livraison) use ($selectedCity) {
+                return $selectedCity === '' || $livraison['ville'] === $selectedCity;
+            });
+
+            // Configuration de la pagination
+            $livraisonsPerPage = 3; // Nombre d'éléments par page
+            $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+            $start = ($page - 1) * $livraisonsPerPage;
+
+            // Pagination sur les livraisons filtrées
+            $totalLivraisons = count($filteredLivraisons);
+            $totalPages = ceil($totalLivraisons / $livraisonsPerPage);
+            $livraisons = array_slice($filteredLivraisons, $start, $livraisonsPerPage);
+            ?>
+
+            <!-- Formulaire de filtre par ville -->
+            <form method="GET" action="" style="display: flex; gap: 10px; margin-bottom: 20px;">
+                <label for="ville" style="font-weight: bold;">Filtrer par ville :</label>
+                <select name="ville" id="ville" style="padding: 10px; border: 1px solid #1c5739; border-radius: 5px;">
+                    <option value="">Toutes les villes</option>
+                    <?php foreach (array_unique(array_column($allLivraisons, 'ville')) as $ville): ?>
+                        <option value="<?= htmlspecialchars($ville) ?>" <?= ($ville === $selectedCity) ? 'selected' : '' ?>>
+                            <?= htmlspecialchars($ville) ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>
+                <button type="submit" style="padding: 10px 20px; background-color: #1c5739; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Filtrer</button>
+            </form>
+
+            <table>
                 <thead>
                     <tr>
                         <th>ID Livraison</th>
                         <th>Ville</th>
                         <th>Code Postal</th>
                         <th>Adresse</th>
-                        <th>Référence Commande</th> <!-- Ajout du champ Référence Commande -->
+                        <th>Référence Commande</th>
                         <th>ID Utilisateur</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
-                    <?php
-                    include_once '../../../Controller/LivraisonController.php';
-
-                    use Controller\LivraisonController;
-
-                    $livraisonController = new LivraisonController();
-                    $livraisons = $livraisonController->getAllLivraisons(); // Récupérer toutes les livraisons
-
-                    foreach ($livraisons as $livraison) {
-                        // Exemple d'affichage d'une référence de commande (ajustez selon votre modèle)
-                        $referenceCommande = $livraison['ref_commande']; // Assurez-vous que 'ref_commande' est une colonne valide dans votre base de données
-
-                        echo "
-                        <tr id='row-{$livraison['ID_livraison']}'>
-                            <td>{$livraison['ID_livraison']}</td>
-                            <td>{$livraison['ville']}</td>
-                            <td>{$livraison['codePostal']}</td>
-                            <td>{$livraison['Adresse_de_Livraison']}</td>
-                            <td>{$referenceCommande}</td> <!-- Affichage de la référence commande -->
-                            <td>{$livraison['idUser']}</td>
+                    <?php foreach ($livraisons as $livraison): ?>
+                        <tr>
+                            <td><?= htmlspecialchars($livraison['ID_livraison']) ?></td>
+                            <td><?= htmlspecialchars($livraison['ville']) ?></td>
+                            <td><?= htmlspecialchars($livraison['codePostal']) ?></td>
+                            <td><?= htmlspecialchars($livraison['Adresse_de_Livraison']) ?></td>
+                            <td><?= htmlspecialchars($livraison['ref_commande']) ?></td>
+                            <td><?= htmlspecialchars($livraison['idUser']) ?></td>
                             <td>
-                                <a href='editlivraison.php?id={$livraison['ID_livraison']}' class='btn btn-success'>Modifier</a>
-                                <a href='deletelivraison.php?id={$livraison['ID_livraison']}' class='btn btn-primary'>Annuler</a>
+                                <a href="editlivraison.php?id=<?= $livraison['ID_livraison'] ?>" style="background-color: #1c5739; color: #fdf2e7; padding: 5px 10px; border-radius: 5px; text-decoration: none;">Modifier</a>
+                                <a href="deletelivraison.php?id=<?= $livraison['ID_livraison'] ?>" style="background-color: #f54242; color: #fdf2e7; padding: 5px 10px; border-radius: 5px; text-decoration: none;" onclick="return confirm('Êtes-vous sûr de vouloir annuler cette livraison ?')">Annuler</a>
                             </td>
-                        </tr>";
-                    }
-                    ?>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
+
+            <!-- Pagination -->
+            <nav style="text-align: center; margin-top: 20px;">
+                <ul style="list-style-type: none; padding: 0; display: inline-flex;">
+                    <?php if ($page > 1): ?>
+                        <li><a href="?page=<?= $page - 1 ?>&ville=<?= urlencode($selectedCity) ?>" style="text-decoration: none; background-color: #1c5739; color: #fdf2e7; padding: 8px 12px; border-radius: 5px;">Précédent</a></li>
+                    <?php endif; ?>
+
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <li>
+                            <a href="?page=<?= $i ?>&ville=<?= urlencode($selectedCity) ?>" style="text-decoration: none; padding: 8px 12px; border-radius: 5px; <?= $i === $page ? 'background-color: #ead885; color: #1c5739;' : 'background-color: #1c5739; color: #fdf2e7;' ?>">
+                                <?= $i ?>
+                            </a>
+                        </li>
+                    <?php endfor; ?>
+
+                    <?php if ($page < $totalPages): ?>
+                        <li><a href="?page=<?= $page + 1 ?>&ville=<?= urlencode($selectedCity) ?>" style="text-decoration: none; background-color: #1c5739; color: #fdf2e7; padding: 8px 12px; border-radius: 5px;">Suivant</a></li>
+                    <?php endif; ?>
+                </ul>
+            </nav>
         </section>
     </main>
-
 </body>
 
 </html>

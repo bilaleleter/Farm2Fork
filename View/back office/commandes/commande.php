@@ -56,220 +56,277 @@
                         <span class="nav-link-text ms-1">Historique</span>
                     </a>
                 </li>
+                <li class="nav-item">
+                      <a class="nav-link text-dark" href="gestion_feedback.php">
+                        <i class="material-symbols-rounded">comments</i>
+                        <span class="nav-link-text ms-1">Feedbacks</span>
+                    </a>
+                </li>
             </ul>
         </div>
     </aside>
 
 
     <head>
-        <meta charset="UTF-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Gestion des Commandes</title>
-        <style>
-            /* Style global */
-            body {
-                font-family: Arial, sans-serif;
-                margin: 0;
-                padding: 0;
-                background-color: #fdf2e7;
-                color: #1c5739;
-            }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gestion des Commandes</title>
+    <style>
+        /* Style global */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #fdf2e7;
+            color: #1c5739;
+        }
 
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+        }
 
+        nav ul li {
+            display: inline;
+            margin-right: 20px;
+        }
 
+        nav ul li a {
+            color: #fdf2e7;
+            text-decoration: none;
+            font-weight: bold;
+        }
 
-            nav ul {
-                list-style-type: none;
-                padding: 0;
-            }
+        nav ul li a:hover {
+            text-decoration: underline;
+        }
 
-            nav ul li {
-                display: inline;
-                margin-right: 20px;
-            }
+        main {
+            padding: 30px;
+            margin-left: 260px;
+            /* Espace réservé pour la sidebar */
+        }
 
-            nav ul li a {
-                color: #fdf2e7;
-                text-decoration: none;
-                font-weight: bold;
-            }
+        .overview {
+            background-color: #ead885;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
 
-            nav ul li a:hover {
-                text-decoration: underline;
-            }
+        .overview h2 {
+            margin-top: 0;
+            font-size: 1.8em;
+            text-align: center;
+        }
 
-            main {
-                padding: 30px;
-                margin-left: 260px;
-                /* Espace réservé pour la sidebar */
-            }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
 
-            .overview {
-                background-color: #ead885;
-                padding: 20px;
-                border-radius: 8px;
-                box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            }
+        table th,
+        table td {
+            padding: 10px;
+            border: 1px solid #ddd;
+            text-align: left;
+        }
 
-            .overview h2 {
-                margin-top: 0;
-                font-size: 1.8em;
-                text-align: center;
-            }
+        table th {
+            background-color: #1c5739;
+            color: #fdf2e7;
+        }
 
-            table {
-                width: 100%;
-                border-collapse: collapse;
-                margin-top: 20px;
-            }
+        .actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
 
-            table th,
-            table td {
-                padding: 10px;
-                border: 1px solid #ddd;
-                text-align: left;
-            }
+        .actions button {
+            background-color: #1c5739;
+            color: #fdf2e7;
+            padding: 8px 16px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
 
-            table th {
-                background-color: #1c5739;
-                color: #fdf2e7;
-            }
+        .actions button:hover {
+            background-color: #3e7e57;
+        }
+    </style>
+</head>
 
-            .actions {
-                display: flex;
-                gap: 10px;
-                justify-content: center;
-            }
-
-            .actions button {
-                background-color: #1c5739;
-                color: #fdf2e7;
-                padding: 8px 16px;
-                border: none;
-                border-radius: 5px;
-                cursor: pointer;
-            }
-
-            .actions button:hover {
-                background-color: #3e7e57;
-            }
-        </style>
-    </head>
-
-    <body>
-
-
-
-    <main>
+<body>
+<main style="font-family: Arial, sans-serif; background-color: #fdf2e7; color: #1c5739; padding: 20px;">
     <section class="overview">
-        <h2>Liste des Commandes</h2>
-        <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
-            <thead>
+        <h2 style="text-align: center; color: #1c5739;">Liste des Commandes</h2>
+
+        <?php
+        // Importation des fichiers nécessaires
+        include_once '../../../Controller/CommandeController.php';
+        include_once '../../../Controller/ProduitController.php';
+
+        use Controller\CommandeController;
+        use Controller\ProduitController;
+
+        $commandeController = new CommandeController();
+        $produitController = new ProduitController();
+
+        // Configuration de la pagination
+        $commandsPerPage = 3; // Nombre d'éléments par page
+        $page = isset($_GET['page']) && is_numeric($_GET['page']) ? (int)$_GET['page'] : 1;
+        $start = ($page - 1) * $commandsPerPage;
+
+        // Filtrer par produit sélectionné
+        $selectedProduct = isset($_GET['produit']) ? $_GET['produit'] : '';
+
+        // Récupération des commandes et gestion de la pagination
+        $allCommandes = $commandeController->getAllCommands();
+        $filteredCommandes = array_filter($allCommandes, function($commande) use ($selectedProduct, $produitController) {
+            if ($selectedProduct === '') return true;
+
+            $produitId = $commande['id_produit'];
+            $produitNom = $produitController->getProduitbyId($produitId)['NomProduit'] ?? '';
+
+            return $produitNom === $selectedProduct;
+        });
+
+        $totalCommands = count($filteredCommandes);
+        $totalPages = ceil($totalCommands / $commandsPerPage);
+        $commandes = array_slice($filteredCommandes, $start, $commandsPerPage);
+        ?>
+
+        <!-- Formulaire de filtrage par produit -->
+        <form method="GET" action="" style="display: flex; gap: 10px; margin-bottom: 20px;">
+            <label for="produit" style="font-weight: bold;">Filtrer par produit :</label>
+            <select name="produit" id="produit" style="padding: 10px; border: 1px solid #1c5739; border-radius: 5px;">
+                <option value="">Tous les produits</option>
+                <?php foreach ($produitController->getAllProduits() as $produit): ?>
+                    <option value="<?= htmlspecialchars($produit['NomProduit']) ?>" <?= ($produit['NomProduit'] === $selectedProduct) ? 'selected' : '' ?>>
+                        <?= htmlspecialchars($produit['NomProduit']) ?>
+                    </option>
+                <?php endforeach; ?>
+            </select>
+            <button type="submit" style="padding: 10px 20px; background-color: #1c5739; color: #fff; border: none; border-radius: 5px; cursor: pointer;">Filtrer</button>
+        </form>
+
+        <table style="width: 100%; border-collapse: collapse; margin: 20px 0;">
+            <thead style="background-color: #1c5739; color: #fdf2e7;">
                 <tr>
-                    <th>ID Commande</th>
-                    <th>Date de Commande</th>
-                    <th>État</th>
-                    <th>Quantité</th>
-                    <th>Produit</th>
-                    <th>Référence</th>
-                    <th>Actions</th>
+                    <th style="padding: 10px; text-align: left;">ID Commande</th>
+                    <th style="padding: 10px; text-align: left;">Date de Commande</th>
+                    <th style="padding: 10px; text-align: left;">État</th>
+                    <th style="padding: 10px; text-align: left;">Quantité</th>
+                    <th style="padding: 10px; text-align: left;">Produit</th>
+                    <th style="padding: 10px; text-align: left;">Référence</th>
+                    <th style="padding: 10px; text-align: left;">Actions</th>
                 </tr>
             </thead>
             <tbody>
-                <?php
-                include_once '../../../Controller/CommandeController.php';
-                include_once '../../../Controller/ProduitController.php';
-                include_once '../../../Controller/LivraisonController.php';
-
-                use Controller\CommandeController;
-                use Controller\ProduitController;
-
-                $commandeController = new CommandeController();
-                $produitController = new ProduitController();
-
-                $commandes = $commandeController->getAllCommands(); // Récupérer toutes les commandes
-
-                foreach ($commandes as $commande) {
-                    // Récupérer les données de la commande
-                    $id_commande = isset($commande['ID_commande']) ? $commande['ID_commande'] : 'Inconnu';
-                    $date_commande = isset($commande['date_commande']) ? $commande['date_commande'] : 'Non spécifiée';
-                    $etat = isset($commande['etat']) ? $commande['etat'] : 'Non spécifié';
-                    $quantite = isset($commande['quantite']) ? $commande['quantite'] : 'Non spécifiée';
+                <?php foreach ($commandes as $commande): ?>
+                    <?php
+                    $id_commande = $commande['ID_commande'] ?? 'Inconnu';
+                    $date_commande = $commande['date_commande'] ?? 'Non spécifiée';
+                    $etat = $commande['etat'] ?? 'Non spécifié';
+                    $quantite = $commande['quantite'] ?? 'Non spécifiée';
                     $produit_nom = isset($commande['id_produit']) ? $produitController->getProduitbyId($commande['id_produit'])['NomProduit'] : 'Produit inconnu';
-                    $ref_commande = isset($commande['ref_commande']) ? $commande['ref_commande'] : 'Non spécifiée';
-
-                    // Affichage des lignes de la table avec les données
-                    echo "
-                    <tr id='row-{$commande['ID_commande']}'>
-                        <td>{$id_commande}</td>
-                        <td>{$date_commande}</td>
-                        <td>{$etat}</td>
-                        <td>{$quantite}</td>
-                        <td>{$produit_nom}</td>
-                        <td>{$ref_commande}</td>
-                        <td>
-                            <a href='modifier_commande.php?id_commande={$commande['ID_commande']}' class='btn btn-warning'>Modifier</a>
-                            <a href='supprimer_commande.php?id_commande={$commande['ID_commande']}' class='btn btn-danger' onclick=\"return confirm('Êtes-vous sûr de vouloir supprimer cette commande ?')\">Supprimer</a>
+                    $ref_commande = $commande['ref_commande'] ?? 'Non spécifiée';
+                    ?>
+                    <tr style="background-color: #ead885;">
+                        <td style="padding: 10px;"><?= htmlspecialchars($id_commande) ?></td>
+                        <td style="padding: 10px;"><?= htmlspecialchars($date_commande) ?></td>
+                        <td style="padding: 10px;"><?= htmlspecialchars($etat) ?></td>
+                        <td style="padding: 10px;"><?= htmlspecialchars($quantite) ?></td>
+                        <td style="padding: 10px;"><?= htmlspecialchars($produit_nom) ?></td>
+                        <td style="padding: 10px;"><?= htmlspecialchars($ref_commande) ?></td>
+                        <td style="padding: 10px;">
+                            <a href="modifier_commande.php?id_commande=<?= $id_commande ?>" style="background-color: #1c5739; color: #fdf2e7; padding: 5px 10px; border-radius: 5px; text-decoration: none;">Modifier</a>
+                            <a href="supprimer_commande.php?id_commande=<?= $id_commande ?>" style="background-color: #f54242; color: #fdf2e7; padding: 5px 10px; border-radius: 5px; text-decoration: none;" onclick="return confirm('Êtes-vous sûr de vouloir supprimer cette commande ?')">Supprimer</a>
                         </td>
-                    </tr>";
-                }
-                ?>
+                    </tr>
+                <?php endforeach; ?>
             </tbody>
         </table>
+
+        <!-- Pagination -->
+        <nav style="text-align: center; margin-top: 20px;">
+            <ul style="list-style-type: none; padding: 0; display: inline-flex;">
+                <?php if ($page > 1): ?>
+                    <li style="margin: 0 5px;">
+                        <a href="?page=<?= $page - 1 ?>&produit=<?= urlencode($selectedProduct) ?>" style="text-decoration: none; background-color: #1c5739; color: #fdf2e7; padding: 8px 12px; border-radius: 5px;">Précédent</a>
+                    </li>
+                <?php endif; ?>
+
+                <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                    <li style="margin: 0 5px;">
+                        <a href="?page=<?= $i ?>&produit=<?= urlencode($selectedProduct) ?>" style="text-decoration: none; <?= $i === $page ? 'background-color: #ead885; color: #1c5739;' : 'background-color: #1c5739; color: #fdf2e7;' ?>">
+                            <?= $i ?>
+                        </a>
+                    </li>
+                <?php endfor; ?>
+
+                <?php if ($page < $totalPages): ?>
+                    <li style="margin: 0 5px;">
+                        <a href="?page=<?= $page + 1 ?>&produit=<?= urlencode($selectedProduct) ?>" style="text-decoration: none; background-color: #1c5739; color: #fdf2e7; padding: 8px 12px; border-radius: 5px;">Suivant</a>
+                    </li>
+                <?php endif; ?>
+            </ul>
+        </nav>
     </section>
 </main>
 
-        <script>
-            function modifierCommande(idCommande) {
-                const newQuantity = document.getElementById("quantity-" + idCommande).value;
-                if (newQuantity > 0) {
-                    fetch('/modifier_commande', {
-                            method: 'POST',
-                            body: JSON.stringify({
-                                idCommande: idCommande,
-                                quantity: newQuantity
-                            }),
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                alert("Commande modifiée avec succès !");
-                            } else {
-                                alert("Erreur lors de la modification.");
-                            }
-                        });
-                } else {
-                    alert("Quantité invalide.");
-                }
-            }
+<script>
+    function modifierCommande(idCommande) {
+        const newQuantity = document.getElementById("quantity-" + idCommande).value;
+        if (newQuantity > 0) {
+            fetch('/modifier_commande', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        idCommande: idCommande,
+                        quantity: newQuantity
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Commande modifiée avec succès !");
+                    } else {
+                        alert("Erreur lors de la modification.");
+                    }
+                });
+        } else {
+            alert("Quantité invalide.");
+        }
+    }
 
-            function annulerCommande(idCommande) {
-                if (confirm("Êtes-vous sûr de vouloir annuler cette commande ?")) {
-                    fetch('/annuler_commande', {
-                            method: 'POST',
-                            body: JSON.stringify({
-                                idCommande: idCommande
-                            }),
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                        })
-                        .then(response => response.json())
-                        .then(data => {
-                            if (data.success) {
-                                alert("Commande annulée.");
-                                document.getElementById('row-' + idCommande).remove();
-                            } else {
-                                alert("Erreur lors de l'annulation.");
-                            }
-                        });
-                }
-            }
-        </script>
-
-    </body>
-
+    function annulerCommande(idCommande) {
+        if (confirm("Êtes-vous sûr de vouloir annuler cette commande ?")) {
+            fetch('/annuler_commande', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        idCommande: idCommande
+                    }),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        alert("Commande annulée.");
+                        document.getElementById('row-' + idCommande).remove();
+                    } else {
+                        alert("Erreur lors de l'annulation.");
+                    }
+                });
+        }
+    }
+</script>
+</body>
 </html>
