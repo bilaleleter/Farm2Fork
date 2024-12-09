@@ -191,13 +191,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <i class="material-symbols-rounded opacity-5">dashboard</i>
             <span class="nav-link-text ms-1">Dashboard</span>
           </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-link text-dark" href="../pages/logs.html">
-            <i class="material-symbols-rounded opacity-5">receipt_long</i>
-            <span class="nav-link-text ms-1">Logs</span>
-          </a>
         </li>-->
+        <li class="nav-item">
+          <a class="nav-link text-dark" href="kitchen.php">
+            <i class="material-symbols-rounded opacity-5">receipt_long</i>
+            <span class="nav-link-text ms-1">Kitchen</span>
+          </a>
+        </li>
         <!--
           <li class="nav-item mt-3">
             <h6 class="ps-4 ms-2 text-uppercase text-xs text-dark font-weight-bolder opacity-5">Account</h6>
