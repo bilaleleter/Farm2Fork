@@ -1,0 +1,420 @@
+/* Styles for the scrollbar track (part the thumb slides within) */
+::-webkit-scrollbar {
+  width: 12px; 
+  height: 12px; 
+}
+
+/* Styles for the draggable part of the scrollbar (thumb) */
+::-webkit-scrollbar-thumb {
+  background-color: #1c5739; /* Dark green color matching your theme */
+  border-radius: 6px; /* Rounded corners of the thumb */
+}
+
+/* Styles for the scrollbar track */
+::-webkit-scrollbar-track {
+  background: #fdf2e7; /* Light beige background, same as your form background */
+  border-radius: 6px; /* Rounded corners of the track */
+}
+
+
+
+
+body {
+  background-color: #fdf2e7;
+  color: #1c5739;
+  font-family: "Neue Montreal Regular", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  display: flex;
+  justify-content: flex-start;
+  align-items: center;
+  padding-left: 20%;
+  height: 100vh;
+  margin: 0;
+  overflow: hidden; /* Prevent scrolling of the body */
+}
+
+
+#signup-form {
+  width: 300px;
+  max-height: 80vh; /* Limit height to the viewport */
+  overflow: auto; /* Allow scrolling within the form */
+  overflow-wrap: break-word;
+  margin: auto; /* Ensure some spacing and centering */
+  margin-top: 50px;
+  padding: 20px;
+  background-color: rgba(255, 255, 255, 0.2); /* Slight transparency */
+  border: 1px solid #1c5739;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(28, 87, 57, 0.2);
+  z-index: 1000;
+}
+
+
+.form-step {
+  display: none;
+}
+
+.form-step.active {
+  display: block;
+}
+
+/* Button Styling */
+#submit-button {
+  visibility: hidden;
+  width: 100%;
+  padding: 8px;
+  margin-left: 10px;
+  font-size: 14px;
+  background-color: #1c5739;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.6s ease;
+}
+
+#submit-button:hover {
+  background-color: #164b2f;
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: center;
+}
+
+.nav-button {
+  width: 48%;
+  padding: 8px;
+  font-size: 14px;
+  background-color: #1c5739;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: 0.5s ease;
+}
+
+.nav-button:hover {
+  background-color: #164b2f;
+}
+
+input,
+textarea,
+select {
+  width: 100%;
+  padding: 6px;
+  font-size: 14px;
+  margin-bottom: 8px;
+  background-color: #EAD885;
+  color: #1c5739;
+  border: 1px solid #1c5739;
+  border-radius: 5px;
+}
+
+input::placeholder,
+textarea::placeholder {
+  color: #1c5739;
+  font-size: 13px;
+}
+
+label {
+  font-size: 14px;
+  margin-bottom: 5px;
+  display: flex;
+  justify-content: flex-start;
+}
+
+
+
+
+input[type="password"]+small {
+  display: block;
+  font-size: 0.85rem;
+  color: #555;
+  font-style: italic;
+  margin-top: 4px;
+  padding-left: 5px;
+}
+
+input[type="password"]+small::before {
+  content: "🔒 ";
+  font-size: 0.9rem;
+  margin-right: 3px;
+}
+
+small {
+  display: block;
+  font-size: 0.75rem;
+  color: #555;
+  margin-top: 2px;
+  margin-bottom: 10px;
+  opacity: 0.8;
+}
+
+
+button {
+  /*width: calc(100% - 12px);*/
+  max-width: 100%;
+  border: none;
+  font-size: 14px;
+  box-sizing: content-box;
+  margin-bottom: 8px;
+}
+
+.nav-buttons {
+  display: flex;
+  justify-content: center;
+  gap: 4%;
+}
+
+.nav-button {
+  width: 48%;
+}
+
+.location-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 50%;
+  background-color: #fff;
+  cursor: pointer;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  transition: 0.4s ease, box-shadow 0.2s ease;
+  margin-left: 10px;
+}
+
+.location-button:hover {
+  background-color: #EAD885;
+  box-shadow: 0 6px 8px rgba(0, 0, 0, 0.15);
+  padding: 8px;
+}
+
+.location-button:active {
+  background-color: #fff;
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.2);
+}
+
+
+.navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 10px 20px;
+  z-index: 1;
+}
+
+.navbar-container {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.navbar-logo {
+  flex: 0 0 auto;
+}
+
+.navbar-logo img {
+  height: 80px;
+  display: block;
+}
+
+.navbar-links {
+  list-style-type: none;
+  display: flex;
+  gap: 20px;
+}
+
+.navbar-links li {
+  flex: 0 0 auto;
+}
+
+.navbar-links a {
+  text-decoration: none;
+  color: #043623;
+  font-family: "Neue Montreal Regular", system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+  font-size: 20px;
+  font-weight: bold;
+  padding: 5px 10px;
+  transition: color 0.3s;
+}
+
+.navbar-links a:hover {
+  color: #EAD885;
+}
+
+input.invalid, select.invalid {
+  border: 2px solid red;
+}
+
+input.valid, select.valid {
+  border: 2px solid green;
+}
+
+.error-message {
+  display: block;
+  color: red;
+  font-size: 0.8rem;
+  margin-top: 5px; /* Adjust spacing as necessary */
+}
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.info-icon {
+  margin-left: 8px;
+  cursor: help;
+  font-size: 18px; /* Adjust icon size */
+  display: inline-block;
+  color: #1c5739; /* Icon color to match your theme */
+}
+
+.info-icon::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  width: 250px; /* Adjust width based on your content needs */
+  background: rgba(28, 87, 57, 0.9); /* Semi-transparent background */
+  color: white;
+  padding: 10px;
+  border-radius: 6px;
+  top: 100%; /* Position below the icon */
+  left: 50%;
+  transform: translateX(-50%); /* Center the tooltip */
+  white-space: normal; /* Allow text wrapping */
+  text-align: left;
+  font-size: 12px; /* Smaller font size for tooltip text */
+  line-height: 1.6; /* Improved line spacing for readability */
+  box-shadow: 0px 8px 16px rgba(0, 0, 0, 0.2); /* Soft shadow for depth */
+  z-index: 999;
+  visibility: hidden;
+  opacity: 0;
+  transition: opacity 0.3s, visibility 0.3s;
+}
+
+.info-icon:hover::after {
+  visibility: visible;
+  opacity: 1;
+}
+
+.input-container label{
+  display: block;
+}
+
+spline-viewer {
+  width: 100%;
+  height: 100%;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 0;
+}
+
+.overlay {
+  position: absolute;
+  text-align: center;
+  z-index: 1;
+  /*pointer-events: none; makhaletnich nhoveri aal buttons*/
+}
+/* Container holding the face recognition elements */
+.face-recognition-container {
+  margin-top: 20px; /* Spacing from previous elements */
+  text-align: center; /* Center-align all elements */
+}
+
+/* Style for the face recognition button */
+.face-recognition-btn {
+  background-color: #EAD885; /* Green background */
+  color: #1c5739; /* White text */
+  border: none; /* No border */
+  padding: 10px 20px; /* Comfortable padding */
+  border-radius: 15px; /* Rounded corners */
+  font-size: 16px; /* Readable text size */
+  cursor: pointer; /* Cursor indicates clickable */
+  display: inline-block; /* Aligns well with other inline or inline-block elements */
+  transition: 0.9s ease; /* Smooth color and press effects */
+  outline: none; /* Removes the outline */
+  position: relative; /* For positioning the nested icon */
+}
+
+.face-recognition-btn:hover {
+  background-color: #1c5739; /* Darker green on hover */
+  color: white;
+  border-radius: 40px;
+  border: 1px solid #EAD885;
+  box-shadow: #043623;
+}
+
+.face-recognition-btn:active {
+  transform: scale(0.96); /* Slight shrink effect */
+}
+
+/* Icon inside the button */
+#face-icon {
+  width: 24px; /* Set the icon size */
+  height: 24px; /* Set the icon size */
+  vertical-align: middle; /* Aligns icon vertically with the text */
+  margin-right: 8px; /* Space between icon and text */
+}
+
+
+#video, #canvas {
+  position: absolute; /* Absolute positioning to fit the container */
+  top: 20%;
+  left: 10%;
+  border-radius: 25px; /* Rounds the corners to match the container */
+  z-index: 1000;
+  border: 2px solid #1c5739 ;
+  transition: 0.6s ease;
+  animation: movingBorder 2s infinite ease; /* Apply the animation */
+}
+
+
+@keyframes movingBorder {
+  0%, 100% {
+    border-color: #1c5739; /* Starting color */
+    box-shadow: 0 0 15px #1c5739;
+  }
+  5%, 95% {
+    border-color: #1a6345;
+    box-shadow: 0 0 16px #1a6345;
+  }
+  10%, 90% {
+    border-color: #176e51;
+    box-shadow: 0 0 17px #176e51;
+  }
+  15%, 85% {
+    border-color: #157957;
+    box-shadow: 0 0 18px #157957;
+  }
+  20%, 80% {
+    border-color: #138463;
+    box-shadow: 0 0 19px #138463;
+  }
+  25%, 75% {
+    border-color: #108f6f;
+    box-shadow: 0 0 20px #108f6f;
+  }
+  30%, 70% {
+    border-color: #0e9a7b;
+    box-shadow: 0 0 21px #0e9a7b;
+  }
+  35%, 65% {
+    border-color: #0ba587;
+    box-shadow: 0 0 22px #0ba587;
+  }
+  40%, 60% {
+    border-color: #07b093;
+    box-shadow: 0 0 23px #07b093;
+  }
+  50% {
+    border-color: #04bb9f;
+    box-shadow: 0 0 25px #04bb9f;
+  }
+}
